@@ -1,0 +1,2740 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE rem:requirementsProject SYSTEM "C:\Pablo\Universidad\21-22\REM\xml\REM_1_2_2.dtd">
+<rem:requirementsProject
+xmlns:rem="http://rem.lsi.us.es">
+<rem:name>misRequisitosPrevios</rem:name>
+<rem:c_requirementsSpecification oid = "CRS-0001">
+<rem:name>Documento de Requisitos del Sistema</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno
+</rem:comments>
+<rem:section
+ oid = "SEC-0001">
+<rem:name>
+Objetivos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>1</rem:level>
+<rem:number>1 </rem:number>
+<rem:objective
+ oid = "OBJ-0001">
+<rem:name>
+Gestionar el mentoring</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir la gestión del mentoring. Los [ACT-0002] accederán a la aplicación para poder ponerse en contacto con los [ACT-0001] para que estos los aconsejen, apoyen o guíen en algún aspecto de su carrera profesional.</rem:description>
+<rem:objective
+ oid = "OBJ-0003">
+<rem:name>
+Gestión de usuarios</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+permitir a los [ACT-0001] y a los [ACT-0002] registrarse en la aplicación, creandose un perfil con sus datos personales, profesionales y de contacto. Los usuarios podrán modificar su propio perfil y acceder a los perfiles de otros usuarios, mediante una búsqueda.</rem:description>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0004">
+<rem:name>
+Contacto entre usuarios</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+permitir que los [ACT-0002] tengan la posibilidad de ponerse en contacto con los [ACT-0001].</rem:description>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0005">
+<rem:name>
+Compartir ficheros</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+permitir a los ususarios compartir ficheros con otros usuarios, ya sea exponiendolos en su perfil o enviándoselos a otro usuario con quien hayan establecido un contacto previo.</rem:description>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0006">
+<rem:name>
+Generación de reportes</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+permitir generar reportes a partir de los datos de la aplicación, para que los usuarios puedan concocer el estado y evolución de la misma.</rem:description>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0008">
+<rem:name>
+Modular</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+ser modular para permitir realizar modificaciones en uno de sus módulos o añadir nuevos módulos sin afectar de manera importante a los demás módulos.</rem:description>
+</rem:objective>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0002">
+<rem:name>
+Facilitar el mentoring</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+facilitar el proceso de mentoring. Por lo tanto, deberá ser fácil de usar y cómodo, haciéndolo preferible a otras alternativas.</rem:description>
+<rem:objective
+ oid = "OBJ-0007">
+<rem:name>
+Usabilidad</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+ser usable e intuitivo, con una interfaz de usuario agradable y cómoda, así como responsive.</rem:description>
+</rem:objective>
+<rem:objective
+ oid = "OBJ-0009">
+<rem:name>
+Seguridad</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+proteger los datos de los usuarios.</rem:description>
+</rem:objective>
+</rem:objective>
+</rem:section>
+<rem:section
+ oid = "SEC-0006">
+<rem:name>
+Usuarios</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>1</rem:level>
+<rem:number>2 </rem:number>
+<rem:actor
+ oid = "ACT-0001">
+<rem:name>
+Mentor</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:actorRole>a los posibles mentores que pueden utilizar la aplicación con el fin de compartir su conocimiento o experiencia con un mentorizado, con el fin de guiarle o apoyarle en algún ámbito de su carrera profesional.</rem:actorRole>
+</rem:actor>
+<rem:actor
+ oid = "ACT-0002">
+<rem:name>
+Mentorizado</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:actorRole>a los usuarios que se van a beneficiar de la experiencia y conocimiento de los mentores.</rem:actorRole>
+</rem:actor>
+<rem:actor
+ oid = "ACT-0003">
+<rem:name>
+Administrador de la aplicación</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>21</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:actorRole>a los administradores de la empresa que provee la aplicación. Entre sus responsabilidades se encuentra el mantenimiento de la misma, la generación de reportes, la asistencia a los usuarios y la gestión de los mismos de forma general.</rem:actorRole>
+</rem:actor>
+<rem:actor
+ oid = "ACT-0004">
+<rem:name>
+Administrador de una institución</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>23</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:actorRole>a un administrador de una de las instituciones que han contratado los servicios de la aplicación. En tre sus responsabilidades está la configuración de la aplicación para los usuarios de su institución y la gestión de los mismos.</rem:actorRole>
+</rem:actor>
+</rem:section>
+<rem:section
+ oid = "SEC-0010">
+<rem:name>
+Requisitos de información</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>1</rem:level>
+<rem:number>3 </rem:number>
+<rem:constraintRequirement
+ oid = "CRQ-0001">
+<rem:name>
+Mentor</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+Este requisito recoge la información que debe almacenar el sistema acerca de un mentor registrado. Los campos son los siguientes:<br/>-Identificador único<br/>-Nombre<br/>-Apellidos<br/>-Correo electronico<br/>-Empresa o institución<br/>-Campos de conocimiento en los que podría ayudar<br/></rem:description>
+</rem:constraintRequirement>
+<rem:constraintRequirement
+ oid = "CRQ-0002">
+<rem:name>
+Mentorizado</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+Este requisito recoge la información que debe almacenar el sistema acerca de un mentorizado registrado. Los campos son los siguientes:<br/>-Identificador único<br/>-Nombre<br/>-Apelllidos<br/>-Correo electrónico<br/>-Institución (si pertenecen a alguna)<br/>-Nivel de estudios<br/>-Campos en los que tienen estudios<br/>-Campos en los que tienen interes o necesitan ayuda</rem:description>
+</rem:constraintRequirement>
+<rem:constraintRequirement
+ oid = "CRQ-0003">
+<rem:name>
+Peticion de comunicación</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+<rem:tbd/></rem:description>
+</rem:constraintRequirement>
+<rem:constraintRequirement
+ oid = "CRQ-0004">
+<rem:name>
+Evento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+<rem:tbd/></rem:description>
+</rem:constraintRequirement>
+<rem:constraintRequirement
+ oid = "CRQ-0005">
+<rem:name>
+Reporte general</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>23</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance>
+<rem:tbd/>
+</rem:importance>
+<rem:urgency>
+<rem:tbd/>
+</rem:urgency>
+<rem:status>
+<rem:tbd/>
+</rem:status>
+<rem:stability>
+<rem:tbd/>
+</rem:stability>
+<rem:description>
+<rem:tbd/></rem:description>
+</rem:constraintRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0002">
+<rem:name>
+Requisitos funcionales y no funcionales</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>1</rem:level>
+<rem:number>4 </rem:number>
+<rem:section
+ oid = "SEC-0003">
+<rem:name>
+Herramienta de chat</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.1 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0001">
+<rem:name>
+Enviar un mensaje</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios enviar mensajes a través del chat. Para ello, el emisor escribirá el mensaje deseado en el chat correspondiente y le dará a enviar. Este mensaje se almacenará en un repositorio, guardando el emisor, el destinatario, el contenido del mensaje, el tipo del mismo y su hora de envío.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0002">
+<rem:name>
+Recibir un mensaje</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios recibir mensajes en los chats de los que sean miembros. Para ello, una vez que el usuario entre en el chat, se deberá consultarel repositorio para recuperar los X últimos mensajes.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0003">
+<rem:name>
+Obtener mensajes antiguos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir al usuario mostrar todos los mensajes que han sido enviados y recibidos en un determinado chat.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0004">
+<rem:name>
+Recargar el chat</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+recargar un chat abierto cada X segundos, comprobando si hay mensajes nuevos tras ese tiempo. Para ello se puede almacenar la hora del último mensaje y utilizarla para comprobar si hubo mensajes más recientes. También se podrá realizar la recarga a petición del usuario. Esta acción se realizará también antes de realizar el envío de un mensaje por parte del usuario.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0005">
+<rem:name>
+Enviar una solicitud</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los [ACT-0002] enviar una solicitud a un[ACT-0001] para iniciar una comunicación con este. Dicha solicitud puede contener un pequeño texto explicativo de por que se desea estrablecer la comunicación.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0006">
+<rem:name>
+Aceptar solicitud</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los [ACT-0001] aceptar o rechazar una solicitud que les haya realizado un [ACT-0002] para iniciar una comunicación.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0012">
+<rem:name>
+Cerrar una comunicación</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un usuario, tanto [ACT-0001] como [ACT-0002] cerrar un chat abierto con otro usuario, terminando así la relación de mentorización.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0031">
+<rem:name>
+Notificar a un usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>23</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+notificar a un usuario si este recibe un mensaje a través de un chat establecido con otro usuario. Esta notificación se mostrará al usuario al iniciar la aplicación, en el caso de haber recibido mensajes cuando estaba desconectado, o si estando conectado, recibe mensajes si el chat abierto.</rem:description>
+</rem:functionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0004">
+<rem:name>
+Gestión de usuarios</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.2 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0007">
+<rem:name>
+Registrar un usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0002"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir que un usuario, tanto [ACT-0001] como [ACT-0002], pueda registrarse en la aplicación, proprocionando información personal y de contacto. También deberán indicar un nombre de usuario y una contraseña, que serán usadas para autentificarse.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0008">
+<rem:name>
+Iniciar sesión</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0002"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios iniciar sesión con las credenciales creadas durante el registro.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0009">
+<rem:name>
+Modificar perfil</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios modificar o actualizar la información de su perfil.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0010">
+<rem:name>
+Cerrar sesión</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios cerrar sesión en el dispositivo desde el que estén accediendo a la aplicación web.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0011">
+<rem:name>
+Sacar a un usuario del sistema</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un usuario eliminar su cuenta.</rem:description>
+</rem:functionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0001">
+<rem:name>
+Durabilidad de los datos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+mantener los datos de un usuario que ha eliminado su cuenta durante un período de [2 meses].</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0013">
+<rem:name>
+Buscar usuarios</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0002"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0004"/>
+<rem:description>
+permitir a los [ACT-0002] realizar búsquedas entre los [ACT-0001] disponibles, y viceversa, utilizando para ello una serie de filtros. </rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0014">
+<rem:name>
+Acceder al perfil de un mentor</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0002"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0004"/>
+<rem:description>
+los [ACT-0002] podrán acceder al perfil de un [ACT-0001] para visualizar sus datos públicos y poder realizar una solicitud de contacto a ese mentor.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0016">
+<rem:name>
+Acceder al perfil de un mentorizado</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0002"/>
+<rem:urgency value = "URV-0002"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+a los [ACT-0001] acceder al perfil de un [ACT-0002] y visualizar su información pública. Esto puede tener como fin permitir a un mentor decidir si aceptar la petición de un mentorizado.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0028">
+<rem:name>
+Enviar comentario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>22</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+a los usuarios [ACT-0001] o [ACT-0002] enviar un comentario para que sea leido por un [ACT-0004]. Los comentarios tendrán como finalidad proprocionar ideas a los desarrolladores para mejorar la aplicación o agregar nuevas posibles funcionalidades. Los comantario, al contrario que las asistencias, no tendrán respuesta.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0026">
+<rem:name>
+Reportar usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a los usuarios reportar a otros usuarios por hacer alguna acción que vaya contra las normas establecidas.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0027">
+<rem:name>
+Contactar con asistencia</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>20</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un usuario [ACT-0001] o [ACT-0002] dejar un mensaje a un [ACT-0004] para informar hacerca de un error ocurrido o un fallo detectado, así como problemas con el perfil del usuario. De ser necesario una respuesta, el [ACT-0004] se la comunicaría al usuario a traves de un medio externo, como un correo eletrónico o mediante una notificación.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0029">
+<rem:name>
+Expulsar a un usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>22</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un [ACT-0004] expulsar a un usuario que haya sido reportado, cancelando su cuenta de forma temporal, o eliminandola de forma permanente. El usuario expulsado recibirá un correo eletronico a la cuenta facilitada durante el registro donde se le explicará el motivo de la expulsión.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0030">
+<rem:name>
+Advertir a un usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>22</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un [ACT-0004] enviar una notificación a un usuario advirtiendole de que ha realizado una actividad que va contra las normas de la aplicación. Si la acción realizada por el usuario es grave, se procedería directamente a la expulsión sin pasar por una advertencia.</rem:description>
+</rem:functionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0009">
+<rem:name>
+Tiempo de respuesta en las búsquedas</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+tardar menos de 3 segundos desde que se le indica que realice una búsqueda de usuarios hasta que se obtiene el resultado.</rem:description>
+</rem:nonFunctionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0005">
+<rem:name>
+Comparticion de ficheros</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.3 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0015">
+<rem:name>
+Subir fichero al perfil de un usuario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios subir a su perfil ficheros que los otros usuarios podrán visualizar y descargar al acceder a su perfil.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0017">
+<rem:name>
+Enviar un fichero</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los dos tipos de usuarios enviar ficheros a través de la aplicación a quellos usuarios con quienes hayan contactado previamente.</rem:description>
+</rem:functionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0002">
+<rem:name>
+Límite de almacenamiento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+evitar que un usuario tenga colgado en su perfil más de [10Kb] de datos en forma de ficheros.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0003">
+<rem:name>
+Límite de tamaño de envío</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>18</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+evitar que los usuarios compartan con otro usuario ficheros de más de [2Kb] de tamaño.</rem:description>
+</rem:nonFunctionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0007">
+<rem:name>
+Generación de reportes</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.4 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0018">
+<rem:name>
+Generar un reporte</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los[ACT-0004] del sistema generar un reporte con los datos disponibles en la aplicación.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0019">
+<rem:name>
+Colgar un reporte</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los [ACT-0004] del sistema colgar los reportes en la aplicación para que los usuarios puedan visualizarlos y descargarlos.</rem:description>
+</rem:functionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0008">
+<rem:name>
+Herramienta de planificación</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.5 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0020">
+<rem:name>
+Crear un evento en el calendario</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los [ACT-0001] o [ACT-0002] crear un evento en el calendario de la aplicación, estableciendo la franja de tiempo que durará y pudiendo indicar que se realizará con otro usuario. De ser así, se le enviará una solicitu de evento a este otro usuario, salvo que este tenga ya un evento programado para la franja de tiempo establecida.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0021">
+<rem:name>
+Aceptar solicitud de evento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a un [ACT-0001] o [ACT-0002]  que haya recibido una solicitud de evento en el calendario aceptarla o rechazarla.</rem:description>
+</rem:functionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0004">
+<rem:name>
+Avisar de evento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+avisar a un usuario de que tiene un evento programado para el día actual cuando el usuario se conecte y media hora, un cuarto de hora y cinco minutos antes del evento.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0022">
+<rem:name>
+Cancelar un evento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir al creador de un evento cancelarlo, quitandolo tanto de su calendario como del calendario de otro posible usuario invitado.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0023">
+<rem:name>
+Abandonar un evento</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a un usuario que ha sido invitado a un evento y ha aceptado la invitación a abandonarlo, eliminandolo de su calendario. El sistema pedirá que indique el motivo de su abandono para informarselo al creador del evento.</rem:description>
+</rem:functionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0009">
+<rem:name>
+Registro de actividades</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.6 </rem:number>
+<rem:functionalRequirement
+ oid = "FRQ-0024">
+<rem:name>
+Registrar mensajes del servidor</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+registrar en un log todos los mensajes que genere el servidor Rest del Backend, tanto los de información como los de error.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0025">
+<rem:name>
+Registrar accesos al perfil</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+registrar los usuarios que han accedido a un perfil determinado o que han realizado una cierta búsqueda, o, en su defecto, el número de ellos.</rem:description>
+</rem:functionalRequirement>
+</rem:section>
+<rem:section
+ oid = "SEC-0011">
+<rem:name>
+Usabilidad y seguridad</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:level>2</rem:level>
+<rem:number>4.7 </rem:number>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0005">
+<rem:name>
+Interfaz agradable</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+proporcionar una interfaz de usuario agradable y cómoda de usar.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0006">
+<rem:name>
+Seguridad de los datos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+mantener la seguridad de los datos de los usuarios, implementando protocolos de autentificción y restrinción en el acceso a los datos. También implicará encriptar los datos pertinentes en el repositorio utilizado.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0007">
+<rem:name>
+Comunicaciones encriptadas</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+encriptar todas las comunicaciones entre el frontend y el backend mediante https, al igual que los accesos al frontend desde los navegadores de los usuarios. Lo que implicará la necesidad de un certificado para la aplicación.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0008">
+<rem:name>
+Interfaz responsiva</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0003"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+disponer de una interfaz de usuario que se adapte al tamaño del dispositivo usado para visualizar la aplicación.</rem:description>
+</rem:nonFunctionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0032">
+<rem:name>
+Obtener más información</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+permitir a los usuarios obtener información acerca del funcionamiento de la aplicación, su finalidad y sus creadores.</rem:description>
+</rem:functionalRequirement>
+<rem:functionalRequirement
+ oid = "FRQ-0033">
+<rem:name>
+Consultar normativa</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0004"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0002"/>
+<rem:description>
+permitir a los usuarios consultar la normativa de uso de la aplicación.</rem:description>
+</rem:functionalRequirement>
+<rem:nonFunctionalRequirement
+ oid = "NFR-0010">
+<rem:name>
+Cumplir con la normativa de protección de datos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>24</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:importance value = "IMV-0003"/>
+<rem:urgency value = "URV-0004"/>
+<rem:status value = "STV-0002"/>
+<rem:stability value = "SBV-0003"/>
+<rem:description>
+cumplir la normativa de protección de datos vigente y adaptarse a las nuevas normativas emergentes que le puedan afectar.</rem:description>
+</rem:nonFunctionalRequirement>
+</rem:section>
+<rem:traceabilityMatrix
+ oid = "TRM-0001">
+<rem:name>
+Matriz de rasterabilidad</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>19</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno</rem:comments>
+<rem:tr>
+<rem:th/>
+<rem:th oid ="OBJ-0001"/>
+<rem:th oid ="OBJ-0002"/>
+<rem:th oid ="OBJ-0003"/>
+<rem:th oid ="OBJ-0004"/>
+<rem:th oid ="OBJ-0005"/>
+<rem:th oid ="OBJ-0006"/>
+<rem:th oid ="OBJ-0007"/>
+<rem:th oid ="OBJ-0008"/>
+<rem:th oid ="OBJ-0009"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0001"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0002"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0003"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0004"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0005"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0006"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0007"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0008"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0009"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0010"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0011"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0012"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0013"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0014"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0015"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0016"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0017"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0018"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0019"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0020"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0021"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0022"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0023"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0024"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0025"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0026"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0027"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0028"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0029"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0030"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0031"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0032"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+</rem:tr>
+<rem:tr>
+<rem:th oid ="FRQ-0033"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+<rem:td mark ="no"/>
+<rem:td mark ="yes"/>
+</rem:tr>
+</rem:traceabilityMatrix>
+</rem:section>
+</rem:c_requirementsSpecification>
+<rem:d_requirementsSpecification oid = "DRS-0002">
+<rem:name>Documento de Análisis del Sistema</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno
+</rem:comments>
+</rem:d_requirementsSpecification>
+<rem:defectsSpecification oid = "DFS-0003">
+<rem:name>Registro de Conflictos y Defectos</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno
+</rem:comments>
+</rem:defectsSpecification>
+<rem:changeRequestsSpecification oid = "CHS-0004">
+<rem:name>Registro de Peticiones de Cambio</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2022</rem:year>
+<rem:month>2</rem:month>
+<rem:day>17</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Ninguno
+</rem:comments>
+</rem:changeRequestsSpecification>
+<rem:trace source = "OBJ-0003"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0004"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0005"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0006"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0029"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0001"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0010"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0008"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0014"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0008"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0028"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0030"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0001"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0002"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0003"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0009"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0011"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0013"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0016"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0027"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0009"  target = "OBJ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0026"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "OBJ-0007"  target = "OBJ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0007"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0005"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0001"  target = "FRQ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0012"  target = "FRQ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0004"  target = "FRQ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0006"  target = "FRQ-0005" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0011"  target = "FRQ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0024"  target = "OBJ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0010"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0013"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0019"  target = "FRQ-0018" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0017"  target = "FRQ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0025"  target = "OBJ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0009"  target = "FRQ-0013" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0018"  target = "OBJ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0009"  target = "OBJ-0003" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0001"  target = "FRQ-0011" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0002"  target = "FRQ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0026"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0009"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0020"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0003"  target = "FRQ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0008"  target = "FRQ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0027"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0009"  target = "FRQ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0028"  target = "FRQ-0008" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0015"  target = "FRQ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0031"  target = "FRQ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0029"  target = "FRQ-0026" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0019"  target = "OBJ-0006" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0030"  target = "FRQ-0026" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0014"  target = "FRQ-0013" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0016"  target = "FRQ-0013" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0003"  target = "OBJ-0005" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0006"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0012"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0017"  target = "OBJ-0005" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0002"  target = "OBJ-0005" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0015"  target = "OBJ-0005" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0004"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0005"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0031"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0024"  target = "FRQ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0033"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0007"  target = "OBJ-0004" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0004"  target = "FRQ-0020" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0032"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0033"  target = "OBJ-0009" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0021"  target = "FRQ-0020" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0007"  target = "OBJ-0009" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0008"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0004"  target = "OBJ-0002" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0004"  target = "FRQ-0021" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0025"  target = "FRQ-0014" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0010"  target = "OBJ-0009" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0021"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0023"  target = "FRQ-0021" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0025"  target = "FRQ-0016" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0005"  target = "OBJ-0007" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0006"  target = "OBJ-0009" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "NFR-0007"  target = "FRQ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0022"  target = "FRQ-0020" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0022"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:trace source = "FRQ-0023"  target = "OBJ-0001" >
+<rem:isChecked/>
+</rem:trace>
+<rem:predefinedValueTypes>
+<rem:predefinedValueType
+ oid = "PVT-0004">
+<rem:name>
+String</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type</rem:comments>
+<rem:description>
+Alphanumeric strings</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+<rem:predefinedValueType
+ oid = "PVT-0006">
+<rem:name>
+Time</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type (non-standard)</rem:comments>
+<rem:description>
+Hour:minutes:seconds</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+<rem:predefinedValueType
+ oid = "PVT-0001">
+<rem:name>
+Real</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type</rem:comments>
+<rem:description>
+Real numbers</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+<rem:predefinedValueType
+ oid = "PVT-0002">
+<rem:name>
+Integer</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type</rem:comments>
+<rem:description>
+Integer numbers</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+<rem:predefinedValueType
+ oid = "PVT-0003">
+<rem:name>
+Natural</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type</rem:comments>
+<rem:description>
+Natural numbers</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+<rem:predefinedValueType
+ oid = "PVT-0005">
+<rem:name>
+Date</rem:name>
+<rem:version>
+<rem:major>1</rem:major>
+<rem:minor>0</rem:minor>
+<rem:date>
+<rem:year>2000</rem:year>
+<rem:month>10</rem:month>
+<rem:day>30</rem:day>
+</rem:date>
+</rem:version>
+<rem:comments>
+Predefined OCL type (non-standard)</rem:comments>
+<rem:description>
+Dates</rem:description>
+<rem:definition>
+(null)
+</rem:definition>
+</rem:predefinedValueType>
+</rem:predefinedValueTypes>
+<rem:predefinedValues>
+<rem:changeRequestStatusValue oid = "CRV-0003">
+<rem:name>pendiente de aprobar/rechazar</rem:name>
+</rem:changeRequestStatusValue>
+<rem:changeRequestStatusValue oid = "CRV-0004">
+<rem:name>pendiente de realización</rem:name>
+</rem:changeRequestStatusValue>
+<rem:changeRequestStatusValue oid = "CRV-0001">
+<rem:name>PD</rem:name>
+</rem:changeRequestStatusValue>
+<rem:changeRequestStatusValue oid = "CRV-0002">
+<rem:name>pendiente de análisis</rem:name>
+</rem:changeRequestStatusValue>
+<rem:changeRequestStatusValue oid = "CRV-0006">
+<rem:name>rechazado</rem:name>
+</rem:changeRequestStatusValue>
+<rem:changeRequestStatusValue oid = "CRV-0005">
+<rem:name>verificado</rem:name>
+</rem:changeRequestStatusValue>
+<rem:conflictStatusValue oid = "CSV-0003">
+<rem:name>en proceso de negociación</rem:name>
+</rem:conflictStatusValue>
+<rem:conflictStatusValue oid = "CSV-0004">
+<rem:name>resuelto</rem:name>
+</rem:conflictStatusValue>
+<rem:conflictStatusValue oid = "CSV-0002">
+<rem:name>no resuelto</rem:name>
+</rem:conflictStatusValue>
+<rem:conflictStatusValue oid = "CSV-0001">
+<rem:name>PD</rem:name>
+</rem:conflictStatusValue>
+<rem:defectStatusValue oid = "DSV-0001">
+<rem:name>PD</rem:name>
+</rem:defectStatusValue>
+<rem:defectStatusValue oid = "DSV-0003">
+<rem:name>en proceso de negociación</rem:name>
+</rem:defectStatusValue>
+<rem:defectStatusValue oid = "DSV-0004">
+<rem:name>eliminado</rem:name>
+</rem:defectStatusValue>
+<rem:defectStatusValue oid = "DSV-0002">
+<rem:name>no eliminado</rem:name>
+</rem:defectStatusValue>
+<rem:defectTypeValue oid = "DTV-0003">
+<rem:name>No necesidad</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no son necesarios porque no contribuyen a satisfacer ninguna necesidad de clientes o usuarios]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0004">
+<rem:name>Incomprensibilidad</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no pueden ser entendidos por algún lector]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0001">
+<rem:name>PD</rem:name>
+<rem:description>
+<![CDATA[Por Determinar]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0002">
+<rem:name>Ambigüedad</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos, aunque comprensibles, tienen más de una interpretación posible]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0005">
+<rem:name>No verificabilidad</rem:name>
+<rem:description>
+<![CDATA[No se puede comprobar que el sistema satisface el requisito o requisitos]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0015">
+<rem:name>Nivel incorrecto de detalle</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no están expresados con el nivel adecuado de detalle, es decir, son demasiado abstractos o demasiado detallados]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0010">
+<rem:name>Redundancia</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos son redundantes o contienen elementos redundantes]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0011">
+<rem:name>Imprecisión</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no se expresan de forma precisa, es decir, usando cantidades numéricas siempre que sea posible con el nivel adecuado de precisión]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0012">
+<rem:name>Incompleción</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no describen todo lo que el sistema se supone que deberá hacer, no describen las respuestas del sistema a todas las posibles situaciones o incluyen elementos por determinar (PD)]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0014">
+<rem:name>Estabilidad no establecida</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no tienen estimada su estabilidad]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0008">
+<rem:name>Verbosidad excesiva</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos pueden expresarse de forma más concisa sin alterar su significado]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0009">
+<rem:name>Dependiente del diseño</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos incluyen elementos dependientes del diseño del sistema]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0023">
+<rem:name>Otro</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos presentan otro tipo de defecto]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0016">
+<rem:name>No rastreabilidad</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no están trazados hacia sus orígenes, bien requisitos de nivel superior (objetivos), bien clientes y usuarios]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0013">
+<rem:name>Prioridad no establecida</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no tienen establecida su prioridad, es decir, su importancia y su urgencia]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0007">
+<rem:name>No implementabilidad</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no pueden ser implementados con la tecnología actual o dentro de un coste razonable]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0006">
+<rem:name>Inconsistencia</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no son consistentes, es decir, presentan contradicciones internas o entre varios]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:defectTypeValue oid = "DTV-0017">
+<rem:name>Organización incorrecta</rem:name>
+<rem:description>
+<![CDATA[El requisito o requisitos no están organizados correctamente según la normativa aplicada o el documento no contiene las secciones obligatorias]]>
+</rem:description>
+</rem:defectTypeValue>
+<rem:importanceValue oid = "IMV-0002">
+<rem:name>vital</rem:name>
+</rem:importanceValue>
+<rem:importanceValue oid = "IMV-0004">
+<rem:name>quedaría bien</rem:name>
+</rem:importanceValue>
+<rem:importanceValue oid = "IMV-0001">
+<rem:name>PD</rem:name>
+</rem:importanceValue>
+<rem:importanceValue oid = "IMV-0003">
+<rem:name>importante</rem:name>
+</rem:importanceValue>
+<rem:stabilityValue oid = "SBV-0002">
+<rem:name>baja</rem:name>
+</rem:stabilityValue>
+<rem:stabilityValue oid = "SBV-0003">
+<rem:name>media</rem:name>
+</rem:stabilityValue>
+<rem:stabilityValue oid = "SBV-0004">
+<rem:name>alta</rem:name>
+</rem:stabilityValue>
+<rem:stabilityValue oid = "SBV-0001">
+<rem:name>PD</rem:name>
+</rem:stabilityValue>
+<rem:statusValue oid = "STV-0003">
+<rem:name>pendiente de verificación</rem:name>
+</rem:statusValue>
+<rem:statusValue oid = "STV-0004">
+<rem:name>pendiente de validación</rem:name>
+</rem:statusValue>
+<rem:statusValue oid = "STV-0001">
+<rem:name>PD</rem:name>
+</rem:statusValue>
+<rem:statusValue oid = "STV-0002">
+<rem:name>en construcción</rem:name>
+</rem:statusValue>
+<rem:statusValue oid = "STV-0005">
+<rem:name>validado</rem:name>
+</rem:statusValue>
+<rem:terminationValue oid = "TEV-0002">
+<rem:name>continúa</rem:name>
+</rem:terminationValue>
+<rem:terminationValue oid = "TEV-0003">
+<rem:name>queda sin efecto</rem:name>
+</rem:terminationValue>
+<rem:terminationValue oid = "TEV-0001">
+<rem:name>PD</rem:name>
+</rem:terminationValue>
+<rem:timeUnitValue oid = "TUV-0005">
+<rem:name>mes(es)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0007">
+<rem:name>semana(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0002">
+<rem:name>año(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0001">
+<rem:name>PD</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0014">
+<rem:name>milisegundo(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0008">
+<rem:name>día(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0011">
+<rem:name>segundo(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0013">
+<rem:name>centésima(s) de segundo</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0012">
+<rem:name>décima(s) de segundo</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0010">
+<rem:name>minuto(s)</rem:name>
+</rem:timeUnitValue>
+<rem:timeUnitValue oid = "TUV-0009">
+<rem:name>hora(s)</rem:name>
+</rem:timeUnitValue>
+<rem:urgencyValue oid = "URV-0002">
+<rem:name>inmediatamente</rem:name>
+</rem:urgencyValue>
+<rem:urgencyValue oid = "URV-0001">
+<rem:name>PD</rem:name>
+</rem:urgencyValue>
+<rem:urgencyValue oid = "URV-0003">
+<rem:name>hay presión</rem:name>
+</rem:urgencyValue>
+<rem:urgencyValue oid = "URV-0004">
+<rem:name>puede esperar</rem:name>
+</rem:urgencyValue>
+</rem:predefinedValues>
+</rem:requirementsProject>
