@@ -1,0 +1,8 @@
+Tutorial Hibernate Postgres
+https://pharos.sh/implementando-hibernate-con-spring-boot-y-postgresql/
+(este mejor)
+https://www.bezkoder.com/spring-boot-postgresql-example/
+Ejemplo claves foraneas hibernate
+https://examples.javacodegeeks.com/enterprise-java/hibernate/hibernate-foreign-key-example/
+Ejemplo auth+thymeleaf
+https://spring.io/guides/gs/securing-web/
