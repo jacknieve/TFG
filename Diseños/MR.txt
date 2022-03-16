@@ -1,0 +1,122 @@
+Usuario{
+Correo String
+Password String
+Rol int
+Primary Key(Correo)
+}
+Mentor{
+Correo String
+Nombre String
+Apellidos String
+Nivel de estudios String
+Teléfono String(12)[+00000000000]
+Descripcion Text
+Twitter String
+Instagram String
+Facebook String
+Linkedin String
+FechaEliminacion Date
+DireccionVerfificada Boolean
+HorasPorMes Integer
+Primary Key(Correo)
+Foreing Key(Correo, Usuario(Correo))
+Id int Unique
+}
+
+Mentorizado{
+Correo String
+Nombre String
+Apellidos String
+Nivel de estudios String
+Teléfono String(12)[+00000000000]
+Descripcion Text
+Twitter String
+Instagram String
+Facebook String
+Linkedin String
+FechaEliminacion Date
+DireccionVerfificada Boolean
+Primary Key(Correo)
+Foreing Key(Correo, Usuario(Correo))
+Id int Unique
+}
+
+Institucion{
+Correo String
+Icono String
+Nombre String Unique
+Color String
+PaginaWeb String
+Direccion String
+Visibilidad Boolean
+Primary Key(Correo)
+Foreing Key(Correo, Usuario(Correo))
+}
+
+SerDeInstitucion{
+MentorId int
+Institucion String
+Puesto String
+Primary Key(MentorId, Institucion)
+Foreing Key(MentorId, Mentor(Id))
+Foreing Key(Institucion, Institucion(Nombre))
+}
+
+AreasMentor{
+MentorId int
+Nombre String
+Primary Key(MentorId, Nombre)
+Foreing Key(MentorId, Mentor(Id))
+}
+
+AreasMentorizado{
+MentorizadoId int
+Nombre String
+Primary Key(MentorizadoId, Nombre)
+Foreing Key(MentorizadoId, Mentorizado(Id))
+}
+
+VerificadoPor{
+MentorId int
+Institucion String
+Primary Key(MentorId, Institucion)
+Foreing Key(MentorId, Mentor(Id))
+Foreing Key(Institucion, Institucion(Nombre))
+}
+
+Mentorizacion{
+MentorId int
+MentorizadoId int
+FechaIn date
+FechaFin date
+Calificacion int
+Comentario String
+Primary Key(MentorId, MentorizadoId, FechaIn)
+Foreing Key(MentorId, Mentor(Id))
+Foreing Key(MentorizadoId, Mentorizado(Id))
+}
+
+Peticion{
+MentorId int
+MentorizadoId int
+Fecha date
+Motivo String
+Estado String/int
+FechaRes Date
+Primary Key(MentorId, MentorizadoId, Fecha)
+Foreing Key(MentorId, Mentor(Id))
+Foreing Key(MentorizadoId, Mentorizado(Id))
+}
+
+Extension{
+Extension String
+Primary Key(Extension)
+}
+
+ExtensionesPermitidas{
+Extension String
+Institucion String
+Primary Key(Extension, Institucion)
+Foreing Key(Extension, Extension(Extension))
+Foreing Key(Institucion, Institucion(Nombre))
+}
