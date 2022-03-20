@@ -2,43 +2,37 @@ Usuario{
 Correo String
 Password String
 Rol int
-Primary Key(Correo)
+Id int
+Primary Key(Id)
+FechaRegistro Date
 }
 Mentor{
-Correo String
+Id int
 Nombre String
 Apellidos String
 Nivel de estudios String
 Teléfono String(12)[+00000000000]
-Descripcion Text
-Twitter String
-Instagram String
-Facebook String
+Descripcion Text [500 max]
 Linkedin String
 FechaEliminacion Date
 DireccionVerfificada Boolean
 HorasPorMes Integer
-Primary Key(Correo)
-Foreing Key(Correo, Usuario(Correo))
-Id int Unique
+Primary Key(Id)
+Foreing Key(Id, Usuario(Id))
 }
 
 Mentorizado{
-Correo String
+Id int
 Nombre String
 Apellidos String
 Nivel de estudios String
 Teléfono String(12)[+00000000000]
-Descripcion Text
-Twitter String
-Instagram String
-Facebook String
+Descripcion Text [500 max]
 Linkedin String
 FechaEliminacion Date
 DireccionVerfificada Boolean
-Primary Key(Correo)
-Foreing Key(Correo, Usuario(Correo))
-Id int Unique
+Primary Key(Id)
+Foreing Key(Id, Usuario(Id))
 }
 
 Institucion{
@@ -119,4 +113,15 @@ Institucion String
 Primary Key(Extension, Institucion)
 Foreing Key(Extension, Extension(Extension))
 Foreing Key(Institucion, Institucion(Nombre))
+}
+
+Notificacion{
+Usuario int Index
+Id int
+Fecha Date
+Titulo String
+Descripcion Text
+Estado String/int
+Primary Key(Id)
+Foreing Key(Usuario, Usuario(Id))
 }

@@ -1,2 +1,6 @@
-Plan de pruebas:
-Simplemente, decir que voy a hacer pruebas unitarias de las funcionalidades a medida que las voy desarrollando. Luego, que se harán pruebas sobre las funcionalidades principales (pruebas de requisitos), es decir, en plan, un usuario se puede logear, registrar, buscar mentores...
+Mandar notificaciones al correo del usuario cuando este este deconectado
+Quitar enlaces que no sean a linkedin
+Mejora de mentorizaciones grupales
+
+
+
