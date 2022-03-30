@@ -2,37 +2,39 @@ Usuario{
 Correo String
 Password String
 Rol int
-Id int
-Primary Key(Id)
+Id int Unique
 FechaRegistro Date
+Habilitado Boolean
+Bloqueado Boolean
+Primary Key(Correo)
 }
 Mentor{
-Id int
+Correo String
 Nombre String
 Apellidos String
-Nivel de estudios String
-Teléfono String(12)[+00000000000]
+NivelEstudios String
+Telefono String(12)[+00000000000]
 Descripcion Text [500 max]
 Linkedin String
 FechaEliminacion Date
-DireccionVerfificada Boolean
-HorasPorMes Integer
-Primary Key(Id)
-Foreing Key(Id, Usuario(Id))
+HorasPorMes int
+FechaNaz Date
+Primary Key(Correo)
+Foreing Key(Correo, Usuario(Correo))
 }
 
 Mentorizado{
-Id int
+Correo String
 Nombre String
 Apellidos String
-Nivel de estudios String
-Teléfono String(12)[+00000000000]
+NivelEstudios String
+Telefono String(12)[+00000000000]
 Descripcion Text [500 max]
 Linkedin String
 FechaEliminacion Date
-DireccionVerfificada Boolean
-Primary Key(Id)
-Foreing Key(Id, Usuario(Id))
+FechaNaz Date
+Primary Key(Correo)
+Foreing Key(Correo, Usuario(Correo))
 }
 
 Institucion{
@@ -48,58 +50,58 @@ Foreing Key(Correo, Usuario(Correo))
 }
 
 SerDeInstitucion{
-MentorId int
+Mentor String
 Institucion String
 Puesto String
-Primary Key(MentorId, Institucion)
-Foreing Key(MentorId, Mentor(Id))
+Primary Key(Mentor, Institucion)
+Foreing Key(Mentor, Mentor(Correo))
 Foreing Key(Institucion, Institucion(Nombre))
 }
 
 AreasMentor{
-MentorId int
+Mentor String
 Nombre String
-Primary Key(MentorId, Nombre)
-Foreing Key(MentorId, Mentor(Id))
+Primary Key(Mentor, Nombre)
+Foreing Key(Mentor, Mentor(Correo))
 }
 
 AreasMentorizado{
-MentorizadoId int
+MentorizadoId String
 Nombre String
-Primary Key(MentorizadoId, Nombre)
-Foreing Key(MentorizadoId, Mentorizado(Id))
+Primary Key(Mentorizado, Nombre)
+Foreing Key(Mentorizado, Mentorizado(Correo))
 }
 
 VerificadoPor{
-MentorId int
+Mentor String
 Institucion String
-Primary Key(MentorId, Institucion)
-Foreing Key(MentorId, Mentor(Id))
+Primary Key(Mentor, Institucion)
+Foreing Key(Mentor, Mentor(Correo))
 Foreing Key(Institucion, Institucion(Nombre))
 }
 
 Mentorizacion{
-MentorId int
-MentorizadoId int
+Mentor String
+Mentorizado String
 FechaIn date
 FechaFin date
 Calificacion int
 Comentario String
-Primary Key(MentorId, MentorizadoId, FechaIn)
-Foreing Key(MentorId, Mentor(Id))
-Foreing Key(MentorizadoId, Mentorizado(Id))
+Primary Key(Mentor, Mentorizado, FechaIn)
+Foreing Key(Mentor, Mentor(Correo))
+Foreing Key(Mentorizado, Mentorizado(Correo))
 }
 
 Peticion{
-MentorId int
-MentorizadoId int
+Mentor String
+Mentorizado String
 Fecha date
 Motivo String
 Estado String/int
 FechaRes Date
-Primary Key(MentorId, MentorizadoId, Fecha)
-Foreing Key(MentorId, Mentor(Id))
-Foreing Key(MentorizadoId, Mentorizado(Id))
+Primary Key(Mentor, Mentorizado, Fecha)
+Foreing Key(Mentor, Mentor(Correo))
+Foreing Key(Mentorizado, Mentorizado(Correo))
 }
 
 Extension{
@@ -116,12 +118,12 @@ Foreing Key(Institucion, Institucion(Nombre))
 }
 
 Notificacion{
-Usuario int Index
+Usuario String Index
 Id int
 Fecha Date
 Titulo String
 Descripcion Text
 Estado String/int
 Primary Key(Id)
-Foreing Key(Usuario, Usuario(Id))
+Foreing Key(Usuario, Usuario(Correo))
 }

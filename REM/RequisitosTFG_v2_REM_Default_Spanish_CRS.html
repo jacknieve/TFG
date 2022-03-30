@@ -362,6 +362,45 @@ Ninguno</td>
 <h1 align="left">2 
 Usuarios</h1><a name="PRG-0003" />
 <p>Los usuarios (Actores) representan los diferentes tipos de usuarios que van a interactuar con nuestro sistema.</p>
+<a name="ACT-0007" />
+<table border="1" width="100%">
+<tr bgcolor="#c8e0e0">
+<th align="left" valign="top">ACT-0007</th>
+<th align="left" valign="top" width="100%">
+Usuario</th>
+</tr>
+<tr>
+<th align="left" valign="top">Versión</th>
+<td align="left" valign="top">1.0 
+			( 20/03/2022 )
+        </td>
+</tr>
+<tr>
+<th align="left" valign="top">Autores</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Fuentes</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Descripción</th>
+<td align="left" valign="top">
+    Este actor representa
+<em>tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Comentarios</th>
+<td align="left" valign="top" colspan="1">
+Ninguno</td>
+</tr>
+</table>
+<p />
 <a name="ACT-0001" />
 <table border="1" width="100%">
 <tr bgcolor="#c8e0e0">
@@ -557,45 +596,6 @@ Ninguno</td>
 </tr>
 </table>
 <p />
-<a name="ACT-0007" />
-<table border="1" width="100%">
-<tr bgcolor="#c8e0e0">
-<th align="left" valign="top">ACT-0007</th>
-<th align="left" valign="top" width="100%">
-Usuario</th>
-</tr>
-<tr>
-<th align="left" valign="top">Versión</th>
-<td align="left" valign="top">1.0 
-			( 20/03/2022 )
-        </td>
-</tr>
-<tr>
-<th align="left" valign="top">Autores</th>
-<td align="left" valign="top" colspan="1">
-<font color="red"><b>?</b></font>
-</td>
-</tr>
-<tr>
-<th align="left" valign="top">Fuentes</th>
-<td align="left" valign="top" colspan="1">
-<font color="red"><b>?</b></font>
-</td>
-</tr>
-<tr>
-<th align="left" valign="top">Descripción</th>
-<td align="left" valign="top">
-    Este actor representa
-<em>tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.</em>
-</td>
-</tr>
-<tr>
-<th align="left" valign="top">Comentarios</th>
-<td align="left" valign="top" colspan="1">
-Ninguno</td>
-</tr>
-</table>
-<p />
 <a name="SEC-0010" />
 <h1 align="left">3 
 Requisitos de información</h1><a name="PRG-0001" />
@@ -633,6 +633,11 @@ Mentor</th>
                                 [OBJ-0003] 
 Gestión de usuarios</a>
 </li>
+<li>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
+</li>
 </td>
 </tr>
 <tr>
@@ -641,11 +646,9 @@ Gestión de usuarios</a>
 	La información almacenada por el sistema deberá satisfacer la siguiente restricción: 
 <em>
 el sistema debe almacenar información acerca de un mentor registrado. Los campos son los siguientes:
-<br />-Identificador único
+<br />-Correo electrónico (referencia a correo de Usuario)
 <br />-Nombre
 <br />-Apellidos
-<br />-Contraseña
-<br />-Correo electronico
 <br />-Empresa o institución
 <br />-Puesto en esta institución
 <br />-Nivel de estudios (graduado, master, doctorado...)
@@ -655,8 +658,7 @@ el sistema debe almacenar información acerca de un mentor registrado. Los campos
 <br />-Enlace a Linkedin
 <br />-Número de horas mensuales que puede ofrecer
 <br />-Fecha de eliminación de la cuenta
-<br />-Dirección de correo verificada (si o no)
-<br />-Fecha de registro</em>
+<br />-Edad</em>
 </td>
 </tr>
 <tr>
@@ -715,6 +717,11 @@ Mentorizado</th>
                                 [OBJ-0003] 
 Gestión de usuarios</a>
 </li>
+<li>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
+</li>
 </td>
 </tr>
 <tr>
@@ -723,20 +730,17 @@ Gestión de usuarios</a>
 	La información almacenada por el sistema deberá satisfacer la siguiente restricción: 
 <em>
 el sistema debe almacenar información acerca de un mentorizado registrado. Los campos son los siguientes:
-<br />-Identificador único
+<br />-Correo electrónico (referncia a correo de Usuario)
 <br />-Nombre
 <br />-Apelllidos
-<br />-Correo electrónico
-<br />-Contraseña
 <br />-Institución (si pertenecen a alguna)
 <br />-Nivel de estudios
-<br />-Áreas de conocimiento en los que tienen interes o necesita ayuda
+<br />-Áreas de conocimiento en los que tienen interés o necesita ayuda
 <br />-Teléfono
 <br />-Descripción
 <br />-Enlace a Linkedin
 <br />-Fecha de eliminación de la cuenta
-<br />-Dirección de correo verificada (si o no)
-<br />-Fecha de registro</em>
+<br />-Edad</em>
 </td>
 </tr>
 <tr>
@@ -873,14 +877,14 @@ Evento*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 <li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
@@ -1108,9 +1112,9 @@ Mentorización</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 <li>
 <a href="#OBJ-0003" title="Gestión de usuarios">
@@ -1118,9 +1122,9 @@ Mentorizado</a>
 Gestión de usuarios</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -1269,14 +1273,24 @@ Mensaje</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#FRQ-0001" title="Enviar un mensaje">
+                                [FRQ-0001] 
+Enviar un mensaje</a>
+</li>
+<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
 </li>
 <li>
-<a href="#FRQ-0001" title="Enviar un mensaje">
-                                [FRQ-0001] 
-Enviar un mensaje</a>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -1417,14 +1431,14 @@ Administrador de una institución*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0006" title="Institución">
                                 [CRQ-0006] 
 Institución</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -1490,14 +1504,14 @@ Notificación</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 </td>
 </tr>
@@ -1506,7 +1520,7 @@ Mentorizado</a>
 <td align="left" valign="top">
 	La información almacenada por el sistema deberá satisfacer la siguiente restricción: 
 <em>
-el sistema deberá almacenar las notificaciones enviadas y recibidas a un [ACT-0001] o [ACT-0002]. Los campos que se deben mantener son los siguientes:
+el sistema deberá almacenar las notificaciones enviadas y recibidas a un [ACT-0007]. Los campos que se deben mantener son los siguientes:
 <br />-Usuario
 <br />-Título
 <br />-Descripción
@@ -1521,6 +1535,79 @@ el sistema deberá almacenar las notificaciones enviadas y recibidas a un [ACT-00
 <tr>
 <th align="left" valign="top">Urgencia</th>
 <td align="left" valign="top" colspan="1">puede esperar</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estado</th>
+<td align="left" valign="top" colspan="1">en construcción</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estabilidad</th>
+<td align="left" valign="top" colspan="1">media</td>
+</tr>
+<tr>
+<th align="left" valign="top">Comentarios</th>
+<td align="left" valign="top" colspan="1">
+Ninguno</td>
+</tr>
+</table>
+<p />
+<a name="CRQ-0015" />
+<table border="1" width="100%">
+<tr bgcolor="#c8e0e0">
+<th align="left" valign="top">CRQ-0015</th>
+<th align="left" valign="top" width="100%">
+Usuario</th>
+</tr>
+<tr>
+<th align="left" valign="top">Versión</th>
+<td align="left" valign="top">1.0 
+			( 22/03/2022 )
+        </td>
+</tr>
+<tr>
+<th align="left" valign="top">Autores</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Fuentes</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Dependencias</th>
+<td align="left" valign="top" colspan="1">
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
+</li>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Descripción</th>
+<td align="left" valign="top">
+	La información almacenada por el sistema deberá satisfacer la siguiente restricción: 
+<em>
+el sistema debe almacenar la información de acceso de los [ACT-0007] y [ACT-0005], esta información es común para los [ACT-0001], [ACT-0002] y [ACT-0005]. Los datos que se deben mantener son:
+<br />-Identificador único
+<br />-Correo electrónico
+<br />-Contraseña
+<br />-Rol
+<br />-Fecha de registro
+<br />-Si ha sido bloqueado (Bloqueado)
+<br />-Si se ha verificado su correo eletrónico (Habilitado)</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Importancia</th>
+<td align="left" valign="top" colspan="1">vital</td>
+</tr>
+<tr>
+<th align="left" valign="top">Urgencia</th>
+<td align="left" valign="top" colspan="1">inmediatamente</td>
 </tr>
 <tr>
 <th align="left" valign="top">Estado</th>
@@ -1954,11 +2041,6 @@ Latencia de llegada de un mensaje</th>
 Enviar un mensaje</a>
 </li>
 <li>
-<a href="#CRQ-0009" title="Mensaje">
-                                [CRQ-0009] 
-Mensaje</a>
-</li>
-<li>
 <a href="#FRQ-0002" title="Recibir un mensaje">
                                 [FRQ-0002] 
 Recibir un mensaje</a>
@@ -1972,6 +2054,11 @@ Contacto entre usuarios</a>
 <a href="#OBJ-0007" title="Usabilidad">
                                 [OBJ-0007] 
 Usabilidad</a>
+</li>
+<li>
+<a href="#CRQ-0009" title="Mensaje">
+                                [CRQ-0009] 
+Mensaje</a>
 </li>
 </td>
 </tr>
@@ -2106,11 +2193,6 @@ Notificación por correo</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0031" title="Notificar a un usuario">
-                                [FRQ-0031] 
-Notificar a un usuario</a>
-</li>
-<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
@@ -2119,6 +2201,11 @@ Contacto entre usuarios</a>
 <a href="#CRQ-0014" title="Notificación">
                                 [CRQ-0014] 
 Notificación</a>
+</li>
+<li>
+<a href="#FRQ-0031" title="Notificar a un usuario">
+                                [FRQ-0031] 
+Notificar a un usuario</a>
 </li>
 </td>
 </tr>
@@ -2189,14 +2276,14 @@ Registrar un usuario</th>
 Gestión de usuarios</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 </td>
 </tr>
@@ -2271,14 +2358,9 @@ Gestión de usuarios</a>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
 </li>
 </td>
 </tr>
@@ -2287,7 +2369,7 @@ Mentorizado</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los usuarios iniciar sesión con las credenciales creadas durante el registro. Dichas credenciales serán el correo electrónico y la contraseña que haya facilitado en el registro.</em>
+permitir a los [ACT-0007] iniciar sesión con las credenciales creadas durante el registro. Dichas credenciales serán el correo electrónico y la contraseña que haya facilitado en el registro.</em>
 </td>
 </tr>
 <tr>
@@ -2352,14 +2434,14 @@ Gestión de usuarios</a>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 </td>
 </tr>
@@ -2439,7 +2521,7 @@ Iniciar sesión</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los usuarios cerrar sesión en el dispositivo desde el que estén accediendo a la aplicación web, habiendo previamente iniciado sesión en este.</em>
+permitir a los [ACT-0007] cerrar sesión en el dispositivo desde el que estén accediendo a la aplicación web, habiendo previamente iniciado sesión en este.</em>
 </td>
 </tr>
 <tr>
@@ -2969,14 +3051,14 @@ Gestión de usuarios</a>
 Informar de la actividad de un usuario*</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 <li>
 <a href="#CRQ-0012" title="Informe de una actividad de usuario*">
@@ -3045,6 +3127,11 @@ Tiempo de respuesta en las búsquedas</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#FRQ-0013" title="Buscar mentores">
+                                [FRQ-0013] 
+Buscar mentores</a>
+</li>
+<li>
 <a href="#OBJ-0003" title="Gestión de usuarios">
                                 [OBJ-0003] 
 Gestión de usuarios</a>
@@ -3053,11 +3140,6 @@ Gestión de usuarios</a>
 <a href="#OBJ-0007" title="Usabilidad">
                                 [OBJ-0007] 
 Usabilidad</a>
-</li>
-<li>
-<a href="#FRQ-0013" title="Buscar mentores">
-                                [FRQ-0013] 
-Buscar mentores</a>
 </li>
 <li>
 <a href="#CRQ-0001" title="Mentor">
@@ -3126,14 +3208,14 @@ Acceder al progreso de una mentorización</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0007" title="Mentorización">
                                 [CRQ-0007] 
 Mentorización</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -3197,14 +3279,14 @@ Avanzar en la hoja de ruta</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0007" title="Mentorización">
-                                [CRQ-0007] 
-Mentorización</a>
-</li>
-<li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
+</li>
+<li>
+<a href="#CRQ-0007" title="Mentorización">
+                                [CRQ-0007] 
+Mentorización</a>
 </li>
 </td>
 </tr>
@@ -3268,19 +3350,14 @@ Restaurar contraseña*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
 </li>
 <li>
 <a href="#FRQ-0007" title="Registrar un usuario">
@@ -3288,9 +3365,14 @@ Mentor</a>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#FRQ-0008" title="Iniciar sesión">
-                                [FRQ-0008] 
-Iniciar sesión</a>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
 </li>
 </td>
 </tr>
@@ -3354,29 +3436,14 @@ Visualizar notificaciones</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0012" title="Cerrar una relación">
-                                [FRQ-0012] 
-Cerrar una relación</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
 </li>
 <li>
-<a href="#FRQ-0005" title="Enviar una solicitud">
-                                [FRQ-0005] 
-Enviar una solicitud</a>
-</li>
-<li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
+<a href="#FRQ-0012" title="Cerrar una relación">
+                                [FRQ-0012] 
+Cerrar una relación</a>
 </li>
 <li>
 <a href="#FRQ-0031" title="Notificar a un usuario">
@@ -3384,9 +3451,24 @@ Gestión de usuarios</a>
 Notificar a un usuario</a>
 </li>
 <li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
+</li>
+<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#FRQ-0005" title="Enviar una solicitud">
+                                [FRQ-0005] 
+Enviar una solicitud</a>
 </li>
 <li>
 <a href="#CRQ-0014" title="Notificación">
@@ -3526,9 +3608,9 @@ Puntuar experiencia</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0012" title="Cerrar una relación">
-                                [FRQ-0012] 
-Cerrar una relación</a>
+<a href="#CRQ-0007" title="Mentorización">
+                                [CRQ-0007] 
+Mentorización</a>
 </li>
 <li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
@@ -3536,9 +3618,9 @@ Cerrar una relación</a>
 Gestionar el mentoring</a>
 </li>
 <li>
-<a href="#CRQ-0007" title="Mentorización">
-                                [CRQ-0007] 
-Mentorización</a>
+<a href="#FRQ-0012" title="Cerrar una relación">
+                                [FRQ-0012] 
+Cerrar una relación</a>
 </li>
 <li>
 <a href="#CRQ-0002" title="Mentorizado">
@@ -3607,6 +3689,11 @@ Eliminar una notificación</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#OBJ-0004" title="Contacto entre usuarios">
+                                [OBJ-0004] 
+Contacto entre usuarios</a>
+</li>
+<li>
 <a href="#FRQ-0045" title="Visualizar notificaciones">
                                 [FRQ-0045] 
 Visualizar notificaciones</a>
@@ -3615,11 +3702,6 @@ Visualizar notificaciones</a>
 <a href="#OBJ-0003" title="Gestión de usuarios">
                                 [OBJ-0003] 
 Gestión de usuarios</a>
-</li>
-<li>
-<a href="#OBJ-0004" title="Contacto entre usuarios">
-                                [OBJ-0004] 
-Contacto entre usuarios</a>
 </li>
 <li>
 <a href="#CRQ-0014" title="Notificación">
@@ -3688,6 +3770,11 @@ Restricción de inicio de sesión</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#OBJ-0009" title="Seguridad">
+                                [OBJ-0009] 
+Seguridad</a>
+</li>
+<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
@@ -3701,11 +3788,6 @@ Iniciar sesión</a>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
-</li>
-<li>
-<a href="#OBJ-0009" title="Seguridad">
-                                [OBJ-0009] 
-Seguridad</a>
 </li>
 </td>
 </tr>
@@ -3769,14 +3851,14 @@ Enviar una solicitud</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0008" title="Iniciar sesión">
-                                [FRQ-0008] 
-Iniciar sesión</a>
-</li>
-<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
 </li>
 <li>
 <a href="#CRQ-0003" title="Peticion de comunicación">
@@ -3845,14 +3927,14 @@ Aceptar solicitud</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0005" title="Enviar una solicitud">
-                                [FRQ-0005] 
-Enviar una solicitud</a>
-</li>
-<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#FRQ-0005" title="Enviar una solicitud">
+                                [FRQ-0005] 
+Enviar una solicitud</a>
 </li>
 <li>
 <a href="#CRQ-0003" title="Peticion de comunicación">
@@ -3921,24 +4003,24 @@ Eliminar cuentas no verificadas*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
 </li>
 <li>
-<a href="#FRQ-0007" title="Registrar un usuario">
-                                [FRQ-0007] 
-Registrar un usuario</a>
-</li>
-<li>
 <a href="#OBJ-0003" title="Gestión de usuarios">
                                 [OBJ-0003] 
 Gestión de usuarios</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
+<a href="#FRQ-0007" title="Registrar un usuario">
+                                [FRQ-0007] 
+Registrar un usuario</a>
 </li>
 </td>
 </tr>
@@ -3970,6 +4052,82 @@ eliminar las cuentas registradas tras [48 horas] en caso de que no se haya reali
 <th align="left" valign="top">Comentarios</th>
 <td align="left" valign="top" colspan="1">
 Depende de como se implemente, pueden ser 48 horas exactas o 2 dias después a la hora que el servidor realice la comprobación de las cuentas no verificadas.</td>
+</tr>
+</table>
+<p />
+<a name="FRQ-0049" />
+<table border="1" width="100%">
+<tr bgcolor="#c8e0e0">
+<th align="left" valign="top">FRQ-0049</th>
+<th align="left" valign="top" width="100%">
+Cambiar dirección de correo*</th>
+</tr>
+<tr>
+<th align="left" valign="top">Versión</th>
+<td align="left" valign="top">1.0 
+			( 22/03/2022 )
+        </td>
+</tr>
+<tr>
+<th align="left" valign="top">Autores</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Fuentes</th>
+<td align="left" valign="top" colspan="1">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Dependencias</th>
+<td align="left" valign="top" colspan="1">
+<li>
+<a href="#FRQ-0009" title="Modificar perfil">
+                                [FRQ-0009] 
+Modificar perfil</a>
+</li>
+<li>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
+</li>
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
+</li>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Descripción</th>
+<td align="left" valign="top">
+    El sistema deberá 
+<em>
+permitir a un usuario modificar la dirección de correo con la que se registró, siempre que el nuevo correo no esté ya siendo usado por otra cuenta. La nueva dirección de correo debe ser verificada al igual que durante el registro.</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Importancia</th>
+<td align="left" valign="top" colspan="1">quedaría bien</td>
+</tr>
+<tr>
+<th align="left" valign="top">Urgencia</th>
+<td align="left" valign="top" colspan="1">puede esperar</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estado</th>
+<td align="left" valign="top" colspan="1">en construcción</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estabilidad</th>
+<td align="left" valign="top" colspan="1">media</td>
+</tr>
+<tr>
+<th align="left" valign="top">Comentarios</th>
+<td align="left" valign="top" colspan="1">
+Ninguno</td>
 </tr>
 </table>
 <p />
@@ -4351,14 +4509,14 @@ Enviar un informe</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0006" title="Generación de reportes">
-                                [OBJ-0006] 
-Generación de reportes</a>
-</li>
-<li>
 <a href="#FRQ-0018" title="Generar un informe">
                                 [FRQ-0018] 
 Generar un informe</a>
+</li>
+<li>
+<a href="#OBJ-0006" title="Generación de reportes">
+                                [OBJ-0006] 
+Generación de reportes</a>
 </li>
 <li>
 <a href="#CRQ-0005" title="Informe para institución">
@@ -4432,14 +4590,14 @@ Información acerca del estado de la aplicación</th>
 Mentor</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0007" title="Mentorización">
                                 [CRQ-0007] 
 Mentorización</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 <li>
 <a href="#OBJ-0006" title="Generación de reportes">
@@ -4890,11 +5048,6 @@ Conexión con otras aplicaciones de planificación*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0004" title="Evento*">
-                                [CRQ-0004] 
-Evento*</a>
-</li>
-<li>
 <a href="#FRQ-0020" title="Crear un evento en el calendario*">
                                 [FRQ-0020] 
 Crear un evento en el calendario*</a>
@@ -4903,6 +5056,11 @@ Crear un evento en el calendario*</a>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
+</li>
+<li>
+<a href="#CRQ-0004" title="Evento*">
+                                [CRQ-0004] 
+Evento*</a>
 </li>
 </td>
 </tr>
@@ -5680,14 +5838,14 @@ Leer términos y condiciones</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0009" title="Seguridad">
-                                [OBJ-0009] 
-Seguridad</a>
-</li>
-<li>
 <a href="#FRQ-0007" title="Registrar un usuario">
                                 [FRQ-0007] 
 Registrar un usuario</a>
+</li>
+<li>
+<a href="#OBJ-0009" title="Seguridad">
+                                [OBJ-0009] 
+Seguridad</a>
 </li>
 </td>
 </tr>
@@ -5753,14 +5911,14 @@ Personalizar configuración institución*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0006" title="Institución">
                                 [CRQ-0006] 
 Institución</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 <li>
 <a href="#FRQ-0039" title="Registrar una institución*">
@@ -5900,14 +6058,14 @@ Visualizar interfaz personalizada*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0006" title="Institución">
                                 [CRQ-0006] 
 Institución</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -5971,11 +6129,6 @@ Validar mentor*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
@@ -5984,6 +6137,11 @@ Gestionar el mentoring</a>
 <a href="#CRQ-0008" title="Mentor validado*">
                                 [CRQ-0008] 
 Mentor validado*</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 </td>
 </tr>
@@ -6047,14 +6205,14 @@ Ver mentores validados*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0008" title="Mentor validado*">
                                 [CRQ-0008] 
 Mentor validado*</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -7465,6 +7623,38 @@ Ninguno</td>
                 -
             </td>
 </tr>
+<tr>
+<th align="left" valign="top" bgcolor="#c8e0e0">
+<a href="&#xA;                        #FRQ-0049" title="Cambiar dirección de correo*">FRQ-0049</a>
+</th>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+<img src="&#xA;C:\Pablo\Universidad\21-22\REM\xml\default\trace.gif&#xA;" />
+</td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+<td align="center" valign="top">
+                -
+            </td>
+</tr>
 </table>
 <p align="center">
 <b>Matriz de rastreabilidad</b>:
@@ -7509,6 +7699,16 @@ Registrar a un usuario</th>
                                 [FRQ-0007] 
 Registrar un usuario</a>
 </li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
+</li>
 </td>
 </tr>
 <tr>
@@ -7524,7 +7724,7 @@ un usuario quiera proceder a registrarse en la aplicación.</em>
 <tr>
 <th align="left" valign="top">Precondición</th>
 <td align="left" valign="top" colspan="2">
-No haber ya un usuario registrado con el correo electronico que se desea utilizar durante el registro. El usuario no puede haber iniciado sesión.</td>
+El usuario no puede haber iniciado sesión.</td>
 </tr>
 <tr>
 <th align="left" valign="top" rowspan="6">Secuencia normal</th>
@@ -7585,7 +7785,7 @@ debe actualizar el repositorio para indicar que la cuenta se ha verificado e ind
 El usuario debe quedar registrado en el repositorio de datos y se le debe permirtir iniciar sesión en la aplicación.</td>
 </tr>
 <tr>
-<th align="left" valign="top" rowspan="7">Excepciones</th>
+<th align="left" valign="top" rowspan="9">Excepciones</th>
 <th align="center" valign="top">Paso</th>
 <th align="left" valign="top" width="100%">Acción</th>
 </tr>
@@ -7593,12 +7793,11 @@ El usuario debe quedar registrado en el repositorio de datos y se le debe permir
 <a name="STX-0001" />
 <td align="center" valign="top">2</td>
 <td>Si<em>
-el usuario cambia de idea,
-                            </em>el actor<a href="#ACT-0007" title="Este actor representa tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.">
-Usuario (ACT-0007)
-    </a>
-<em>
-decide cancelar el registro</em>,
+el usuario cambia de idea y le da a cancelar,
+                            </em>el
+     
+    sistema<em>
+redirije al usuario a la página de inicio</em>,
                             a continuación este caso de uso
                              
                             <em>queda sin efecto</em>
@@ -7608,7 +7807,7 @@ decide cancelar el registro</em>,
 <a name="STX-0002" />
 <td align="center" valign="top">2</td>
 <td>Si<em>
-el usuario no indica que acepta los términos y condiciones al aceptar el registro,
+el usuario no indica que acepta los términos y condiciones al aceptar,
                             </em>el
      
     sistema<em>
@@ -7624,7 +7823,7 @@ regresa al paso 2</em>)
 <a name="STX-0003" />
 <td align="center" valign="top">2</td>
 <td>Si<em>
-el usuario no cubre uno de los campos obligatorios en el registro y le da a aceptar el registro.,
+el usuario no cubre uno de los campos obligatorios en el registro y le da a aceptar,
                             </em>el
      
     sistema<em>
@@ -7660,12 +7859,28 @@ el sistema detecta que ya hay una cuenta registrada con el correo electrónico fa
                             </em>el
      
     sistema<em>
-le indica al usuario que ya existe una cuenta con ese correo electrónico, y le pide que inicie sesión o utilice otro correo.</em>,
+le indica al usuario que ya existe una cuenta con ese correo electrónico, y le pide que inicie sesión o utilice otro correo</em>,
                             a continuación este caso de uso
                              
                             <em>continúa</em>
                                 (<em>
-regresa al paso 2.</em>)
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0007" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+se produce un error al acceder al repositorio de datos,
+                            </em>el
+     
+    sistema<em>
+se lo notificará al usuario, indicandole que vuelva a intentarlo más tarde</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
                             </td>
 </tr>
 <tr>
@@ -7676,11 +7891,27 @@ el usuario no verifica su cuenta pasadas 48 horas,
                             </em>el
      
     sistema<em>
-envía una correo electrónico a la dirreción de correo indicando que el tiempo ha expirado y elimina los datos registrados de ese usuario.</em>,
+envía una correo electrónico a la dirreción de correo indicando que el tiempo ha expirado y elimina los datos registrados de ese usuario</em>,
                             a continuación este caso de uso
                              
                             <em>queda sin efecto</em>
 </td>
+</tr>
+<tr>
+<a name="STX-0008" />
+<td align="center" valign="top">5</td>
+<td>Si<em>
+se produce un error al acceder al repositorio de datos,
+                            </em>el
+     
+    sistema<em>
+se lo notificará al usuario mediante un correo electrónico para que lo vuelva a intentar más tarde</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 4</em>)
+                            </td>
 </tr>
 <tr>
 <th align="left" valign="top" rowspan="2">Rendimiento</th>
@@ -7718,6 +7949,489 @@ veces por
 <tr>
 <th align="left" valign="top">Estabilidad</th>
 <td align="left" valign="top" colspan="2">alta</td>
+</tr>
+<tr>
+<th align="left" valign="top">Comentarios</th>
+<td align="left" valign="top" colspan="2">
+Para verificar este caso de uso, un usuario debe poder registrarse en la aplicación, y esta debe almacenar de forma correcta y duradera sus datos, permitiendole iniciar sesión en el momento en el que el registro se haya completado.</td>
+</tr>
+</table>
+<p />
+<a name="UC-0002" />
+<table border="1" width="100%">
+<tr bgcolor="#c8e0e0">
+<th align="left" valign="top">UC-0002</th>
+<th align="left" valign="top" width="100%" colspan="2">
+Iniciar sesión</th>
+</tr>
+<tr>
+<th align="left" valign="top">Versión</th>
+<td align="left" valign="top" colspan="2">1.0
+            ( 22/03/2022 )
+        </td>
+</tr>
+<tr>
+<th align="left" valign="top">Autores</th>
+<td align="left" valign="top" colspan="2">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Fuentes</th>
+<td align="left" valign="top" colspan="2">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Dependencias</th>
+<td align="left" valign="top" colspan="2">
+<li>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
+</li>
+<li>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
+</li>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Descripción</th>
+<td colspan="2">
+    El sistema deberá comportarse tal como se describe en el siguiente
+
+    caso de uso cuando
+<em>
+un usuario quiera proceder a iniciar sesión en la aplicación.</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Precondición</th>
+<td align="left" valign="top" colspan="2">
+El usuario no puede haber iniciado sesión (en ese mismo dispositivo)</td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="5">Secuencia normal</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Acción</th>
+</tr>
+<tr>
+<a name="STP-0007" />
+<td align="center" valign="top">1</td>
+<td>El actor<a href="#ACT-0007" title="Este actor representa tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.">
+Usuario (ACT-0007)
+    </a>
+<em>
+accede a la ventana de inicio de sesión.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0008" />
+<td align="center" valign="top">2</td>
+<td>El actor<a href="#ACT-0007" title="Este actor representa tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.">
+Usuario (ACT-0007)
+    </a>
+<em>
+introduce sus datos y le da a aceptar.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0009" />
+<td align="center" valign="top">3</td>
+<td>El
+     
+    sistema<em>
+verifica las credenciales consultando el repositorio de datos.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0010" />
+<td align="center" valign="top">4</td>
+<td>El
+     
+    sistema<em>
+redirije al usuario a la cuenta del mismo, donde puede comenzar a utilizar las acciones permitidas para el rol con el que ha iniciado sesión.</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Postcondición</th>
+<td align="left" valign="top" colspan="2">
+El usuario puede acceder a las funcionalidades disponibles para los usuarios que han iniciado sesión, estas cambiarán dependiendo del rol del usuario.</td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="8">Excepciones</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Acción</th>
+</tr>
+<tr>
+<a name="STX-0009" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario cambia de idea y le da a cancelar,
+                            </em>el
+     
+    sistema<em>
+redirije al usuario a la página de inicio</em>,
+                            a continuación este caso de uso
+                             
+                            <em>queda sin efecto</em>
+</td>
+</tr>
+<tr>
+<a name="STX-0010" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario no cubre todos los campos solicitados,
+                            </em>el
+     
+    sistema<em>
+se lo notifica, inicandole que debe cubrirlos</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0011" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario introduce datos no válidos,
+                            </em>el
+     
+    sistema<em>
+se lo notifica, indicándole como deben ser los datos a introducir</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0012" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+el usuario introduce un correo electrónico no registrado o una contraseña que no se corresponde con el correo registrado,
+                            </em>el
+     
+    sistema<em>
+se lo notifica, indicando que o el correo o la contraseña son incorrectos</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0013" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+la cuenta con la que se desea entrar está bloqueada,
+                            </em>el
+     
+    sistema<em>
+se lo notifica al usuario</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0014" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+la cuenta con la que se desea entrar no está validada,
+                            </em>el
+     
+    sistema<em>
+se lo notifica al usuario</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0015" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+el acceso al repositorio de datos falla,
+                            </em>el
+     
+    sistema<em>
+se lo notifica al usuario y le pide que lo intente más tarde</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="2">Rendimiento</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Tiempo máximo</th>
+</tr>
+<tr>
+<td align="center" valign="top">
+                        -
+                    </td>
+<td>
+                        -
+                    </td>
+</tr>
+<tr>
+<th align="left" valign="top">Frecuencia esperada</th>
+<td colspan="2">
+200
+veces por
+                         
+                        día(s)</td>
+</tr>
+<tr>
+<th align="left" valign="top">Importancia</th>
+<td align="left" valign="top" colspan="2">vital</td>
+</tr>
+<tr>
+<th align="left" valign="top">Urgencia</th>
+<td align="left" valign="top" colspan="2">inmediatamente</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estado</th>
+<td align="left" valign="top" colspan="2">en construcción</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estabilidad</th>
+<td align="left" valign="top" colspan="2">alta</td>
+</tr>
+<tr>
+<th align="left" valign="top">Comentarios</th>
+<td align="left" valign="top" colspan="2">
+Ninguno</td>
+</tr>
+</table>
+<p />
+<a name="UC-0003" />
+<table border="1" width="100%">
+<tr bgcolor="#c8e0e0">
+<th align="left" valign="top">UC-0003</th>
+<th align="left" valign="top" width="100%" colspan="2">
+Modificar perfil</th>
+</tr>
+<tr>
+<th align="left" valign="top">Versión</th>
+<td align="left" valign="top" colspan="2">1.0
+            ( 22/03/2022 )
+        </td>
+</tr>
+<tr>
+<th align="left" valign="top">Autores</th>
+<td align="left" valign="top" colspan="2">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Fuentes</th>
+<td align="left" valign="top" colspan="2">
+<font color="red"><b>?</b></font>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Dependencias</th>
+<td align="left" valign="top" colspan="2">
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
+<a href="#FRQ-0009" title="Modificar perfil">
+                                [FRQ-0009] 
+Modificar perfil</a>
+</li>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Descripción</th>
+<td colspan="2">
+    El sistema deberá comportarse tal como se describe en el siguiente
+
+    caso de uso cuando
+<em>
+un usuario desee añadir o modificar la información de su perfil</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Precondición</th>
+<td align="left" valign="top" colspan="2">
+El usuario debe haber iniciado sesión</td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="5">Secuencia normal</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Acción</th>
+</tr>
+<tr>
+<a name="STP-0011" />
+<td align="center" valign="top">1</td>
+<td>El actor<a href="#ACT-0007" title="Este actor representa tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.">
+Usuario (ACT-0007)
+    </a>
+<em>
+accede a su perfil personal.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0012" />
+<td align="center" valign="top">2</td>
+<td>El actor<a href="#ACT-0007" title="Este actor representa tanto a los [ACT-0001] como a los [ACT-0002], y será un actor abstracto.">
+Usuario (ACT-0007)
+    </a>
+<em>
+modifica los campos que desea modificar y le da a aceptar.</em>
+                                (<em>
+los campos relacionados con [CRQ-0015] no pueden ser modificados en la primera versión de la aplicación</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STP-0013" />
+<td align="center" valign="top">3</td>
+<td>El
+     
+    sistema<em>
+actualiza los datos del respositorio de acuerdo con lo introducido.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0014" />
+<td align="center" valign="top">4</td>
+<td>El
+     
+    sistema<em>
+indica al usuario que la operación ha sido un éxito.</em>
+</td>
+</tr>
+<tr>
+<th align="left" valign="top">Postcondición</th>
+<td align="left" valign="top" colspan="2">
+Los datos del usuario deben actualizarse de acuerdo a lo introducido por el usuario.</td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="5">Excepciones</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Acción</th>
+</tr>
+<tr>
+<a name="STX-0016" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario cambia de opinión y le da a cancelar,
+                            </em>el
+     
+    sistema<em>
+restaura las valores modificados a los almacenados en el repositorio</em>,
+                            a continuación este caso de uso
+                             
+                            <em>queda sin efecto</em>
+</td>
+</tr>
+<tr>
+<a name="STX-0017" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario introduce datos no válidos,
+                            </em>el
+     
+    sistema<em>
+se lo notifica y le indica que formato deben tener para ser correctos</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0018" />
+<td align="center" valign="top">2</td>
+<td>Si<em>
+el usuario deja algún campo obligatorio vacío,
+                            </em>el
+     
+    sistema<em>
+se lo notifica y le pide que lo complete</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2, no se si habrá campos obligatorios de momento que el usuario pueda cambiar</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0019" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+el acceso al repositorio de datos falla,
+                            </em>el
+     
+    sistema<em>
+se lo notifica al usuario y le indica que vuelva a intentarlo más tarde</em>,
+                            a continuación este caso de uso
+                             
+                            <em>continúa</em>
+                                (<em>
+regresa al paso 2</em>)
+                            </td>
+</tr>
+<tr>
+<th align="left" valign="top" rowspan="2">Rendimiento</th>
+<th align="center" valign="top">Paso</th>
+<th align="left" valign="top" width="100%">Tiempo máximo</th>
+</tr>
+<tr>
+<td align="center" valign="top">
+                        -
+                    </td>
+<td>
+                        -
+                    </td>
+</tr>
+<tr>
+<th align="left" valign="top">Frecuencia esperada</th>
+<td colspan="2">
+5
+veces por
+                         
+                        día(s)</td>
+</tr>
+<tr>
+<th align="left" valign="top">Importancia</th>
+<td align="left" valign="top" colspan="2">importante</td>
+</tr>
+<tr>
+<th align="left" valign="top">Urgencia</th>
+<td align="left" valign="top" colspan="2">hay presión</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estado</th>
+<td align="left" valign="top" colspan="2">en construcción</td>
+</tr>
+<tr>
+<th align="left" valign="top">Estabilidad</th>
+<td align="left" valign="top" colspan="2">media</td>
 </tr>
 <tr>
 <th align="left" valign="top">Comentarios</th>
