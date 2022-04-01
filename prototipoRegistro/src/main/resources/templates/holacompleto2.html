@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html ng-app="appPrueba">
+<head>
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>
+<script>
+
+var aplicacionPrueba = angular.module( 'appPrueba' ,[] );
+
+</script>
+</head>
+<body>
+<h1 th:text="Datos">Tus datos</h1>
+	<p>>Tu nombre: <spam th:text="${user.username}"></p>
+	<p>>Tu edad: <spam th:text="${user.edad}"></p>
+	<p>>Tu area: <spam th:text="${user.area}"></p>
+	<p>>Eres mentorizado</p>
+	<tr th:each="notificacion : ${user.notificaciones}">
+		<td><span th:text="${notificacion.estado}"> Estado </span></td>
+		<td><span th:text="${notificacion.descripcion}"> Descripcion </span></td>
+	</tr>
+	<div>{{5+5}}</div>
+</body>
+</html>

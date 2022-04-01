@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Example</title>
+		<meta charset="UTF-8">
+    	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+    	<link th:href="@{/css/style.css}" rel="stylesheet" />
+    	<script th:src="@{/js/restconsumer.js}"></script>
+    </head>
+    <body ng-app="appPrueba">
+        <h1>Welcome!</h1>
+        
+        <p>Click <a th:href="@{/login}">here</a> to see a greeting.</p>
+        <p>Click <a th:href="@{/user/registration}">here</a> to see register.</p>
+        <div>{{5+5}}</div>
+		<div ng-controller="consumerController">
+		<div><button ng-click="getUsuarios()">Obtener users</button></div>
+		<div ng-show="cargando">Cargando...</div>
+		<ul>
+			<li ng-repeat="usuario in usuarios">Nombre: {{usuario.username}}, Área: {{usuario.area}}
+			<div><button ng-click="getPerfil(usuario.id)">Acceder perfil</button></div>
+			<ul ng-show="usuario.expandido">
+				<li>{{usuario.info.edad}}</li>
+			</ul>
+			</li>
+		</ul>
+		</div>
+    </body>
+</html>
