@@ -137,6 +137,14 @@ public class Usuario implements UserDetails{
 	public List<Notificacion> getNotificaciones(){
 		return this.notificaciones;
 	}
+
+	@Override
+	public String toString() {
+		return "Usuario [id=" + id + ", username=" + username + ", password=" + password + ", edad=" + edad
+				+ ", mentor=" + mentor + ", area=" + area + ", unlocked=" + unlocked + ", enable=" + enable
+				+ ", notificaciones=" + notificaciones + "]";
+	}
+	
 	
 	
 

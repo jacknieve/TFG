@@ -1,5 +1,7 @@
 package com.example.prototipoRegistro.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.prototipoRegistro.repository.DemoRepo;
 
@@ -42,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
+		http.cors().and()
 			.authorizeRequests()
 				.antMatchers("/", "/home", "/api/insertar", "/user/**", "/css/**", "/js/**", "/api/Usuarios", "/api/Usuarios/**").permitAll()
 				.antMatchers("/hello").hasAuthority("MENTOR")
@@ -60,16 +65,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout().logoutUrl("/user/logout")
 				.permitAll();
 		//.logoutSuccessUrl("/afterlogout.html")
+		http.csrf().disable();
 	}
-	/*
-	@Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }*/
 	
 	@Bean
 	public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
 	    return new MySimpleUrlAuthenticationSuccessHandler();
 	}
+	
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }

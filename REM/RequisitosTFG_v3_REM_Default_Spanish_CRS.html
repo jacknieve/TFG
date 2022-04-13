@@ -236,7 +236,7 @@ permitir que los [ACT-0002] tengan la posibilidad de ponerse en contacto con los
 <a name="OBJ-0005" />
 <li>
 <b>[OBJ-0005] 
-Compartir ficheros</b>:
+Compartición de ficheros</b>:
 		
     El sistema deberá 
 <em>
@@ -280,7 +280,7 @@ ser modular para permitir realizar modificaciones en uno de sus módulos o añadir
 </tr>
 <tr>
 <th align="left" valign="top">Estabilidad</th>
-<td align="left" valign="top" colspan="1">media</td>
+<td align="left" valign="top" colspan="1">alta</td>
 </tr>
 <tr>
 <th align="left" valign="top">Comentarios</th>
@@ -363,7 +363,7 @@ proteger los datos de los usuarios.</em> <ul>
 </tr>
 <tr>
 <th align="left" valign="top">Estabilidad</th>
-<td align="left" valign="top" colspan="1">media</td>
+<td align="left" valign="top" colspan="1">alta</td>
 </tr>
 <tr>
 <th align="left" valign="top">Comentarios</th>
@@ -811,14 +811,14 @@ Peticion de comunicación</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 <li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
@@ -893,6 +893,11 @@ Evento*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
+</li>
+<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
@@ -901,11 +906,6 @@ Mentor</a>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
-</li>
-<li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -976,14 +976,14 @@ Informe para institución</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0006" title="Generación de reportes">
-                                [OBJ-0006] 
-Generación de reportes</a>
-</li>
-<li>
 <a href="#CRQ-0006" title="Institución">
                                 [CRQ-0006] 
 Institución</a>
+</li>
+<li>
+<a href="#OBJ-0006" title="Generación de reportes">
+                                [OBJ-0006] 
+Generación de reportes</a>
 </li>
 </td>
 </tr>
@@ -1128,14 +1128,14 @@ Mentorización</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#OBJ-0003" title="Gestión de usuarios">
                                 [OBJ-0003] 
 Gestión de usuarios</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 <li>
 <a href="#CRQ-0001" title="Mentor">
@@ -1211,6 +1211,11 @@ Mentor validado*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#CRQ-0006" title="Institución">
+                                [CRQ-0006] 
+Institución</a>
+</li>
+<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
@@ -1219,11 +1224,6 @@ Mentor</a>
 <a href="#OBJ-0003" title="Gestión de usuarios">
                                 [OBJ-0003] 
 Gestión de usuarios</a>
-</li>
-<li>
-<a href="#CRQ-0006" title="Institución">
-                                [CRQ-0006] 
-Institución</a>
 </li>
 </td>
 </tr>
@@ -1299,14 +1299,14 @@ Contacto entre usuarios</a>
 Enviar un mensaje</a>
 </li>
 <li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
 </li>
 </td>
 </tr>
@@ -1541,7 +1541,8 @@ el sistema deberá almacenar las notificaciones enviadas y recibidas a un [ACT-00
 <br />-Título
 <br />-Descripción
 <br />-Fecha de envio
-<br />-Estado (Recibida, Eliminada...)</em>
+<br />-Estado (Recibida, Eliminada...)
+<br />-Enlace a sección de interés* (si la notificación en que ha llegado una nueva petición a un mentor, pues a su sección de peticiones).</em>
 </td>
 </tr>
 <tr>
@@ -1926,7 +1927,7 @@ permitir a un [ACT-0007] recargar el chat, para mostrar posibles nuevos mensajes
 </tr>
 <tr>
 <th align="left" valign="top">Importancia</th>
-<td align="left" valign="top" colspan="1">vital</td>
+<td align="left" valign="top" colspan="1">importante</td>
 </tr>
 <tr>
 <th align="left" valign="top">Urgencia</th>
@@ -2062,11 +2063,6 @@ Mensaje</a>
 Enviar un mensaje</a>
 </li>
 <li>
-<a href="#FRQ-0002" title="Recibir un mensaje">
-                                [FRQ-0002] 
-Recibir un mensaje</a>
-</li>
-<li>
 <a href="#OBJ-0007" title="Usabilidad">
                                 [OBJ-0007] 
 Usabilidad</a>
@@ -2075,6 +2071,11 @@ Usabilidad</a>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#FRQ-0002" title="Recibir un mensaje">
+                                [FRQ-0002] 
+Recibir un mensaje</a>
 </li>
 </td>
 </tr>
@@ -2185,7 +2186,7 @@ Ninguno</td>
 <tr bgcolor="#c8e0e0">
 <th align="left" valign="top">FRQ-0048</th>
 <th align="left" valign="top" width="100%">
-Notificación por correo</th>
+Notificación por correo*</th>
 </tr>
 <tr>
 <th align="left" valign="top">Versión</th>
@@ -2209,9 +2210,9 @@ Notificación por correo</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0004" title="Contacto entre usuarios">
-                                [OBJ-0004] 
-Contacto entre usuarios</a>
+<a href="#FRQ-0031" title="Notificar a un usuario">
+                                [FRQ-0031] 
+Notificar a un usuario</a>
 </li>
 <li>
 <a href="#CRQ-0014" title="Notificación">
@@ -2219,9 +2220,9 @@ Contacto entre usuarios</a>
 Notificación</a>
 </li>
 <li>
-<a href="#FRQ-0031" title="Notificar a un usuario">
-                                [FRQ-0031] 
-Notificar a un usuario</a>
+<a href="#OBJ-0004" title="Contacto entre usuarios">
+                                [OBJ-0004] 
+Contacto entre usuarios</a>
 </li>
 </td>
 </tr>
@@ -2292,14 +2293,14 @@ Registrar un usuario</th>
 Gestión de usuarios</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -2450,14 +2451,14 @@ Gestión de usuarios</a>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -2466,7 +2467,7 @@ Mentor</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los [ACT-0007] modificar o actualizar la información de su perfil, incluido sus datos personales, profesionales y de contacto, incluido la habilitación o no de ciertos servicios como la notificación por correo.</em>
+permitir a los [ACT-0007] modificar o actualizar la información de su perfil, incluido sus datos personales, profesionales y de contacto.</em>
 </td>
 </tr>
 <tr>
@@ -3072,14 +3073,14 @@ Informar de la actividad de un usuario*</a>
 Mentor</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0012" title="Informe de una actividad de usuario*">
                                 [CRQ-0012] 
 Informe de una actividad de usuario*</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -3143,9 +3144,9 @@ Tiempo de respuesta en las búsquedas</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0013" title="Buscar mentores">
-                                [FRQ-0013] 
-Buscar mentores</a>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
 </li>
 <li>
 <a href="#OBJ-0007" title="Usabilidad">
@@ -3153,9 +3154,9 @@ Buscar mentores</a>
 Usabilidad</a>
 </li>
 <li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
+<a href="#FRQ-0013" title="Buscar mentores">
+                                [FRQ-0013] 
+Buscar mentores</a>
 </li>
 <li>
 <a href="#CRQ-0001" title="Mentor">
@@ -3224,14 +3225,14 @@ Acceder al progreso de una mentorización</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0007" title="Mentorización">
-                                [CRQ-0007] 
-Mentorización</a>
-</li>
-<li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
+</li>
+<li>
+<a href="#CRQ-0007" title="Mentorización">
+                                [CRQ-0007] 
+Mentorización</a>
 </li>
 </td>
 </tr>
@@ -3381,14 +3382,14 @@ Registrar un usuario</a>
 Gestión de usuarios</a>
 </li>
 <li>
-<a href="#FRQ-0008" title="Iniciar sesión">
-                                [FRQ-0008] 
-Iniciar sesión</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
 </li>
 </td>
 </tr>
@@ -3452,14 +3453,29 @@ Visualizar notificaciones</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0005" title="Enviar una solicitud">
-                                [FRQ-0005] 
-Enviar una solicitud</a>
+<a href="#FRQ-0012" title="Cerrar una relación">
+                                [FRQ-0012] 
+Cerrar una relación</a>
 </li>
 <li>
 <a href="#FRQ-0031" title="Notificar a un usuario">
                                 [FRQ-0031] 
 Notificar a un usuario</a>
+</li>
+<li>
+<a href="#OBJ-0004" title="Contacto entre usuarios">
+                                [OBJ-0004] 
+Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
+</li>
+<li>
+<a href="#FRQ-0005" title="Enviar una solicitud">
+                                [FRQ-0005] 
+Enviar una solicitud</a>
 </li>
 <li>
 <a href="#CRQ-0001" title="Mentor">
@@ -3470,21 +3486,6 @@ Mentor</a>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
-</li>
-<li>
-<a href="#FRQ-0012" title="Cerrar una relación">
-                                [FRQ-0012] 
-Cerrar una relación</a>
-</li>
-<li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
-</li>
-<li>
-<a href="#OBJ-0004" title="Contacto entre usuarios">
-                                [OBJ-0004] 
-Contacto entre usuarios</a>
 </li>
 <li>
 <a href="#CRQ-0014" title="Notificación">
@@ -3569,7 +3570,7 @@ Contacto entre usuarios</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a un [ACT-0007] cerrar una relación con otro [ACT-0007], lo que cerrará el chat abierto con este, eliminará el perfil de la lista del otro usuario y quitará los eventos del calendario creados para esa relación..</em>
+permitir a un [ACT-0007] cerrar una relación con otro [ACT-0007], lo que cerrará el chat abierto con este, eliminará el perfil de la lista del otro usuario y quitará los eventos del calendario creados para esa relación.</em>
 </td>
 </tr>
 <tr>
@@ -3624,24 +3625,24 @@ Puntuar experiencia</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#FRQ-0012" title="Cerrar una relación">
                                 [FRQ-0012] 
 Cerrar una relación</a>
 </li>
 <li>
-<a href="#CRQ-0007" title="Mentorización">
-                                [CRQ-0007] 
-Mentorización</a>
-</li>
-<li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0007" title="Mentorización">
+                                [CRQ-0007] 
+Mentorización</a>
 </li>
 </td>
 </tr>
@@ -3650,7 +3651,7 @@ Gestionar el mentoring</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a un [ACT-0002] punturar la experiencia de mentorización que ha tenido, una vez que se haya cerrado la comunicación entre ambas partes.</em>
+permitir a un [ACT-0002] punturar la experiencia de mentorización que ha tenido, una vez que se haya cerrado.</em>
 </td>
 </tr>
 <tr>
@@ -3710,14 +3711,14 @@ Eliminar una notificación</th>
 Visualizar notificaciones</a>
 </li>
 <li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
-</li>
-<li>
 <a href="#OBJ-0004" title="Contacto entre usuarios">
                                 [OBJ-0004] 
 Contacto entre usuarios</a>
+</li>
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
 </li>
 <li>
 <a href="#CRQ-0014" title="Notificación">
@@ -3786,14 +3787,14 @@ Restricción de inicio de sesión</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0008" title="Iniciar sesión">
-                                [FRQ-0008] 
-Iniciar sesión</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 <li>
 <a href="#OBJ-0009" title="Seguridad">
@@ -3801,9 +3802,9 @@ Mentor</a>
 Seguridad</a>
 </li>
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
 </li>
 </td>
 </tr>
@@ -3964,7 +3965,7 @@ Peticion de comunicación</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los [ACT-0001] aceptar o rechazar una solicitud que les haya realizado un [ACT-0002] para iniciar una comunicación.</em>
+permitir a los [ACT-0001] aceptar o rechazar una solicitud que les haya realizado un [ACT-0002] para iniciar una mentorización.</em>
 </td>
 </tr>
 <tr>
@@ -4024,11 +4025,6 @@ Eliminar cuentas no verificadas*</th>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#OBJ-0003" title="Gestión de usuarios">
-                                [OBJ-0003] 
-Gestión de usuarios</a>
-</li>
-<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
@@ -4037,6 +4033,11 @@ Mentorizado</a>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
+</li>
+<li>
+<a href="#OBJ-0003" title="Gestión de usuarios">
+                                [OBJ-0003] 
+Gestión de usuarios</a>
 </li>
 </td>
 </tr>
@@ -4100,14 +4101,14 @@ Cambiar dirección de correo*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#CRQ-0015" title="Usuario">
-                                [CRQ-0015] 
-Usuario</a>
-</li>
-<li>
 <a href="#FRQ-0009" title="Modificar perfil">
                                 [FRQ-0009] 
 Modificar perfil</a>
+</li>
+<li>
+<a href="#CRQ-0015" title="Usuario">
+                                [CRQ-0015] 
+Usuario</a>
 </li>
 <li>
 <a href="#OBJ-0003" title="Gestión de usuarios">
@@ -4183,9 +4184,9 @@ Subir fichero al perfil de un usuario</th>
 Registrar un usuario</a>
 </li>
 <li>
-<a href="#OBJ-0005" title="Compartir ficheros">
+<a href="#OBJ-0005" title="Compartición de ficheros">
                                 [OBJ-0005] 
-Compartir ficheros</a>
+Compartición de ficheros</a>
 </li>
 </td>
 </tr>
@@ -4254,9 +4255,9 @@ Enviar un fichero</th>
 Aceptar solicitud</a>
 </li>
 <li>
-<a href="#OBJ-0005" title="Compartir ficheros">
+<a href="#OBJ-0005" title="Compartición de ficheros">
                                 [OBJ-0005] 
-Compartir ficheros</a>
+Compartición de ficheros</a>
 </li>
 </td>
 </tr>
@@ -4320,9 +4321,9 @@ Límite de almacenamiento</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0005" title="Compartir ficheros">
+<a href="#OBJ-0005" title="Compartición de ficheros">
                                 [OBJ-0005] 
-Compartir ficheros</a>
+Compartición de ficheros</a>
 </li>
 </td>
 </tr>
@@ -4386,9 +4387,9 @@ Límite de tamaño de envío</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0005" title="Compartir ficheros">
+<a href="#OBJ-0005" title="Compartición de ficheros">
                                 [OBJ-0005] 
-Compartir ficheros</a>
+Compartición de ficheros</a>
 </li>
 </td>
 </tr>
@@ -4457,14 +4458,14 @@ Borrar un fichero</th>
 Enviar un fichero</a>
 </li>
 <li>
-<a href="#OBJ-0005" title="Compartir ficheros">
-                                [OBJ-0005] 
-Compartir ficheros</a>
-</li>
-<li>
 <a href="#FRQ-0015" title="Subir fichero al perfil de un usuario">
                                 [FRQ-0015] 
 Subir fichero al perfil de un usuario</a>
+</li>
+<li>
+<a href="#OBJ-0005" title="Compartición de ficheros">
+                                [OBJ-0005] 
+Compartición de ficheros</a>
 </li>
 </td>
 </tr>
@@ -4546,7 +4547,7 @@ Informe para institución</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los [ACT-0004]  generar un informe con los datos disponibles en la aplicación dirigido a una institución concreta.</em>
+generar un informe con los datos disponibles en la aplicación dirigido a una institución concreta.</em>
 </td>
 </tr>
 <tr>
@@ -4622,7 +4623,7 @@ Informe para institución</a>
 <td align="left" valign="top">
     El sistema deberá 
 <em>
-permitir a los [ACT-0004] enviar los informes generados a los [ACT-0005] de cada una de las respectivas instituciones a las que va dirigido ese reporte.</em>
+enviar los informes generados a los [ACT-0005] de cada una de las respectivas instituciones a las que va dirigido ese reporte.</em>
 </td>
 </tr>
 <tr>
@@ -4831,14 +4832,14 @@ Aceptar solicitud de evento*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#FRQ-0020" title="Crear un evento en el calendario*">
                                 [FRQ-0020] 
 Crear un evento en el calendario*</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 <li>
 <a href="#CRQ-0004" title="Evento*">
@@ -4907,11 +4908,6 @@ Avisar de evento*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0021" title="Aceptar solicitud de evento*">
-                                [FRQ-0021] 
-Aceptar solicitud de evento*</a>
-</li>
-<li>
 <a href="#OBJ-0002" title="Facilitar el mentoring">
                                 [OBJ-0002] 
 Facilitar el mentoring</a>
@@ -4920,6 +4916,11 @@ Facilitar el mentoring</a>
 <a href="#FRQ-0020" title="Crear un evento en el calendario*">
                                 [FRQ-0020] 
 Crear un evento en el calendario*</a>
+</li>
+<li>
+<a href="#FRQ-0021" title="Aceptar solicitud de evento*">
+                                [FRQ-0021] 
+Aceptar solicitud de evento*</a>
 </li>
 <li>
 <a href="#CRQ-0004" title="Evento*">
@@ -5140,11 +5141,6 @@ Conexión con otras aplicaciones de planificación*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0004" title="Evento*">
                                 [CRQ-0004] 
 Evento*</a>
@@ -5153,6 +5149,11 @@ Evento*</a>
 <a href="#FRQ-0020" title="Crear un evento en el calendario*">
                                 [FRQ-0020] 
 Crear un evento en el calendario*</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 </td>
 </tr>
@@ -5509,6 +5510,11 @@ Comunicaciones encriptadas*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
+<a href="#OBJ-0004" title="Contacto entre usuarios">
+                                [OBJ-0004] 
+Contacto entre usuarios</a>
+</li>
+<li>
 <a href="#FRQ-0001" title="Enviar un mensaje">
                                 [FRQ-0001] 
 Enviar un mensaje</a>
@@ -5517,11 +5523,6 @@ Enviar un mensaje</a>
 <a href="#OBJ-0009" title="Seguridad">
                                 [OBJ-0009] 
 Seguridad</a>
-</li>
-<li>
-<a href="#OBJ-0004" title="Contacto entre usuarios">
-                                [OBJ-0004] 
-Contacto entre usuarios</a>
 </li>
 <li>
 <a href="#CRQ-0009" title="Mensaje">
@@ -5854,9 +5855,9 @@ Aceptar términos y condiciones</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#FRQ-0044" title="Leer términos y condiciones">
-                                [FRQ-0044] 
-Leer términos y condiciones</a>
+<a href="#FRQ-0007" title="Registrar un usuario">
+                                [FRQ-0007] 
+Registrar un usuario</a>
 </li>
 <li>
 <a href="#OBJ-0009" title="Seguridad">
@@ -5864,9 +5865,9 @@ Leer términos y condiciones</a>
 Seguridad</a>
 </li>
 <li>
-<a href="#FRQ-0007" title="Registrar un usuario">
-                                [FRQ-0007] 
-Registrar un usuario</a>
+<a href="#FRQ-0044" title="Leer términos y condiciones">
+                                [FRQ-0044] 
+Leer términos y condiciones</a>
 </li>
 </td>
 </tr>
@@ -6003,14 +6004,14 @@ Personalizar configuración institución*</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="1">
 <li>
-<a href="#OBJ-0001" title="Gestionar el mentoring">
-                                [OBJ-0001] 
-Gestionar el mentoring</a>
-</li>
-<li>
 <a href="#CRQ-0006" title="Institución">
                                 [CRQ-0006] 
 Institución</a>
+</li>
+<li>
+<a href="#OBJ-0001" title="Gestionar el mentoring">
+                                [OBJ-0001] 
+Gestionar el mentoring</a>
 </li>
 <li>
 <a href="#FRQ-0039" title="Registrar una institución*">
@@ -6226,14 +6227,14 @@ Validar mentor*</th>
 Mentor</a>
 </li>
 <li>
-<a href="#CRQ-0008" title="Mentor validado*">
-                                [CRQ-0008] 
-Mentor validado*</a>
-</li>
-<li>
 <a href="#OBJ-0001" title="Gestionar el mentoring">
                                 [OBJ-0001] 
 Gestionar el mentoring</a>
+</li>
+<li>
+<a href="#CRQ-0008" title="Mentor validado*">
+                                [CRQ-0008] 
+Mentor validado*</a>
 </li>
 </td>
 </tr>
@@ -6356,7 +6357,7 @@ Ninguno</td>
 <a href="&#xA;                        #OBJ-0004" title="Contacto entre usuarios">OBJ-0004</a>
 </th>
 <th align="center" valign="top" bgcolor="#c8e0e0">
-<a href="&#xA;                        #OBJ-0005" title="Compartir ficheros">OBJ-0005</a>
+<a href="&#xA;                        #OBJ-0005" title="Compartición de ficheros">OBJ-0005</a>
 </th>
 <th align="center" valign="top" bgcolor="#c8e0e0">
 <a href="&#xA;                        #OBJ-0006" title="Generación de reportes">OBJ-0006</a>
@@ -7685,7 +7686,7 @@ Ninguno</td>
 </tr>
 <tr>
 <th align="left" valign="top" bgcolor="#c8e0e0">
-<a href="&#xA;                        #FRQ-0048" title="Notificación por correo">FRQ-0048</a>
+<a href="&#xA;                        #FRQ-0048" title="Notificación por correo*">FRQ-0048</a>
 </th>
 <td align="center" valign="top">
                 -
@@ -7817,6 +7818,11 @@ Enviar mensaje</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
+<a href="#UC-0025" title="Establecer un chat">
+                                [UC-0025] 
+Establecer un chat</a>
+</li>
+<li>
 <a href="#CRQ-0009" title="Mensaje">
                                 [CRQ-0009] 
 Mensaje</a>
@@ -7825,11 +7831,6 @@ Mensaje</a>
 <a href="#FRQ-0001" title="Enviar un mensaje">
                                 [FRQ-0001] 
 Enviar un mensaje</a>
-</li>
-<li>
-<a href="#UC-0025" title="Establecer un chat">
-                                [UC-0025] 
-Establecer un chat</a>
 </li>
 </td>
 </tr>
@@ -8106,11 +8107,6 @@ Recibir mensaje</th>
 Mensaje</a>
 </li>
 <li>
-<a href="#UC-0026" title="Recibir mensaje (tiempo real)">
-                                [UC-0026] 
-Recibir mensaje (tiempo real)</a>
-</li>
-<li>
 <a href="#FRQ-0002" title="Recibir un mensaje">
                                 [FRQ-0002] 
 Recibir un mensaje</a>
@@ -8119,6 +8115,11 @@ Recibir un mensaje</a>
 <a href="#UC-0016" title="Enviar mensaje">
                                 [UC-0016] 
 Enviar mensaje</a>
+</li>
+<li>
+<a href="#UC-0026" title="Recibir mensaje (tiempo real)">
+                                [UC-0026] 
+Recibir mensaje (tiempo real)</a>
 </li>
 </td>
 </tr>
@@ -8311,9 +8312,9 @@ Obtener mensajes antiguos</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0003" title="Obtener mensajes antiguos">
-                                [FRQ-0003] 
-Obtener mensajes antiguos</a>
+<a href="#UC-0017" title="Recibir mensaje">
+                                [UC-0017] 
+Recibir mensaje</a>
 </li>
 <li>
 <a href="#CRQ-0009" title="Mensaje">
@@ -8321,9 +8322,9 @@ Obtener mensajes antiguos</a>
 Mensaje</a>
 </li>
 <li>
-<a href="#UC-0017" title="Recibir mensaje">
-                                [UC-0017] 
-Recibir mensaje</a>
+<a href="#FRQ-0003" title="Obtener mensajes antiguos">
+                                [FRQ-0003] 
+Obtener mensajes antiguos</a>
 </li>
 </td>
 </tr>
@@ -8658,14 +8659,14 @@ Notificar por correo</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
+<a href="#FRQ-0048" title="Notificación por correo*">
+                                [FRQ-0048] 
+Notificación por correo*</a>
+</li>
+<li>
 <a href="#CRQ-0014" title="Notificación">
                                 [CRQ-0014] 
 Notificación</a>
-</li>
-<li>
-<a href="#FRQ-0048" title="Notificación por correo">
-                                [FRQ-0048] 
-Notificación por correo</a>
 </li>
 </td>
 </tr>
@@ -8802,14 +8803,14 @@ Establecer un chat</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0005" title="Enviar una solicitud">
-                                [FRQ-0005] 
-Enviar una solicitud</a>
-</li>
-<li>
 <a href="#FRQ-0006" title="Aceptar solicitud">
                                 [FRQ-0006] 
 Aceptar solicitud</a>
+</li>
+<li>
+<a href="#FRQ-0005" title="Enviar una solicitud">
+                                [FRQ-0005] 
+Enviar una solicitud</a>
 </li>
 </td>
 </tr>
@@ -9104,6 +9105,11 @@ Registrar a un usuario</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
+<a href="#CRQ-0001" title="Mentor">
+                                [CRQ-0001] 
+Mentor</a>
+</li>
+<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
@@ -9112,11 +9118,6 @@ Mentorizado</a>
 <a href="#FRQ-0007" title="Registrar un usuario">
                                 [FRQ-0007] 
 Registrar un usuario</a>
-</li>
-<li>
-<a href="#CRQ-0001" title="Mentor">
-                                [CRQ-0001] 
-Mentor</a>
 </li>
 </td>
 </tr>
@@ -9395,14 +9396,14 @@ Iniciar sesión</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0008" title="Iniciar sesión">
-                                [FRQ-0008] 
-Iniciar sesión</a>
-</li>
-<li>
 <a href="#CRQ-0015" title="Usuario">
                                 [CRQ-0015] 
 Usuario</a>
+</li>
+<li>
+<a href="#FRQ-0008" title="Iniciar sesión">
+                                [FRQ-0008] 
+Iniciar sesión</a>
 </li>
 </td>
 </tr>
@@ -9666,11 +9667,6 @@ Modificar perfil</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0009" title="Modificar perfil">
-                                [FRQ-0009] 
-Modificar perfil</a>
-</li>
-<li>
 <a href="#CRQ-0001" title="Mentor">
                                 [CRQ-0001] 
 Mentor</a>
@@ -9679,6 +9675,11 @@ Mentor</a>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
+</li>
+<li>
+<a href="#FRQ-0009" title="Modificar perfil">
+                                [FRQ-0009] 
+Modificar perfil</a>
 </li>
 </td>
 </tr>
@@ -10055,6 +10056,11 @@ Eliminar cuenta de usuario</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
+<a href="#FRQ-0011" title="Eliminar cuenta de usuario">
+                                [FRQ-0011] 
+Eliminar cuenta de usuario</a>
+</li>
+<li>
 <a href="#CRQ-0002" title="Mentorizado">
                                 [CRQ-0002] 
 Mentorizado</a>
@@ -10068,11 +10074,6 @@ Mentor</a>
 <a href="#CRQ-0015" title="Usuario">
                                 [CRQ-0015] 
 Usuario</a>
-</li>
-<li>
-<a href="#FRQ-0011" title="Eliminar cuenta de usuario">
-                                [FRQ-0011] 
-Eliminar cuenta de usuario</a>
 </li>
 </td>
 </tr>
@@ -10344,14 +10345,14 @@ Visualizar notificaciones</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0045" title="Visualizar notificaciones">
-                                [FRQ-0045] 
-Visualizar notificaciones</a>
-</li>
-<li>
 <a href="#CRQ-0014" title="Notificación">
                                 [CRQ-0014] 
 Notificación</a>
+</li>
+<li>
+<a href="#FRQ-0045" title="Visualizar notificaciones">
+                                [FRQ-0045] 
+Visualizar notificaciones</a>
 </li>
 </td>
 </tr>
@@ -10573,14 +10574,14 @@ Eliminar una notificación</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0046" title="Eliminar una notificación">
-                                [FRQ-0046] 
-Eliminar una notificación</a>
-</li>
-<li>
 <a href="#CRQ-0014" title="Notificación">
                                 [CRQ-0014] 
 Notificación</a>
+</li>
+<li>
+<a href="#FRQ-0046" title="Eliminar una notificación">
+                                [FRQ-0046] 
+Eliminar una notificación</a>
 </li>
 </td>
 </tr>
@@ -11065,7 +11066,7 @@ un [ACT-0002] que haya cerrado una relación de mentorización (o que haya sido el
 El [ACT-0002] debe haber iniciado sesión y debe o un [ACT-0001] debe haber cerrado una relación de mentorización en la que participaba.</td>
 </tr>
 <tr>
-<th align="left" valign="top" rowspan="6">Secuencia normal</th>
+<th align="left" valign="top" rowspan="7">Secuencia normal</th>
 <th align="center" valign="top">Paso</th>
 <th align="left" valign="top" width="100%">Acción</th>
 </tr>
@@ -11083,20 +11084,30 @@ puede ser el propio [ACT-0002] o le llega la notificación de que se la han cerra
                             </td>
 </tr>
 <tr>
-<a name="STP-0081" />
+<a name="STP-0136" />
 <td align="center" valign="top">2</td>
 <td>El actor<a href="#ACT-0002" title="Este actor representa a los usuarios que se van a beneficiar de la experiencia y conocimiento de los mentores.">
 Mentorizado (ACT-0002)
     </a>
 <em>
-acepta la petición del sistema de puntuar la experiencia de una mentorización.</em>
+se dirige a la sección de mentorizaciones por puntuar.</em>
+</td>
+</tr>
+<tr>
+<a name="STP-0081" />
+<td align="center" valign="top">3</td>
+<td>El actor<a href="#ACT-0002" title="Este actor representa a los usuarios que se van a beneficiar de la experiencia y conocimiento de los mentores.">
+Mentorizado (ACT-0002)
+    </a>
+<em>
+selecciona la mentorización cerrada por puntuar en la que desea puntuar la experiencia.</em>
                                 (<em>
-en caso de ser él quien la ha cerrado, saldrá un pop-up ofreciendole puntuar, en caso de llegarle por notificación, un botón para puntuar.</em>)
+en caso de ser él quien la ha cerrado, saldrá un pop-up ofreciendole puntuar y el paso anterior no se daría.</em>)
                             </td>
 </tr>
 <tr>
 <a name="STP-0082" />
-<td align="center" valign="top">3</td>
+<td align="center" valign="top">4</td>
 <td>El actor<a href="#ACT-0002" title="Este actor representa a los usuarios que se van a beneficiar de la experiencia y conocimiento de los mentores.">
 Mentorizado (ACT-0002)
     </a>
@@ -11106,7 +11117,7 @@ introduce la puntuación de la experiencia (de 1 a 5) y puede introducir un comen
 </tr>
 <tr>
 <a name="STP-0083" />
-<td align="center" valign="top">4</td>
+<td align="center" valign="top">5</td>
 <td>El
      
     sistema<em>
@@ -11115,7 +11126,7 @@ actualiza la mentorización en el repositorio de datos con los datos introducidos
 </tr>
 <tr>
 <a name="STP-0084" />
-<td align="center" valign="top">5</td>
+<td align="center" valign="top">6</td>
 <td>El
      
     sistema<em>
@@ -11128,13 +11139,13 @@ notifica al [ACT-0002] que la operación ha sido un exito y cierra el pop-up de p
 A la mentorización cerrada se le pueden haber añadido la puntuación de la experiencia y un comentario de la misma.</td>
 </tr>
 <tr>
-<th align="left" valign="top" rowspan="5">Excepciones</th>
+<th align="left" valign="top" rowspan="7">Excepciones</th>
 <th align="center" valign="top">Paso</th>
 <th align="left" valign="top" width="100%">Acción</th>
 </tr>
 <tr>
 <a name="STX-0062" />
-<td align="center" valign="top">2</td>
+<td align="center" valign="top">3</td>
 <td>Si<em>
 el [ACT-0002] rechaza la petición,
                             </em>el
@@ -11147,8 +11158,39 @@ cierra el pop-up de petición</em>,
 </td>
 </tr>
 <tr>
-<a name="STX-0063" />
+<a name="STX-0099" />
 <td align="center" valign="top">3</td>
+<td>Si<em>
+el [ACT-0002] cambia de opinión,
+                            </em>el actor<a href="#ACT-0002" title="Este actor representa a los usuarios que se van a beneficiar de la experiencia y conocimiento de los mentores.">
+Mentorizado (ACT-0002)
+    </a>
+<em>
+abandona la sección de puntuar y se dirige a otra sección de la aplicación</em>,
+                            a continuación este caso de uso
+                             
+                            <em>queda sin efecto</em>
+                                (<em>
+esto en caso de que fuese el propio [ACT-0002] quien hubiese cerrado la relación y procediese a puntuarla tras haberla cerrado</em>)
+                            </td>
+</tr>
+<tr>
+<a name="STX-0100" />
+<td align="center" valign="top">3</td>
+<td>Si<em>
+el [ACT-0002] no tiene relaciones por puntuar,
+                            </em>el
+     
+    sistema<em>
+se lo notifica</em>,
+                            a continuación este caso de uso
+                             
+                            <em>queda sin efecto</em>
+</td>
+</tr>
+<tr>
+<a name="STX-0063" />
+<td align="center" valign="top">4</td>
 <td>Si<em>
 el [ACT-0002] cambia de idea y le da a cancelar,
                             </em>el
@@ -11162,7 +11204,7 @@ cierra el pop-up de puntuar</em>,
 </tr>
 <tr>
 <a name="STX-0064" />
-<td align="center" valign="top">3</td>
+<td align="center" valign="top">4</td>
 <td>Si<em>
 los datos introducidos no son válidos,
                             </em>el
@@ -11178,7 +11220,7 @@ regresa al paso 3</em>)
 </tr>
 <tr>
 <a name="STX-0065" />
-<td align="center" valign="top">4</td>
+<td align="center" valign="top">5</td>
 <td>Si<em>
 se produce un fallo en el acceso al repositorio de datos,
                             </em>el
@@ -11232,7 +11274,7 @@ veces por
 <tr>
 <th align="left" valign="top">Comentarios</th>
 <td align="left" valign="top" colspan="2">
-Para verificar este caso de uso, un [ACT-0002] debe poder puntuar y comentar una mentorización cerrada en la que participaba. En el repositorio de datos, la mentorización deb eactualizarse, añadiendo el comentario y la puntuación indicadas. Una vez que se puntua, rechaza puntuar al cerrar, o se elimina la notificación de puntuar sin haber puntuado, no se podrá alterar el comentario ni puntuación asignados.</td>
+Para verificar este caso de uso, un [ACT-0002] debe poder puntuar y comentar una mentorización cerrada en la que participaba. En el repositorio de datos, la mentorización deb eactualizarse, añadiendo el comentario y la puntuación indicadas. Una vez que se puntua, no se podrá alterar el comentario ni puntuación asignados.</td>
 </tr>
 </table>
 <p />
@@ -11788,19 +11830,14 @@ Aceptar una solicitud</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#FRQ-0006" title="Aceptar solicitud">
-                                [FRQ-0006] 
-Aceptar solicitud</a>
-</li>
-<li>
-<a href="#UC-0013" title="Acceder al perfil de un mentorizado">
-                                [UC-0013] 
-Acceder al perfil de un mentorizado</a>
-</li>
-<li>
 <a href="#CRQ-0007" title="Mentorización">
                                 [CRQ-0007] 
 Mentorización</a>
+</li>
+<li>
+<a href="#CRQ-0003" title="Peticion de comunicación">
+                                [CRQ-0003] 
+Peticion de comunicación</a>
 </li>
 <li>
 <a href="#UC-0019" title="Notificar a usuario">
@@ -11808,9 +11845,14 @@ Mentorización</a>
 Notificar a usuario</a>
 </li>
 <li>
-<a href="#CRQ-0003" title="Peticion de comunicación">
-                                [CRQ-0003] 
-Peticion de comunicación</a>
+<a href="#UC-0013" title="Acceder al perfil de un mentorizado">
+                                [UC-0013] 
+Acceder al perfil de un mentorizado</a>
+</li>
+<li>
+<a href="#FRQ-0006" title="Aceptar solicitud">
+                                [FRQ-0006] 
+Aceptar solicitud</a>
 </li>
 </td>
 </tr>
@@ -12079,14 +12121,14 @@ Acceder al perfil de un mentorizado</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#CRQ-0002" title="Mentorizado">
-                                [CRQ-0002] 
-Mentorizado</a>
-</li>
-<li>
 <a href="#FRQ-0016" title="Acceder al perfil de un mentorizado">
                                 [FRQ-0016] 
 Acceder al perfil de un mentorizado</a>
+</li>
+<li>
+<a href="#CRQ-0002" title="Mentorizado">
+                                [CRQ-0002] 
+Mentorizado</a>
 </li>
 </td>
 </tr>
@@ -12397,14 +12439,14 @@ Visualizar el progreso de una mentorización</th>
 Acceder al progreso de una mentorización</a>
 </li>
 <li>
-<a href="#FRQ-0037" title="Avanzar en la hoja de ruta">
-                                [FRQ-0037] 
-Avanzar en la hoja de ruta</a>
-</li>
-<li>
 <a href="#CRQ-0007" title="Mentorización">
                                 [CRQ-0007] 
 Mentorización</a>
+</li>
+<li>
+<a href="#FRQ-0037" title="Avanzar en la hoja de ruta">
+                                [FRQ-0037] 
+Avanzar en la hoja de ruta</a>
 </li>
 </td>
 </tr>
@@ -13319,14 +13361,14 @@ Generar y enviar informes</th>
 <th align="left" valign="top">Dependencias</th>
 <td align="left" valign="top" colspan="2">
 <li>
-<a href="#CRQ-0005" title="Informe para institución">
-                                [CRQ-0005] 
-Informe para institución</a>
-</li>
-<li>
 <a href="#FRQ-0018" title="Generar un informe">
                                 [FRQ-0018] 
 Generar un informe</a>
+</li>
+<li>
+<a href="#CRQ-0005" title="Informe para institución">
+                                [CRQ-0005] 
+Informe para institución</a>
 </li>
 <li>
 <a href="#FRQ-0019" title="Enviar un informe">
@@ -13786,7 +13828,7 @@ Para verificar este caso de uso, un [ACT-0007] que entra en la aplicación sin ha
 <a href="&#xA;                        #FRQ-0047" title="Mentorizaciones grupales*">FRQ-0047</a>
 </th>
 <th align="center" valign="top" bgcolor="#c8e0e0">
-<a href="&#xA;                        #FRQ-0048" title="Notificación por correo">FRQ-0048</a>
+<a href="&#xA;                        #FRQ-0048" title="Notificación por correo*">FRQ-0048</a>
 </th>
 <th align="center" valign="top" bgcolor="#c8e0e0">
 <a href="&#xA;                        #FRQ-0049" title="Cambiar dirección de correo*">FRQ-0049</a>

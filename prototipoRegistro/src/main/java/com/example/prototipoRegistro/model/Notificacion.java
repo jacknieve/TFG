@@ -1,5 +1,7 @@
 package com.example.prototipoRegistro.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +25,10 @@ public class Notificacion {
 	private String descripcion;
 	@Column(name="estado")
 	private EstadosNotificacion estado;
+	@Column(name="fechaenv")
+	private Date fechaenv;
+	@Column(name="fechaeliminacion")
+	private Date fechaeliminacion;
 	
 	public Notificacion() {
 		
@@ -38,6 +44,8 @@ public class Notificacion {
 		this.descripcion=descripcion;
 		this.estado=estado;
 		this.usuario=usuario;
+		fechaenv = new Date();
+		fechaeliminacion = null;
 	}
 	
 	public long getId() {
@@ -64,6 +72,27 @@ public class Notificacion {
 	public void setEstado(EstadosNotificacion estado) {
 		this.estado = estado;
 	}
+
+	public Date getFechaeliminacion() {
+		return fechaeliminacion;
+	}
+
+	public void setFechaeliminacion(Date fechaeliminacion) {
+		this.fechaeliminacion = fechaeliminacion;
+	}
+
+	public Date getFechaenv() {
+		return fechaenv;
+	}
+
+	@Override
+	public String toString() {
+		return "Id: "+this.id+", Decripcion: "+this.descripcion+", Usuario: "+this.usuario+", Estado: "
+				+this.estado+", Eliminacion: "+this.fechaeliminacion+", Envio: "+this.fechaenv;
+	}
+	
+	
+	
 	
 	
 

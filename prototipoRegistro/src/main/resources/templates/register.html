@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html>
-<body>
+<html ng-app="appPrueba">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+<script th:src="@{/js/restconsumer.js}"></script>
+<script>
+
+var aplicacionPrueba = angular.module( 'appPrueba' ,[] );
+
+aplicacionPrueba.controller("consumerController", function($scope, $http){
+			$scope.usuario="pepe"
+			$scope.edad=50;
+			$scope.cargando=false;
+	});
+
+</script>
+</head>
+<body ng-controller="consumerController">
 <h1 th:text="Formulario">form</h1>
 <form action='#' th:action="@{/user/register}" th:object="${user}" method="POST" enctype="utf8">
     <div>
         <label th:text="Username">Username</label>
-        <input th:field="*{username}"/>
+        <input th:field="*{username}"/><!-- ng-model="usuario"-->
         <p th:each="error: ${#fields.errors('username')}" 
           th:text="${error}">Validation error</p>
     </div>
@@ -21,9 +37,9 @@
         <p th:each="error: ${#fields.errors('area')}" 
           th:text="${error}">Validation error</p>
     </div>
-    <div>
+    <div ng-show="cargando">
         <label th:text="Edad">Edad</label>
-        <input th:field="*{edad}"/>
+        <input th:field="*{edad}" ng-model="edad"/>
         <p th:each="error: ${#fields.errors('edad')}" 
           th:text="${error}">Validation error</p>
     </div>

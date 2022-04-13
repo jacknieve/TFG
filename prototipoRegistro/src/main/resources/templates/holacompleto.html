@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html ng-app="appPrueba">
+<html ng-app="appConsumer">
 <head>
 	<meta charset="UTF-8">
     <title>Hola</title>
     <link th:href="@{/css/style.css}" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
     <script type="text/javascript" th:src="@{/js/actions.js}"></script>
-    <script type="text/javascript" th:src="@{/js/restconsumer.js}"></script>
+    <script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
 </head>
 <body>
 <h1 th:text="Datos">Tus datos</h1>
@@ -15,7 +15,33 @@
 <p>>Tu area: <spam th:text="${user.area}"></p>
 <p>>Eres mentor</p>
 <button type="button" th:onclick="showAlert()">Show Alert</button>
-<div>{{5+5}}</div>
+<div ng-controller="consumerController">
+		<div><button ng-click="getUsuarios()">Obtener users</button></div>
+		<div ng-show="cargando">Cargando...</div>
+		<ul>
+			<li ng-repeat="usuario in usuarios">Nombre: {{usuario.username}}, Área: {{usuario.area}}, Mentor: {{usuario.mentor}}
+			<div><button ng-click="getPerfil(usuario.id)">Acceder perfil</button></div>
+			<ul ng-show="usuario.expandido">
+				<li>{{usuario.info.edad}}</li>
+				<!--<li><form action='#' th:action="@{/api/busqueda/notificaciones/add}" th:object="${notificacion}" method="POST" enctype="utf8">
+    			<div>
+        		<label th:text="Descripcion">Descripcion</label>
+        		<input th:field="*{descripcion}"/>
+    			</div>
+    			<div ng-show="ocultar">
+        			<input th:field="*{usuario}" ng-model="usuario.id"/>
+    			</div>
+    			<button type="submit" th:text="Aceptar">submit</button>
+				</form></li>-->
+				<li><form name="form">
+				<div><label for="descripcion">Descripción</label></div>
+				<div><input type="text" ng-model="usuario.form.descripcion" id="descripcion"></div>
+				<button ng-click="addNotificacion(usuario)">Aceptar</button>
+				</form></li>
+			</ul>
+			</li>
+		</ul>
+		</div>
 <tr th:each="notificacion : ${user.notificaciones}">
 		<td><span th:text="${notificacion.estado}"> Estado </span></td>
 		<td><span th:text="${notificacion.descripcion}"> Descripcion </span></td>

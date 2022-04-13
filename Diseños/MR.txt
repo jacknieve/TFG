@@ -1,4 +1,4 @@
-Usuario{
+Usuario{*
 Correo String
 Password String
 Rol int
@@ -8,7 +8,7 @@ Habilitado Boolean
 Bloqueado Boolean
 Primary Key(Correo)
 }
-Mentor{
+Mentor{*
 Correo String
 Nombre String
 Apellidos String
@@ -23,7 +23,7 @@ Primary Key(Correo)
 Foreing Key(Correo, Usuario(Correo))
 }
 
-Mentorizado{
+Mentorizado{*
 Correo String
 Nombre String
 Apellidos String
@@ -37,7 +37,7 @@ Primary Key(Correo)
 Foreing Key(Correo, Usuario(Correo))
 }
 
-Institucion{
+Institucion{*
 Correo String
 Icono String
 Nombre String Unique
@@ -49,7 +49,7 @@ Primary Key(Correo)
 Foreing Key(Correo, Usuario(Correo))
 }
 
-SerDeInstitucion{
+SerDeInstitucion{*
 Mentor String
 Institucion String
 Puesto String
@@ -58,21 +58,21 @@ Foreing Key(Mentor, Mentor(Correo))
 Foreing Key(Institucion, Institucion(Nombre))
 }
 
-AreasMentor{
+AreasMentor{*
 Mentor String
 Nombre String
 Primary Key(Mentor, Nombre)
 Foreing Key(Mentor, Mentor(Correo))
 }
 
-AreasMentorizado{
+AreasMentorizado{*
 MentorizadoId String
 Nombre String
 Primary Key(Mentorizado, Nombre)
 Foreing Key(Mentorizado, Mentorizado(Correo))
 }
 
-VerificadoPor{
+VerificadoPor{*
 Mentor String
 Institucion String
 Primary Key(Mentor, Institucion)

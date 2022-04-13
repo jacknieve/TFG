@@ -1,6 +1,12 @@
-Mandar notificaciones al correo del usuario cuando este este deconectado
-Quitar enlaces que no sean a linkedin
-Mejora de mentorizaciones grupales
+Cosas que faltan por probar:
 
+Mas cosas que hacer:
+-Empezar informe
+-Seguir diseño
+-Empezar a programar de verdad
+-En algun momento quizas añadir una clase de excepciones para salidas personalizadas?
+-Para los formularios, todos los que se puedan, usar el modelo de thymeleaf (para los post)
+es decir: enviar peticion, puntuar experiencia, registro...
+-Probar con ngResource, a ver si así funciona bien cors
 
 

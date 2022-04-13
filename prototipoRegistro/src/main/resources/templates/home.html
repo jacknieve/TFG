@@ -17,13 +17,33 @@
 		<div><button ng-click="getUsuarios()">Obtener users</button></div>
 		<div ng-show="cargando">Cargando...</div>
 		<ul>
-			<li ng-repeat="usuario in usuarios">Nombre: {{usuario.username}}, Área: {{usuario.area}}
+			<li ng-repeat="usuario in usuarios">Nombre: {{usuario.username}}, Área: {{usuario.area}}, Mentor: {{usuario.mentor}}
 			<div><button ng-click="getPerfil(usuario.id)">Acceder perfil</button></div>
 			<ul ng-show="usuario.expandido">
 				<li>{{usuario.info.edad}}</li>
+				<li><form name="form">
+				<div><label for="descripcion">Descripción</label></div>
+				<div><input type="text" ng-model="usuario.form.descripcion" id="descripcion"></div>
+				<button ng-click="addNotificacion(usuario)">Aceptar</button>
+				</form></li>
 			</ul>
 			</li>
 		</ul>
+		<div><button ng-click="addUser()">Nuevo user</button></div>
+		<div><button ng-click="removeUser()">Quitar user</button></div>
 		</div>
+		<div ng-controller="notificacionController">
+			<!--<div ng-init="iniciaNotificaciones">-->
+			<div ng-show="cargando">Cargando...</div>
+			<ul ng-show="mostrarnot">
+			<li ng-repeat="notificacion in notificaciones">Descripcion: {{notificacion.descripcion}}, Estado: {{notificacion.estado}}, Fecha envio: {{notificacion.fechaenv}}
+			<div> <button ng-click="borrarNotificacion(notificacion.id)">Borrar notificacion</button></div>
+			</li>
+			</ul>
+			<!--</div>-->
+			<div> <button ng-click="detenActualizacion()">Parar actualizacion</button></div>
+			<div> <button ng-click="iniciaNotificaciones()">Restear actualizacion</button></div>
+		</div>
+		
     </body>
 </html>

@@ -1,15 +1,15 @@
 package com.example.prototipoRegistro.controller;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.prototipoRegistro.configuration.MvcConfig;
+import com.example.prototipoRegistro.model.EstadosNotificacion;
+import com.example.prototipoRegistro.model.Idprueba;
+import com.example.prototipoRegistro.model.Notificacion;
+import com.example.prototipoRegistro.model.NotificacionInv;
+import com.example.prototipoRegistro.model.NotificacionPlantilla;
 import com.example.prototipoRegistro.model.Usuario;
 import com.example.prototipoRegistro.repository.DemoRepo;
+import com.example.prototipoRegistro.repository.NotInvRepo;
+import com.example.prototipoRegistro.repository.NotificacionRepo;
 
-@CrossOrigin(origins = "http://localhost:8080")
+//@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api")
 public class DemoController {
@@ -34,6 +41,10 @@ public class DemoController {
 	DemoRepo demorepo;
 	@Autowired
 	MvcConfig mvcconf;
+	@Autowired
+	NotificacionRepo notrepo;
+	@Autowired
+	NotInvRepo notinvrepo;
 	//@Autowired
 	//UserModelAssembler uasembler;
 	
@@ -128,6 +139,20 @@ public class DemoController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@PostMapping("/busqueda/notificaciones/add")
+	public ResponseEntity<String> addNotificacionUser(@RequestBody NotificacionPlantilla np, @AuthenticationPrincipal Usuario us){
+		System.out.println("Add");
+		if(np == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		System.out.println(np.toString());
+		System.out.println(us.toString());
+		Notificacion not = new Notificacion(np.getDescripcion(), EstadosNotificacion.ENTREGADA, np.getUsuario());
+		notrepo.save(not);
+		return new ResponseEntity<>(null, HttpStatus.OK);
+		
+	}
 	/*@GetMapping("/Usuarios/mentorizados")
 	public ResponseEntity<List<Usuario>> findByMentorizados() {
 		try {
@@ -161,9 +186,129 @@ public class DemoController {
 			model = new ModelAndView("holacompleto2");
 		}
 		model.addObject("user", us);
+		NotificacionPlantilla n = new NotificacionPlantilla();
+		model.addObject("notificacion", n);
+		System.out.println(n.toString());
 	    //model.addObject("notificaciones", us.getNotificaciones());
 		return model;
 	}
+	
+	
+	@GetMapping("/Usuarios/notificaciones")
+	public ResponseEntity<List<Notificacion>> getAllNotificaciones() {
+		try {
+			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
+			Notificaciones = notrepo.findAll();
+			//Esto es un poco cutre, seria mejor una consulta sql que ya filtrase
+			Notificaciones.removeIf(n -> (n.getFechaeliminacion() != null));
+			if (Notificaciones.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			return new ResponseEntity<>(Notificaciones, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/Usuarios/notificaciones/{date}")
+	public ResponseEntity<List<Notificacion>> getNewNotificaciones(@PathVariable("date") Long date) {
+		try {
+			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
+			Timestamp fecha = new Timestamp(date);
+			Notificaciones = notrepo.getNews(fecha);
+			if (Notificaciones.isEmpty()) {
+				System.out.println("Sin nuevas");
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			return new ResponseEntity<>(Notificaciones, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	//Para probar el mapeo a la inversa
+	@GetMapping("/Usuarios/notificaciones/id/{id}")
+	public ResponseEntity<NotificacionInv> getNotificacionId(@PathVariable("id") Long id) {
+		try {
+			Optional<NotificacionInv> ni = notinvrepo.findById(id);
+			if (ni.isPresent()) {
+				NotificacionInv _ni = ni.get();
+				return new ResponseEntity<>(_ni, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	//Para probar el mapeo a la inversa recogiendo según un usuario, siendo el atributo UsuarioInv
+	//No funciona, salta excepcion porque no le gusta que le pida con Id
+	//Pero si le hago la petición con una consulta personalizada, indicando el ID, tambien trae el usuario completo
+	@GetMapping("/Usuarios/notificaciones/user/{id}")
+	public ResponseEntity<List<NotificacionInv>> getNotificacionUser(@PathVariable("id") Long id) {
+		try {
+			System.out.println("kk");
+			List<NotificacionInv> Notificaciones = new ArrayList<NotificacionInv>();
+			Notificaciones = notinvrepo.getNotificaciosUser(id);
+			System.out.println("kk");
+			if (Notificaciones != null) {
+				return new ResponseEntity<>(Notificaciones, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+	}
+	
+	
+	@PostMapping("/Usuarios/notificaciones/borrar")
+	public ResponseEntity<String> borrarNotificacion(@RequestBody Idprueba id){
+		System.out.println("Borrando");
+		if(id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		Optional<Notificacion> notData = notrepo.findById(id.getId());
+		if(notData.isPresent()) {
+			Notificacion notificacion = notData.get();
+			notificacion.setFechaeliminacion(new Date());
+			notificacion.setEstado(EstadosNotificacion.BORRADA);
+			notrepo.save(notificacion);
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/Usuarios/notificaciones/add")
+	public ResponseEntity<String> addNotificacion(@RequestBody NotificacionPlantilla notificacion){
+		System.out.println("Add");
+		if(notificacion == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		Notificacion not = new Notificacion(notificacion.getDescripcion(), EstadosNotificacion.ENTREGADA, notificacion.getUsuario());
+		notrepo.save(not);
+		return new ResponseEntity<>(null, HttpStatus.OK);
+		
+	}
+	
+	/*@PostMapping("/Usuarios/notificaciones/borrar")
+	public ResponseEntity<String> borrarNotificacion(@RequestBody Notificacion not){
+		System.out.println("Borrando");
+		Optional<Notificacion> notData = notrepo.findById(not.getId());
+		if(notData.isPresent()) {
+			Notificacion notificacion = notData.get();
+			notificacion.setFechaeliminacion(new Date());
+			notificacion.setEstado(EstadosNotificacion.BORRADA);
+			notrepo.save(notificacion);
+			return new ResponseEntity<>("ok", HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}*/
 	
 	
 	

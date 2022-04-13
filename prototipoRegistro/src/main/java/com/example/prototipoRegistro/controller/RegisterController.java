@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.prototipoRegistro.configuration.MvcConfig;
-import com.example.prototipoRegistro.configuration.WebSecurityConfig;
 import com.example.prototipoRegistro.model.Usuario;
 import com.example.prototipoRegistro.repository.DemoRepo;
 
@@ -51,11 +49,11 @@ public class RegisterController {
 	
 	@PostMapping("/register")
 	public ModelAndView registerUserAccount(@ModelAttribute("user") Usuario user) {
-		System.out.println("kk");
 	    user.setPassword(getPasswordEncoder().encode(user.getPassword()));
-	    System.out.println(user.toString());
-	    Usuario u = demorepo.save(user);
-	    System.out.println(u.toString());
+	    //System.out.println(user.toString());
+	    //Usuario u = demorepo.save(user);
+	    demorepo.save(user);
+	    //System.out.println(u.toString());
 	    return new ModelAndView("login");
 	}
 	
