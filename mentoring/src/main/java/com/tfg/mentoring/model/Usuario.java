@@ -13,13 +13,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+//Esto para los errores al verificar los campos
+//https://www.baeldung.com/spring-thymeleaf-error-messages
 
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name = "correo", nullable=false)
-	private String correo;
+	@Column(name = "username", nullable=false)
+	private String username;
 	@Column(name = "password", nullable=false)
 	private String password;
 	@Column(name = "id", nullable=false)
@@ -31,6 +37,8 @@ public class Usuario implements UserDetails{
 	private boolean unlocked;
 	@Column(name = "enable")
 	private boolean enable;
+	@Column(name = "verification_code", length = 64)
+    private String verificationCode;
 	//orphanRemoval para indicar que la entidad hija sera eliminada directamente al dejar de
 	//referenciar a la padre
 	//Aqui igual mejor invertir, porque al recuperar un mentor, mentorizado... se recuperarían si no también sus notificaciones
@@ -46,7 +54,7 @@ public class Usuario implements UserDetails{
 	
 	public Usuario(String correo, String password, Roles rol) {
 		super();
-		this.correo = correo;
+		this.username = correo;
 		this.password = password;
 		this.rol = rol;
 		this.unlocked=true;
@@ -54,11 +62,8 @@ public class Usuario implements UserDetails{
 	}
 
 
-	public String getCorreo() {
-		return correo;
-	}
-	public void setCorreo(String correo) {
-		this.correo = correo;
+	public void setUsername(String correo) {
+		this.username = correo;
 	}
 	
 	public long getId() {
@@ -86,7 +91,7 @@ public class Usuario implements UserDetails{
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return this.correo;
+		return this.username;
 	}
 	
 	//UserDetails methods
@@ -121,10 +126,28 @@ public class Usuario implements UserDetails{
 		// TODO Auto-generated method stub
 		return this.enable;
 	}
+	
+	
+	public void setUnlocked(boolean unlocked) {
+		this.unlocked = unlocked;
+	}
+
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
 
 	@Override
 	public String toString() {
-		return "Usuario [correo=" + correo + ", password=" + password + ", id=" + id + ", rol=" + rol + ", unlocked="
+		return "Usuario [correo=" + username + ", password=" + password + ", id=" + id + ", rol=" + rol + ", unlocked="
 				+ unlocked + ", enable=" + enable + "]";
 	}
 	

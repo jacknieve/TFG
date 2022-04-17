@@ -1,5 +1,7 @@
 package com.tfg.mentoring.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,10 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.tfg.mentoring.model.auxiliar.UserAux;
 
 @Entity
 @Table(name="mentores")
@@ -54,13 +57,12 @@ public class Mentor {
 	private List<AreaConocimiento> areas = new ArrayList<>();
 	@Column(name="puesto")
 	private String puesto;
-	@ManyToOne(cascade = CascadeType.ALL, optional=false, fetch = FetchType.EAGER)
-	@JoinColumn(name="correo")
-	private Institucion institucion;
+	@Column(name="institucion")
+	private String institucion;
 
 	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
 			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, float horaspormes,
-			Date fnacimiento, String puesto, Institucion institucion) {
+			Date fnacimiento, String puesto, String institucion) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -76,6 +78,31 @@ public class Mentor {
 		this.fnacimiento = fnacimiento;
 		this.puesto = puesto;
 		this.institucion = institucion;
+	}
+	
+	public Mentor(Usuario usuario, UserAux useraux){
+		super();
+		this.usuario=usuario;
+		this.nombre=useraux.getNombre();
+		this.papellido=useraux.getPapellido();
+		this.sapellido=useraux.getSapellido();
+		this.nivelEstudios=useraux.getNivelEstudios();
+		this.telefono=useraux.getTelefono();
+		this.descripcion=useraux.getDescripcion();
+		this.feliminacion=null;
+		this.fregistro= new Date();
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			this.fnacimiento=format.parse(useraux.getFnacimiento());
+		}catch (ParseException e) {
+			System.out.println(e.getMessage());
+			this.feliminacion=null;
+		}
+		this.linkedin=useraux.getLinkedin();
+		this.horaspormes=useraux.getHoraspormes();
+		this.puesto=useraux.getPuesto();
+		this.institucion=useraux.getInstitucion();		
+				
 	}
 
 	public Mentor() {
@@ -195,11 +222,11 @@ public class Mentor {
 		this.puesto = puesto;
 	}
 
-	public Institucion getInstitucion() {
+	public String getInstitucion() {
 		return institucion;
 	}
 
-	public void setInstitucion(Institucion institucion) {
+	public void setInstitucion(String institucion) {
 		this.institucion = institucion;
 	}
 	

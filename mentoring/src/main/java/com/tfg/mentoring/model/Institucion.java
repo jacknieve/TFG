@@ -26,7 +26,7 @@ public class Institucion {
 	@MapsId
 	@JoinColumn(name="correo")
 	private Usuario usuario;
-	@Column(name = "nombre", nullable=false)
+	@Column(name = "nombre", nullable=false, unique = true)
 	private String nombre;
 	@Column(name = "logo")
 	private String logo; //Ruta hasta el fichero que contiene el logo

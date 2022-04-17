@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Hola usuario!</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>Eres un mentor!</h1>
+        <h1 th:text="Formulario">form</h1>
+		<form action='#'>
+    		<div>
+        		Correo: <span th:text="*{usuario.correo}"/>
+    		</div>
+    		<div>
+        		Rol: <span th:text="*{usuario.usuario.rol}"/>
+    		</div>
+    		<div>
+        		Fecha de registro: <span th:text="*{usuario.fregistro}"/>
+    		</div>
+    		<div>
+        		<label th:text="Nombre">Nombre</label>
+        		<input th:field="*{usuario.nombre}"/>
+        		<!--<p th:each="error: ${#fields.errors('nombre')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div>
+        		<label th:text="'Primer apellido'">Primer apellido</label>
+        		<input th:field="*{usuario.papellido}"/>
+        		<!--<p th:each="error: ${#fields.errors('papellido')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div>
+        		<label th:text="'Segundo apellido'">Segundo apellido</label>
+        		<input th:field="*{usuario.sapellido}"/>
+        		<!--<p th:each="error: ${#fields.errors('sapellido')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div>
+        		<label th:text="Telefono">Telefono</label>
+        		<input type="tel" th:field="*{usuario.telefono}"/>
+        		<!--<p th:each="error: ${#fields.errors('telefono')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div>
+        		<label th:text="'Nivel de estudios'">Nivel de estudios</label>
+        		<select th:field="*{usuario.nivelEstudios}">
+        			<option th:each="i : ${estudios}" th:value="${i}" th:text="${i}">
+        			</option>
+        		</select>
+    		</div>
+    		<div>
+        		<label th:text="'Descripción'">Descripción</label>
+        		<input type="textarea" th:field="*{usuario.descripcion}" maxlength="300"/>
+        		<!--<p th:each="error: ${#fields.errors('descripcion')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div>
+        		<label th:text="'Tu linkedin'">Tu linkedin</label>
+        		<input type="url" th:field="*{usuario.linkedin}"/>
+        		<!--<p th:each="error: ${#fields.errors('linkedin')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div th:if="${usuario.usuario.rol == MENTOR}">
+        		<label th:text="'Horas por mes'">Horas por mes</label>
+        		<input type="number" th:field="*{useraux.horaspormes}"/>
+        		<!--<p th:each="error: ${#fields.errors('horaspormes')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<!--<div>
+        		<label th:text="'Fecha de nacimiento'">Fecha de nacimiento</label>
+        		<input type="date" th:field="*{usuario.fnacimiento}"/>
+    		</div>-->
+    		<div>
+        		<label th:text="'Institución'">Institución</label>
+        		<input th:field="*{usuario.institucion}"/>
+        		<!--<p th:each="error: ${#fields.errors('institucion')}" 
+          		th:text="${error}">Validation error</p>-->
+    		</div>
+    		<div th:if="${usuario.usuario.rol == MENTOR}">
+        		<label th:text="Puesto">Puesto</label>
+        		<select th:field="*{usuario.puesto}">
+        			<option th:each="i : ${puestos}" th:value="${i}" th:text="${i}">
+        			</option>
+        		</select>
+    		</div >
+    		<button th:text="Aceptar">submit</button>
+		</form>
+        <a th:href="@{/auth/logout}" th:text="Logout">logout</a>
+    </body>
+</html>

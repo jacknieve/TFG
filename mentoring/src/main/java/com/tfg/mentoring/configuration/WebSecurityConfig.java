@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// TODO Auto-generated method stub
 				//Usuario ud = demoRepo.findByNombre(username);
 				//ud.setPassword(getPasswordEncoder().encode(ud.getPassword()));
+				System.out.println(username);
 				UserDetails ud = urepo.findByUsername(username);
 				if(ud == null) {
 					throw new UsernameNotFoundException("No se encontro "+username);
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and()
 			.authorizeRequests()
-				.antMatchers("/", "/home", "/api/insertar", "/user/**", "/css/**", "/js/**", "/api/Usuarios", "/api/Usuarios/**").permitAll()
+				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/verify_success", "/verify_fail").permitAll()
 				.antMatchers("/hello").hasAuthority("MENTOR")
 				.antMatchers("/hello2").hasAuthority("MENTORIZADO")
 				.antMatchers("/api/Usuarios/mentores").hasAuthority("MENTORIZADO")

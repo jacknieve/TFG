@@ -1,14 +1,17 @@
 package com.tfg.mentoring.controller;
 
+
+
+import java.io.UnsupportedEncodingException;
+
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,61 +20,86 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.tfg.mentoring.configuration.MvcConfig;
 import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.repository.UsuarioRepo;
+import com.tfg.mentoring.model.auxiliar.Listas;
+import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.service.UserService;
 
 //@CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class RegisterController {
 	
+	/*@Autowired
+	private InstitucionRepo irepo;*/
+	
 	@Autowired
-	private UsuarioRepo urepo;
+    private UserService uservice;
+	
 	@Autowired
-	MvcConfig mvcconf;
+	private Listas listas;
+	
+	//Esto para que se llame al crearlo, para configurar cosas o leer desde fichero
+	/*@Autowired
+	public RegisterController() {
+		
+	}*/
 	
 	@ModelAttribute("user")
 	public Usuario usuario() {
 		return new Usuario();
 	}
 	
-	@GetMapping("/registration/mentor")
-	public ModelAndView showRegistrationMentorForm() {
+	@ModelAttribute("useraux")
+	public UserAux useraux() {
+		return new UserAux();
+	}
+	
+	//Probar a pasar en el prototipo argumentos a un metodo como este
+	@GetMapping("/registration")
+	public ModelAndView showRegistrationForm() {
 	    Usuario user = new Usuario();
+	    UserAux useraux = new UserAux();
 	    ModelAndView model = new ModelAndView("register");
 	    model.addObject("user", user);
-	    return model;
-	}
-	
-	@GetMapping("/registration/mentorizado")
-	public ModelAndView showRegistrationMentorizadoForm() {
-	    Usuario user = new Usuario();
-	    ModelAndView model = new ModelAndView("register_mentorizado");
-	    model.addObject("user", user);
+	    model.addObject("useraux", useraux);
+	    model.addObject("puestos", listas.getPuestos());
+	    model.addObject("estudios", listas.getPuestos());
 	    return model;
 	}
 	
 	
-	@PostMapping("/register/mentor")
-	public ModelAndView registerUserAccountMentor(@ModelAttribute("user") Usuario user) {
-	    user.setPassword(getPasswordEncoder().encode(user.getPassword()));
-	    //System.out.println(user.toString());
-	    //Usuario u = demorepo.save(user);
-	    urepo.save(user);
-	    //System.out.println(u.toString());
+	@PostMapping("/register")
+	public ModelAndView registerUserAccount(@ModelAttribute("user") Usuario user, @ModelAttribute("useraux") UserAux useraux,
+			HttpServletRequest request) {
+	    try {
+	    	uservice.register(user, useraux, getSiteURL(request));
+	    }catch (MessagingException e) {
+			System.out.println(e.getMessage());
+		}catch (UnsupportedEncodingException e) {
+			System.out.println(e.getMessage());
+		}
 	    return new ModelAndView("login");
 	}
 	
-	@PostMapping("/register/mentorizado")
-	public ModelAndView registerUserAccountMentorizado(@ModelAttribute("user") Usuario user) {
-	    user.setPassword(getPasswordEncoder().encode(user.getPassword()));
-	    //System.out.println(user.toString());
-	    //Usuario u = demorepo.save(user);
-	    urepo.save(user);
-	    //System.out.println(u.toString());
-	    return new ModelAndView("login");
+	@GetMapping("/verify")
+	public ModelAndView verificarUsuario(@Param("code") String code) {
+		System.out.println(code);
+		if(uservice.verify(code)) {
+			return new ModelAndView("verify_success");
+		}
+		else {
+			return new ModelAndView("verify_fail");
+		}
 	}
+	
+	//Nos devuelve la ruta de contexto de la aplicación, luego se le añade el sufijo necesario 
+	//(/verify?code=) junto con el código para que pueda llamar al método de verificación ya con el código de verificación
+	private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    } 
+	
 	
 	@GetMapping("/logout")
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) {
@@ -94,10 +122,7 @@ public class RegisterController {
 	        return new ResponseEntity<>(null, HttpStatus.OK);
 	}*/
 	
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	
 	
 
 }

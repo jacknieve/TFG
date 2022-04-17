@@ -1,5 +1,7 @@
 package com.tfg.mentoring.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.tfg.mentoring.model.auxiliar.UserAux;
 
 @Entity
 @Table(name="mentorizados")
@@ -48,9 +52,12 @@ public class Mentorizado {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="area_mentorizado", joinColumns = { @JoinColumn(name = "correo") }, inverseJoinColumns = { @JoinColumn(name = "area") })
 	private List<AreaConocimiento> areas = new ArrayList<>();
+	//Aqui usamos mejor un string en vez de una referencia porque no van a estar todas las instituciones en la base de datos
+	@Column(name="institucion")
+	private String institucion;
 	
 	public Mentorizado(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
-			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento) {
+			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, String institucion ) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -62,6 +69,29 @@ public class Mentorizado {
 		this.linkedin = linkedin;
 		this.fregistro = fregistro;
 		this.fnacimiento = fnacimiento;
+		this.institucion = institucion;
+	}
+	
+	public Mentorizado(Usuario usuario, UserAux useraux){
+		super();
+		this.usuario=usuario;
+		this.nombre=useraux.getNombre();
+		this.papellido=useraux.getPapellido();
+		this.sapellido=useraux.getSapellido();
+		this.nivelEstudios=useraux.getNivelEstudios();
+		this.telefono=useraux.getTelefono();
+		this.descripcion=useraux.getDescripcion();
+		this.feliminacion=null;
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			this.fnacimiento=format.parse(useraux.getFnacimiento());
+		}catch (ParseException e) {
+			System.out.println(e.getMessage());
+			this.feliminacion=null;
+		}
+		this.linkedin=useraux.getLinkedin();
+		this.institucion=useraux.getInstitucion();		
+				
 	}
 
 	public Mentorizado() {
@@ -168,14 +198,27 @@ public class Mentorizado {
 	public String getCorreo() {
 		return correo;
 	}
+	
+	
+
+	public String getInstitucion() {
+		return institucion;
+	}
+
+	public void setInstitucion(String institucion) {
+		this.institucion = institucion;
+	}
 
 	@Override
 	public String toString() {
-		return "Mentorizado [usuario=" + usuario + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
-				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion="
-				+ descripcion + ", linkedin=" + linkedin + ", feliminacion=" + feliminacion + ", fregistro=" + fregistro
-				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + "]";
+		return "Mentorizado [correo=" + correo + ", usuario=" + usuario + ", nombre=" + nombre + ", papellido="
+				+ papellido + ", sapellido=" + sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono
+				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", feliminacion=" + feliminacion
+				+ ", fregistro=" + fregistro + ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", institucion="
+				+ institucion + "]";
 	}
+
+	
 
 	
 	

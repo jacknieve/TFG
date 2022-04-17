@@ -3,9 +3,12 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <title>Hello Mentorizado!</title>
+        <script type="text/javascript" th:src="@{/js/actions.js}"></script>
+    	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
     </head>
-    <body>
+    <body ng-app="appConsumer">
         <h1>Eres un mentorizado!</h1>
-        <a th:href="@{/user/logout}" th:text="Logout">logout</a>
+        <a th:href="@{/user/perfil}" th:text="Perfil">perfil</a>
+        <a th:href="@{/auth/logout}" th:text="Logout">logout</a>
     </body>
 </html>
