@@ -12,5 +12,6 @@ es decir: enviar peticion, puntuar experiencia, registro...
 -Acordarse de añadir lo de JavaMail en la introduccion de la memoria
 -Ver que le pasa a la descripcion en el registro, que no la pilla
 -Ver lo de mostrar la fecha para modificarla
+-Se podria hacer los de pasar de mentor/mentorizado a useraux para editar en el perfil
 
 
