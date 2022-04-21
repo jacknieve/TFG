@@ -5,6 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
+/*insert into areas (area)
+ values ('Telecomunicaciones'), ('Informatica'), ('Derecho'), ('Economicas');
+ * */
+
 @Entity
 @Table(name="areas")
 public class AreaConocimiento {

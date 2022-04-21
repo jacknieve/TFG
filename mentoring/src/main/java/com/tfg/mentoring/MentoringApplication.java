@@ -1,5 +1,7 @@
 package com.tfg.mentoring;
 
+import java.text.SimpleDateFormat;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,6 +22,10 @@ public class MentoringApplication {
         return new BCryptPasswordEncoder();
     }
 	
+	@Bean
+	public SimpleDateFormat simpleDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd");
+    }
 	
 	public static void main(String[] args) {
 		SpringApplication.run(MentoringApplication.class, args);

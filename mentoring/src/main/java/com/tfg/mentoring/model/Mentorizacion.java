@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.tfg.mentoring.model.auxiliar.FasesMentorizacion;
+
 @Entity(name="Mentorizacion")
 @Table(name="mentorizaciones")
 public class Mentorizacion {

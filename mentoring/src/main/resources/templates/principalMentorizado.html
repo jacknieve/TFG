@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Hello Mentorizado!</title>
+		<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+    	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
+    </head>
+    <body ng-app="appConsumer">
+        <h1>Eres un mentorizado!</h1>
+        <a th:href="@{/user/perfil}" th:text="Perfil">perfil</a>
+        <a th:href="@{/auth/logout}" th:text="Logout">logout</a>
+        
+        <div ng-controller="notificacionController">
+			<div ng-show="cargando">Cargando...</div>
+			<ul>
+			<li ng-repeat="notificacion in notificaciones">Titulo: {{notificacion.titulo}} <br> Descripcion: {{notificacion.descripcion}}<br> Nueva: {{notificacion.nueva}}, Fecha envio: {{notificacion.fechaenv}}
+			<div> <button ng-click="borrarNotificacion(notificacion)">Borrar notificacion</button></div>
+			</li>
+			</ul>
+			<p  ng-show="mostrarsin"> No tiene notificaciones pendientes</p>
+			<div> <button ng-click="detenActualizacion()">Parar actualizacion</button></div>
+			<div> <button ng-click="iniciaNotificaciones()">Restear actualizacion</button></div>
+		</div>
+		
+		<div ng-controller="busquedaController">
+			<p>Busqueda de mentores <button ng-click="activarBusqueda()">Desplegar/Plegar busqueda</button></p>
+			<div ng-show="mostrarBusqueda">
+			<div>
+        	<label th:text="'Area de conocimiento'">Area de conocimiento</label>
+        		<select ng-model="areaseleccioanda">
+        		<option th:value="sin" th:text="'--Escoge una--'"></option>
+        			<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
+        			</option>
+        		</select>
+        	<label th:text="'Institucion'">Institucion</label>
+        		<select ng-model="institucionseleccionada">
+        		<option th:value="sin" th:text="'--Escoge una--'"></option>
+        			<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+        			</option>
+        		</select>
+        		<label >Horas minimas por mes</label>
+        		<input type="number" ng-model="horasmes"/>
+        		<button ng-click="buscar()">Buscar</button>
+    		</div>
+    		<div>{{areaseleccioanda}}:{{institucionseleccionada}}:{{horasmes}}
+			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<ul>
+			<li ng-repeat="mentor in mentores">Nombre: {{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}<br> Nivel de estudios: {{mentor.nivelEstudios}}, Horas por mes: {{mentor.horaspormes}}
+			<div> <button ng-hide="mentor.expandido" ng-click="obtenerMentor(mentor)">Mas informacion</button></div>
+			<div ng-show="mentor.expandido">
+			Descripcion : {{mentor.info.descripcion}}<br>
+			Institucion : {{mentor.info.institucion.nombre}} Puesto: {{mentor.info.puesto}}<br>
+			<div> <button ng-show="mentor.expandido" ng-click="plegarMentor(mentor)">Menos informacion</button></div>
+			</div>
+			</li>
+			</ul>
+			</div>
+		</div>
+		
+    </body>
+</html>

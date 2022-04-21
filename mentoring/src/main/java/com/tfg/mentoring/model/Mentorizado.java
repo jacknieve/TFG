@@ -14,17 +14,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 
 import com.tfg.mentoring.model.auxiliar.UserAux;
 
 @Entity
 @Table(name="mentorizados")
 public class Mentorizado {
+	
 	@Id
-	@Column(name="correo", insertable = false,updatable = false)
+	@Column(insertable = false,updatable = false)
 	private String correo;
 	@OneToOne(cascade = CascadeType.ALL, optional=false, fetch = FetchType.EAGER)
 	@MapsId
@@ -53,11 +56,14 @@ public class Mentorizado {
 	@JoinTable(name="area_mentorizado", joinColumns = { @JoinColumn(name = "correo") }, inverseJoinColumns = { @JoinColumn(name = "area") })
 	private List<AreaConocimiento> areas = new ArrayList<>();
 	//Aqui usamos mejor un string en vez de una referencia porque no van a estar todas las instituciones en la base de datos
-	@Column(name="institucion")
-	private String institucion;
+	/*@Column(name="institucion")
+	private String institucion;*/
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="institucion", referencedColumnName = "nombre")
+	private Institucion institucion;
 	
 	public Mentorizado(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
-			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, String institucion ) {
+			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, Institucion institucion ) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -72,7 +78,7 @@ public class Mentorizado {
 		this.institucion = institucion;
 	}
 	
-	public Mentorizado(Usuario usuario, UserAux useraux){
+	public Mentorizado(Usuario usuario, UserAux useraux, Institucion institucion){
 		super();
 		this.usuario=usuario;
 		this.nombre=useraux.getNombre();
@@ -82,15 +88,16 @@ public class Mentorizado {
 		this.telefono=useraux.getTelefono();
 		this.descripcion=useraux.getDescripcion();
 		this.feliminacion=null;
+		this.fregistro= new Date();
 		try {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			this.fnacimiento=format.parse(useraux.getFnacimiento());
 		}catch (ParseException e) {
 			System.out.println(e.getMessage());
-			this.feliminacion=null;
+			this.fnacimiento=null;
 		}
 		this.linkedin=useraux.getLinkedin();
-		this.institucion=useraux.getInstitucion();		
+		this.institucion=institucion;		
 				
 	}
 
@@ -201,11 +208,11 @@ public class Mentorizado {
 	
 	
 
-	public String getInstitucion() {
+	public Institucion getInstitucion() {
 		return institucion;
 	}
 
-	public void setInstitucion(String institucion) {
+	public void setInstitucion(Institucion institucion) {
 		this.institucion = institucion;
 	}
 

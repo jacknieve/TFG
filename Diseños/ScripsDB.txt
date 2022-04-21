@@ -1,0 +1,39 @@
+--Insercion de mentores de prueba--
+insert into usuarios (username, enable, password, rol, unlocked, verification_code)
+values ('mentor1', true, 'falsa', 1, true, null),
+('mentor2', true, 'falsa', 1, true, null),
+('mentor3', true, 'falsa', 1, true, null),
+('mentor4', true, 'falsa', 1, true, null),
+('mentor5', true, 'falsa', 1, true, null),
+('mentor6', true, 'falsa', 1, true, null),
+('mentor7', true, 'falsa', 1, true, null),
+('mentorkk1', false, 'falsa', 1, true, null),
+('mentorkk2', true, 'falsa', 1, false, null),
+('mentorkk3', false, 'falsa', 1, false, null);
+
+insert into mentores (usuario_mentor, fnacimiento, feliminacion, fregistro, horaspormes, linkedin, nivelestudios, descripcion, nombre, papellido, sapellido, puesto, telefono, institucion)
+values ('mentor1', current_timestamp, null, current_timestamp, 5.0, null, 'Graduado', null, 'Juan', null, null, 'Otro', null, 'Otra'),
+('mentor2', current_timestamp, null, current_timestamp, 2.0, null, 'Graduado', null, 'Luis', null, null, 'Otro', null, 'Otra'),
+('mentor3', current_timestamp, null, current_timestamp, 1.5, null, 'Graduado', null, 'Alex', null, null, 'Otro', null, 'Otra'),
+('mentor4', current_timestamp, null, current_timestamp, 30.0, null, 'Graduado', null, 'Pablo', null, null, 'Otro', null, 'Otra'),
+('mentor5', current_timestamp, null, current_timestamp, 40.0, null, 'Graduado', null, 'Joel', null, null, 'Otro', null, 'Otra'),
+('mentor6', current_timestamp, null, current_timestamp, 5.0, null, 'Graduado', null, 'Miguel', null, null, 'Otro', null, 'Otra'),
+('mentor7', current_timestamp, null, current_timestamp, 6.0, null, 'Graduado', null, 'Iago', null, null, 'Otro', null, 'Otra'),
+('mentorkk1', null, null, null, 1.0, null, null, null, 'Juan1', null, null, 'Otro', null, 'Otra'),
+('mentorkk2', null, null, null, 1.0, null, null, null, 'Juan2', null, null, 'Otro', null, 'Otra'),
+('mentorkk3', null, null, null, 1.0, null, null, null, 'Juan3', null, null, 'Otro', null, 'Otra');
+
+
+insert into area_mentor (correo, area)
+values ('mentor1','Telecomunicaciones'),
+('mentor1','Informatica'),
+('mentor2', 'Derecho'),
+('mentor3', 'Economicas'),
+('mentor4', 'Telecomunicaciones'),
+('mentor5', 'Telecomunicaciones'),
+('mentor6', 'Informatica'),
+('mentor7', 'Economicas'),
+('mentor7', 'Informatica'),
+('mentorkk1', 'Informatica'),
+('mentorkk2', 'Derecho');
+

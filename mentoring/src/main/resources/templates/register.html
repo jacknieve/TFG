@@ -3,90 +3,97 @@
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Registro</title>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>-->
+<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.js"></script>-->
+<script type="text/javascript" th:src="@{/js/register.js}"></script>
 </head>
-<body>
+<body ng-app="appRegister">
 <h1 th:text="Formulario">form</h1>
-<form action='#' th:action="@{/user/register}" method="POST" enctype="utf8">
+<form action='#' th:action="@{/auth/register}" method="POST" enctype="utf8" ng-controller="registerController">
     <div>
         <label th:text="Correo">Correo</label>
-        <input type="email" th:field="*{user.username}"/><!-- ng-model="usuario"-->
+        <input type="email" th:field="${user.username}"/><!-- ng-model="usuario"-->
         <!--<p th:each="error: ${#fields.errors('username')}"
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
-        <label th:text="Password">password</label>
-        <input type="password" th:field="*{user.password}"/>
+        <label th:text="'Contraseña'">Contraseña</label>
+        <input type="password" th:field="${user.password}"/>
         <!--<p th:each="error : ${#fields.errors('password')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
-        <label th:text="Mentor">Mentor</label>
-        <input type="checkbox" th:field="*{useraux.mentor}"/>
-        <!--<p th:each="error: ${#fields.errors('mentor')}" 
-          th:text="${error}">Validation error</p>-->
+        <label th:text="Mentor">Mentor </label>
+        <input type="checkbox" th:field="${useraux.mentor}" ng-model="mentor"></input>
     </div>
     <div>
         <label th:text="Nombre">Nombre</label>
-        <input th:field="*{useraux.nombre}"/>
+        <input th:field="${useraux.nombre}"/>
         <!--<p th:each="error: ${#fields.errors('nombre')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
         <label th:text="'Primer apellido'">Primer apellido</label>
-        <input th:field="*{useraux.papellido}"/>
+        <input th:field="${useraux.papellido}"/>
         <!--<p th:each="error: ${#fields.errors('papellido')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
         <label th:text="'Segundo apellido'">Segundo apellido</label>
-        <input th:field="*{useraux.sapellido}"/>
+        <input th:field="${useraux.sapellido}"/>
         <!--<p th:each="error: ${#fields.errors('sapellido')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
         <label th:text="Telefono">Telefono</label>
-        <input type="tel" th:field="*{useraux.telefono}"/>
+        <input type="tel" th:field="${useraux.telefono}"/>
         <!--<p th:each="error: ${#fields.errors('telefono')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
         <label th:text="'Nivel de estudios'">Nivel de estudios</label>
-        <select th:field="*{useraux.nivelEstudios}">
+        <select th:field="${useraux.nivelEstudios}">
+        	<option th:value="Otros" th:text="'--Escoge uno--'"></option>
         	<option th:each="i : ${estudios}" th:value="${i}" th:text="${i}">
         	</option>
         </select>
     </div>
     <div>
-        <label th:text="'Descripción'">Descripción</label>
-        <input type="textarea" th:field="*{useraux.descripcion}" maxlength="300"/>
-        <!--<p th:each="error: ${#fields.errors('descripcion')}" 
-          th:text="${error}">Validation error</p>-->
-    </div>
-    <div>
         <label th:text="'Tu linkedin'">Tu linkedin</label>
-        <input type="url" th:field="*{useraux.linkedin}"/>
+        <input type="url" th:field="${useraux.linkedin}"/>
         <!--<p th:each="error: ${#fields.errors('linkedin')}" 
           th:text="${error}">Validation error</p>-->
     </div>
-    <div>
+    <div ng-show="mentor">
         <label th:text="'Horas por mes'">Horas por mes</label>
-        <input type="number" th:field="*{useraux.horaspormes}"/>
+        <input type="number" th:field="${useraux.horaspormes}"/>
         <!--<p th:each="error: ${#fields.errors('horaspormes')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
-        <label th:text="'Fecha de nacimiento'">Fecha de nacimiento</label>
-        <input type="date" th:field="*{useraux.fnacimiento}"/>
+        <label th:text="'Fecha de nacimiento'">Fecha de nacimiento:</label>
+        <input type="date" th:field="${useraux.fnacimiento}"/>
     </div>
+    <!--<div th:object="${useraux}">
+        <label th:text="'Fecha de nacimiento'">Fecha de nacimiento:</label>
+        <input type="date" th:field="${useraux.fnacimiento}"/>
+    </div>-->
     <div>
-        <label th:text="'Institución'">Institución</label>
-        <input th:field="*{useraux.institucion}"/>
-        <!--<p th:each="error: ${#fields.errors('institucion')}" 
-          th:text="${error}">Validation error</p>-->
+    	<label th:text="'Institución'">Institución</label>
+        <select th:field="${useraux.institucion}">
+        	<option th:value="Otra" th:text="'--Escoge una--'"></option>
+        	<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+        	</option>
+        </select>
+        <p>En caso de escoger la opción Otra (una institución que no está registrada en la aplicación), puede indicar de cúal se trata en
+        el apartado descripción de su perfil.</p>
     </div>
-    <div>
+    <!--<p>{{mentor}}</p>-->
+    <div ng-show="mentor">
         <label th:text="Puesto">Puesto</label>
-        <select th:field="*{useraux.puesto}">
+        <select th:field="${useraux.puesto}">
+        	<option th:value="Otro" th:text="'--Escoge uno--'"></option>
         	<option th:each="i : ${puestos}" th:value="${i}" th:text="${i}">
         	</option>
         </select>

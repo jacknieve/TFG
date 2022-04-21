@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.Listas;
 import com.tfg.mentoring.model.auxiliar.UserAux;
 import com.tfg.mentoring.service.UserService;
+import com.tfg.mentoring.service.util.ListLoad;
 
 //@CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -37,7 +38,9 @@ public class RegisterController {
     private UserService uservice;
 	
 	@Autowired
-	private Listas listas;
+	private ListLoad listas;
+	
+	
 	
 	//Esto para que se llame al crearlo, para configurar cosas o leer desde fichero
 	/*@Autowired
@@ -57,14 +60,17 @@ public class RegisterController {
 	
 	//Probar a pasar en el prototipo argumentos a un metodo como este
 	@GetMapping("/registration")
-	public ModelAndView showRegistrationForm() {
-	    Usuario user = new Usuario();
+	public ModelAndView showRegistrationForm(HttpServletRequest request) {
+		Usuario user = new Usuario();
 	    UserAux useraux = new UserAux();
 	    ModelAndView model = new ModelAndView("register");
+	    //System.out.println(getSiteURL(request));
 	    model.addObject("user", user);
+	    //System.out.println(useraux.toString());
 	    model.addObject("useraux", useraux);
 	    model.addObject("puestos", listas.getPuestos());
-	    model.addObject("estudios", listas.getPuestos());
+	    model.addObject("estudios", listas.getEstudios());
+	    model.addObject("instituciones", listas.getInstituciones());
 	    return model;
 	}
 	
@@ -75,9 +81,15 @@ public class RegisterController {
 	    try {
 	    	uservice.register(user, useraux, getSiteURL(request));
 	    }catch (MessagingException e) {
-			System.out.println(e.getMessage());
+	    	return new ModelAndView("error_page");
 		}catch (UnsupportedEncodingException e) {
 			System.out.println(e.getMessage());
+			return new ModelAndView("error_page");
+		}catch (ExcepcionDB e) {
+			System.out.println(e.getMessage());
+			ModelAndView modelo = new ModelAndView("error_page");
+			modelo.addObject("mensaje", e.getMessage());
+			return modelo;
 		}
 	    return new ModelAndView("login");
 	}

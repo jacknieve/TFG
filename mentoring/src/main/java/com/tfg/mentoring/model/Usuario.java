@@ -4,14 +4,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.tfg.mentoring.model.auxiliar.Roles;
 
 //Esto para los errores al verificar los campos
 //https://www.baeldung.com/spring-thymeleaf-error-messages
@@ -25,12 +27,12 @@ public class Usuario implements UserDetails{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name = "username", nullable=false)
+	@NotBlank(message = "El correo no puede estar vacío")
+	@Email(message = "Formato no válido")
 	private String username;
 	@Column(name = "password", nullable=false)
+	@NotBlank(message = "La contrasela no puede estar vacía")
 	private String password;
-	@Column(name = "id", nullable=false)
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
 	@Column(name = "rol", nullable=false)
 	private Roles rol;
 	@Column(name = "unlocked")
@@ -66,10 +68,6 @@ public class Usuario implements UserDetails{
 		this.username = correo;
 	}
 	
-	public long getId() {
-		return id;
-	}
-
 	public Roles getRol() {
 		return rol;
 	}
@@ -147,7 +145,7 @@ public class Usuario implements UserDetails{
 
 	@Override
 	public String toString() {
-		return "Usuario [correo=" + username + ", password=" + password + ", id=" + id + ", rol=" + rol + ", unlocked="
+		return "Usuario [correo=" + username + ", password=" + password + ", rol=" + rol + ", unlocked="
 				+ unlocked + ", enable=" + enable + "]";
 	}
 	

@@ -48,8 +48,8 @@ implements AuthenticationSuccessHandler {
   protected String determineTargetUrl(final Authentication authentication) {
 
 	    Map<String, String> roleTargetUrlMap = new HashMap<>();
-	    roleTargetUrlMap.put("MENTOR", "/hello");
-	    roleTargetUrlMap.put("MENTORIZADO", "/hello2");
+	    roleTargetUrlMap.put("MENTOR", "/user/principal");
+	    roleTargetUrlMap.put("MENTORIZADO", "/user/principal");
 
 	    final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 	    for (final GrantedAuthority grantedAuthority : authorities) {

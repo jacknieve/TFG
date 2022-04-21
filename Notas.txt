@@ -14,4 +14,21 @@ es decir: enviar peticion, puntuar experiencia, registro...
 -Ver lo de mostrar la fecha para modificarla
 -Se podria hacer los de pasar de mentor/mentorizado a useraux para editar en el perfil
 
+-Orden de cosas-
+(tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
+Cargar al comenzar las instituciones, areas de conocimiento y demas estatico
+Enviar peticion (v)
+Aceptar/rechazar peticion (v)
+Acceder a una mentorizacion (mentor) (v)
+Acceder a una mentorizacion (mentorizado) (v)
+Cerrar una relacion (mentor) (s)
+Cerrar una relacion (mentorizado) (s)
+Puntuar una relacion (s)
+Añadir validacion a los campos (d)
+Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar. (d)
+Gestion de las notificaciones (borrarlas y demas)
+Interfaz grafica
+(Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
+
+
 

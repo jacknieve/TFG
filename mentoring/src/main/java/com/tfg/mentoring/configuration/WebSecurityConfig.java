@@ -34,15 +34,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			@Override
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				// TODO Auto-generated method stub
 				//Usuario ud = demoRepo.findByNombre(username);
 				//ud.setPassword(getPasswordEncoder().encode(ud.getPassword()));
-				System.out.println(username);
+				//System.out.println(username);
 				UserDetails ud = urepo.findByUsername(username);
 				if(ud == null) {
 					throw new UsernameNotFoundException("No se encontro "+username);
 				}
-				System.out.println(ud.getAuthorities());
+				//System.out.println(ud.getAuthorities());
 				
 				return ud;
 			}
@@ -54,11 +53,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and()
 			.authorizeRequests()
-				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/verify_success", "/verify_fail").permitAll()
-				.antMatchers("/hello").hasAuthority("MENTOR")
-				.antMatchers("/hello2").hasAuthority("MENTORIZADO")
-				.antMatchers("/api/Usuarios/mentores").hasAuthority("MENTORIZADO")
-				.antMatchers("/api/Usuarios/mentorizados").hasAuthority("MENTOR")
+				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/verify_success", "/verify_fail", "/auth/**").permitAll()
+				.antMatchers("/principalMentor").hasAuthority("MENTOR")
+				.antMatchers("/principalMentorizado").hasAuthority("MENTORIZADO")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()

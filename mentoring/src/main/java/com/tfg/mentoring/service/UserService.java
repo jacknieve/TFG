@@ -1,22 +1,29 @@
 package com.tfg.mentoring.service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.Notificacion;
-import com.tfg.mentoring.model.Roles;
 import com.tfg.mentoring.model.Usuario;
+import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
+import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.NotificacionRepo;
@@ -45,31 +52,50 @@ public class UserService {
     @Autowired
     private NotificacionRepo nrepo;
     
-    public void register(Usuario user, UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException{
+    @Autowired
+    private InstitucionRepo irepo;
+    
+	@Autowired
+	private ModelMapper maper;
+    
+    
+    
+    
+    public void register(Usuario user, UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB{
     	user.setPassword(passwordEncoder.encode(user.getPassword()));
     	String random = RandomString.make(64);
     	user.setEnable(false);
     	user.setVerificationCode(random);
+    	System.out.println(user.toString());
+    	System.out.println(useraux.toString());
 	    if(useraux.getMentor()) {
 	    	user.setRol(Roles.MENTOR);
-	    	Mentor mentor = new Mentor(user, useraux);
+	    	Mentor mentor = new Mentor(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
+	    	try {
 	    	mrepo.save(mentor);
+	    	}catch(DataIntegrityViolationException e) {
+	    		throw new ExcepcionDB("Clave duplicada");
+	    	}
 	    	sendVerificationEmail(user, mentor.getNombre(), siteURL);
 	    	//Aqui, los titulos y la descripcion se podría extraer de la base de datos al arrancar el servidor y tenerlo en un
 	    	//hashmap o similar, dado que en principio no deberian cambiar, y así el administrador podría llegar a cambiarlo desde
 	    	//su interfaz de control
 	    	enviarNotificacion(user, "Bienvenido/a "+mentor.getNombre(), 
-	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
-	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar.");
+	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
+	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar, o su descripción.");
 	    }
 	    else {
 	    	user.setRol(Roles.MENTORIZADO);
-	    	Mentorizado mentorizado = new Mentorizado(user, useraux);
+	    	Mentorizado mentorizado = new Mentorizado(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
+	    	try {
 	    	menrepo.save(mentorizado);
+	    	}catch(DataIntegrityViolationException e) {
+	    		throw new ExcepcionDB("Clave duplicada");
+	    	}
 	    	sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
 	    	enviarNotificacion(user, "Bienvenido/a "+mentorizado.getNombre(), 
 	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
-	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado.");
+	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.");
 	    }
     }
      //https://mail.codejava.net/frameworks/spring-boot/email-verification-example
@@ -117,11 +143,25 @@ public class UserService {
     }
     
     
-    
     public void enviarNotificacion(Usuario u, String titulo, String descripcion) {
     	Notificacion notificacion = new Notificacion(u, titulo, descripcion);
     	nrepo.save(notificacion);
     }
+    
+    
+    
+    public List<MentorBusqueda> getMentorBusqueda(List<Mentor> mentores){
+		return mentores
+				.stream()
+				.map(this::convertEntitytoDto)
+				.collect(Collectors.toList());
+	}
+	
+	private MentorBusqueda convertEntitytoDto(Mentor m) {
+		MentorBusqueda user = new MentorBusqueda();
+		user = maper.map(m, MentorBusqueda.class);
+		return user;
+	}
     
     
 }

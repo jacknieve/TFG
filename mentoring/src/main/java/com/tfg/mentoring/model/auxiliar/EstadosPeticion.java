@@ -1,4 +1,4 @@
-package com.tfg.mentoring.model;
+package com.tfg.mentoring.model.auxiliar;
 
 public enum EstadosPeticion {
 	ENVIADA, RECIBIDA, ACEPTADA, RECHAZADA

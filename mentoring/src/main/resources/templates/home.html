@@ -9,6 +9,8 @@
         <h1>Welcome!</h1>
         
         <p>Click <a th:href="@{/login}">here</a> to see a greeting.</p>
-        <p>Click <a th:href="@{/user/registration}">here</a> to see register.</p>
+        <p>Click <a th:href="@{/auth/registration?m=1}">aquí</a> para registrarte como mentor.</p>
+        <p>Click <a th:href="@{/auth/registration?m=0}">aquí</a> para registrarte como mentorizado.</p>
+        <p>Click <a th:href="@{/auth/registration}">aquí</a> para registrarte como mentorizado.</p>
     </body>
 </html>
