@@ -49,6 +49,9 @@ public class Mentorizacion {
 		this.mentorizado=mentorizado;
 		this.id = new MentorizacionId(mentor.getCorreo(),mentorizado.getCorreo());
 		this.fase = FasesMentorizacion.NACIMIENTO;
+		this.fin = null;
+		this.calificacion = null;
+		this.comentario=null;
 	}
 	
 	

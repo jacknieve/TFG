@@ -52,7 +52,7 @@ public class Mentor {
 	@Column(name="fregistro")
 	private Date fregistro;
 	@Column(name="horaspormes")
-	private float horaspormes;
+	private Float horaspormes;
 	@Column(name="fnacimiento")
 	private Date fnacimiento;
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -67,7 +67,7 @@ public class Mentor {
 	private Institucion institucion;
 
 	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
-			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, float horaspormes,
+			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Float horaspormes,
 			Date fnacimiento, String puesto, Institucion institucion) {
 		super();
 		this.usuario = usuario;
@@ -195,11 +195,11 @@ public class Mentor {
 		this.fregistro = fregistro;
 	}
 
-	public float getHoraspormes() {
+	public Float getHoraspormes() {
 		return horaspormes;
 	}
 
-	public void setHoraspormes(float horaspormes) {
+	public void setHoraspormes(Float horaspormes) {
 		this.horaspormes = horaspormes;
 	}
 

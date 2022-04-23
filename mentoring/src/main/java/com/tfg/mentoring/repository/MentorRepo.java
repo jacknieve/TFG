@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+//import org.springframework.data.repository.query.Param;
 
 import com.tfg.mentoring.model.Mentor;
 
@@ -23,17 +24,8 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1 AND m.institucion = ?2 AND m.horaspormes >= ?3")
 	List<Mentor> buscarCompleto(String area, String institucion, float horas);
 	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1 AND m.institucion = ?2")
-	List<Mentor> buscarAreaInstitucion(String area, String institucion);
-	
 	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1 AND m.horaspormes >= ?2")
 	List<Mentor> buscarAreaHoras(String area, float horas);
-	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1")
-	List<Mentor> buscarArea(String area);
-	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.institucion = ?1")
-	List<Mentor> buscarInstitucion(String institucion);
 	
 	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.horaspormes >= ?1")
 	List<Mentor> buscarHoras(float horas);
@@ -41,8 +33,11 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.institucion = ?1 AND m.horaspormes >= ?2")
 	List<Mentor> buscarInstitucionHoras(String institucion, float horas);
 	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true")
-	List<Mentor> buscarTodos();
+	//Prototipo de busqueda, me trae todo por culpa de las areas
+	//Se podria probar a añadir un area por defecto que tenga todos, asi no hay que hacer la comprobacion de null, y quizas funcionaria
+	/*@Query(nativeQuery = true, value="SELECT DISTINCT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND (:i is null or m.institucion = cast(:i AS text)) AND m.horaspormes >=:h AND (:a is null or a.area =cast(:a AS text))")
+	List<Mentor> buscarPrototipo(@Param("i") String institucion, @Param("h") float horas, @Param("a") String area);*/
+	
 	
 	
 }

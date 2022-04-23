@@ -23,12 +23,12 @@ public class UsuarioPerfil {
 	private Date fnacimiento;
 	private List<AreaConocimiento> areas = new ArrayList<>();
 	private String puesto;
-	private String institucion;
+	private String institucionNombre;
 	private boolean mentor;
 
 	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			Date fnacimiento, String puesto, String institucion, boolean mentor) {
+			Date fnacimiento, String puesto, String institucionNombre, boolean mentor) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -40,7 +40,7 @@ public class UsuarioPerfil {
 		this.horaspormes = horaspormes;
 		this.fnacimiento = fnacimiento;
 		this.puesto = puesto;
-		this.institucion = institucion;
+		this.institucionNombre = institucionNombre;
 		this.mentor=mentor;
 	}
 	
@@ -56,7 +56,7 @@ public class UsuarioPerfil {
 		this.horaspormes = m.getHoraspormes();
 		this.fnacimiento=m.getFnacimiento();
 		this.puesto = m.getPuesto();
-		this.institucion = m.getInstitucion().getNombre();
+		this.institucionNombre = m.getInstitucion().getNombre();
 		this.areas=m.getAreas();
 		this.mentor=true;
 	}
@@ -73,7 +73,7 @@ public class UsuarioPerfil {
 		this.horaspormes = 0;
 		this.fnacimiento=m.getFnacimiento();
 		this.puesto = null;
-		this.institucion = m.getInstitucion().getNombre();
+		this.institucionNombre = m.getInstitucion().getNombre();
 		this.areas=m.getAreas();
 		this.mentor=false;
 	}
@@ -172,12 +172,12 @@ public class UsuarioPerfil {
 		this.puesto = puesto;
 	}
 
-	public String getInstitucion() {
-		return institucion;
+	public String getInstitucionNombre() {
+		return institucionNombre;
 	}
 
-	public void setInstitucion(String institucion) {
-		this.institucion = institucion;
+	public void setInstitucionNombre(String institucionNombre) {
+		this.institucionNombre = institucionNombre;
 	}
 	
 	
@@ -197,7 +197,7 @@ public class UsuarioPerfil {
 		return "UsuarioPerfil [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
 				+ ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion=" + descripcion
 				+ ", linkedin=" + linkedin + ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento
-				+ ", areas=" + areas + ", puesto=" + puesto + ", institucion=" + institucion + ", mentor=" + mentor
+				+ ", areas=" + areas + ", puesto=" + puesto + ", institucion=" + institucionNombre + ", mentor=" + mentor
 				+ "]";
 	}
 

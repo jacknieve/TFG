@@ -51,13 +51,38 @@
 			<div> <button ng-hide="mentor.expandido" ng-click="obtenerMentor(mentor)">Mas informacion</button></div>
 			<div ng-show="mentor.expandido">
 			Descripcion : {{mentor.info.descripcion}}<br>
-			Institucion : {{mentor.info.institucion.nombre}} Puesto: {{mentor.info.puesto}}<br>
+			Institucion : {{mentor.info.institucionNombre}} Puesto: {{mentor.info.puesto}}<br>
+			<button ng-click="mostrarOcultarSolicitud(mentor)">Enviar Solicitud</button>
+			<div ng-show="mentor.info.solicitud">
+			<textarea ng-model="mentor.info.motivo"></textarea>
+			<button ng-click="enviarSolicitud(mentor.correo, mentor.info.motivo)">Enviar</button>
+			</div>
 			<div> <button ng-show="mentor.expandido" ng-click="plegarMentor(mentor)">Menos informacion</button></div>
 			</div>
 			</li>
 			</ul>
+			<p ng-show="sinresultados">No hay ningún mentor registrado que coincida con esos terminos</p>
 			</div>
 		</div>
-		
+		<div ng-controller="mentorizadoMentorizacionController">
+			<p>Mentorizaciones <button ng-click="activarMentorizaciones()">Desplegar/Plegar Mentorizaciones</button></p>
+			<div ng-show="mostrarMentorizaciones">
+			<div>
+			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<ul>
+			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.nombre}} 
+			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button>
+			<div ng-show="mentorizacion.expandido">
+			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
+			Institucion : {{mentorizacion.uperfil.institucionNombre}} Puesto: {{mentorizacion.uperfil.puesto}}<br>
+			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
+			Fase : {{mentorizacion.fase}} 
+			<div> <button ng-show="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
+			</div>
+			</li>
+			</ul>
+			<p ng-show="sinresultados">No tienes ninguna mentorización activa</p>
+			</div>
+		</div>
     </body>
 </html>

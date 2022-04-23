@@ -1,6 +1,6 @@
 package com.tfg.mentoring.controller;
 
-import java.sql.Timestamp;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +27,6 @@ import com.tfg.mentoring.model.Notificacion;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.IdNotificacion;
-import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
 import com.tfg.mentoring.model.auxiliar.NotificacionUser;
 import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
@@ -39,7 +37,7 @@ import com.tfg.mentoring.repository.NotificacionRepo;
 import com.tfg.mentoring.service.UserService;
 import com.tfg.mentoring.service.util.ListLoad;
 
-
+//Partir este controlador en varios, al menos en uno para mentor y otro para mentorizado
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -62,6 +60,11 @@ public class UserController {
 	@Autowired
 	private SimpleDateFormat format;
 	
+/////////////////////////////////////////////////////////////////////////
+////////                  Perfil de usuario                       ///////
+/////////////////////////////////////////////////////////////////////////
+	
+	//Proveer la pagina del perfil
 	@GetMapping("/perfil")
 	public ModelAndView getPerfilPrivado(@AuthenticationPrincipal Usuario us) {
 		try {
@@ -120,6 +123,7 @@ public class UserController {
 		}
 	}
 	
+	//Obtener la informacion del perfil del usuario
 	@GetMapping("/info")
 	public ResponseEntity<UsuarioPerfil> getInfoPerfil(@AuthenticationPrincipal Usuario us) {
 		try {
@@ -127,7 +131,8 @@ public class UserController {
 				Optional<Mentor> m = mrepo.findById(us.getUsername());
 				if(m.isPresent()) {
 					System.out.println(m.get().toString());
-					UsuarioPerfil up = new UsuarioPerfil(m.get());
+					//UsuarioPerfil up = new UsuarioPerfil(m.get());
+					UsuarioPerfil up = uservice.getPerfilMentor(m.get());
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
 				}
@@ -138,7 +143,8 @@ public class UserController {
 			}else if(us.getRol() == Roles.MENTORIZADO){
 				Optional<Mentorizado> m = menrepo.findById(us.getUsername());
 				if(m.isPresent()) {
-					UsuarioPerfil up = new UsuarioPerfil(m.get());
+					//UsuarioPerfil up = new UsuarioPerfil(m.get());
+					UsuarioPerfil up = uservice.getPerfilMentorizado(m.get());
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
 				}
@@ -150,10 +156,12 @@ public class UserController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 		} catch (EntityNotFoundException e) {
+			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
+	//Actualizar la informacion del perfil del usuario
 	@PostMapping("/setinfo")
 	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody UsuarioPerfil up, @AuthenticationPrincipal Usuario us) {
 		try {
@@ -172,8 +180,8 @@ public class UserController {
 					men.setNivelEstudios(up.getNivelEstudios());
 					men.setPuesto(up.getPuesto());
 					men.setTelefono(up.getTelefono());
-					if(!men.getInstitucion().getNombre().equals(up.getInstitucion())) {
-						Institucion i = irepo.getById(up.getInstitucion());
+					if(!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
+						Institucion i = irepo.getById(up.getInstitucionNombre());
 						men.setInstitucion(i);
 					}
 					men.setAreas(up.getAreas());
@@ -202,8 +210,8 @@ public class UserController {
 					men.setLinkedin(up.getLinkedin());
 					men.setNivelEstudios(up.getNivelEstudios());
 					men.setTelefono(up.getTelefono());
-					if(!men.getInstitucion().getNombre().equals(up.getInstitucion())) {
-						Institucion i = irepo.getById(up.getInstitucion());
+					if(!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
+						Institucion i = irepo.getById(up.getInstitucionNombre());
 						men.setInstitucion(i);
 					}
 					men.setAreas(up.getAreas());
@@ -225,62 +233,12 @@ public class UserController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@GetMapping("/notificaciones")
-	public ResponseEntity<List<NotificacionUser>> getAllNotificaciones(@AuthenticationPrincipal Usuario us) {
-		try {
-			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
-			List<NotificacionUser> nUser = new ArrayList<NotificacionUser>();
-			Notificaciones = notrepo.getNotificaciosUser(us.getUsername());
-			if (Notificaciones.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			//notrepo.actualizaEstadoNotificaciosUser(us.getUsername());
-			for(Notificacion n : Notificaciones) {
-				//System.out.println(n.getEstado().toString());
-				nUser.add(new NotificacionUser(n));
-				if(n.getEstado() == EstadosNotificacion.ENTREGADA) {
-					n.setEstado(EstadosNotificacion.LEIDA);
-				}
-			}
-			notrepo.saveAll(Notificaciones);
-			
-			//Notificaciones.removeIf(n -> (n.getFechaeliminacion() != null));
-			return new ResponseEntity<>(nUser, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@GetMapping("/notificaciones/{date}")
-	public ResponseEntity<List<Notificacion>> getNewNotificaciones(@AuthenticationPrincipal Usuario us, @PathVariable("date") Long date) {
-		try {
-			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
-			Timestamp fecha = new Timestamp(date);
-			Notificaciones = notrepo.getNews(us.getUsername(),fecha);
-			if (Notificaciones.isEmpty()) {
-				System.out.println("Sin nuevas");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<>(Notificaciones, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
-	@PostMapping("/notificaciones/delete")
-	public ResponseEntity<String> borrarNotificacion(@RequestBody IdNotificacion id){
-		System.out.println("Borrando");
-		if(id == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		}
-		notrepo.borrarNotificacion(id.getId());
-		return new ResponseEntity<>(null, HttpStatus.OK);
-	}
-	
+	//Eliminar areas de conocimiento de un usuario
 	@PostMapping("/areas/delete")
 	public ResponseEntity<String> borrarAreaUsuario(@AuthenticationPrincipal Usuario us, @RequestBody AreaConocimiento area){
 		System.out.println("Borrando");
@@ -321,6 +279,80 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 	}
+	
+	
+/////////////////////////////////////////////////////////////////////////
+////////                  Notificaciones                          ///////
+/////////////////////////////////////////////////////////////////////////
+	
+	//Obtener notificaciones
+	@GetMapping("/notificaciones")
+	public ResponseEntity<List<NotificacionUser>> getAllNotificaciones(@AuthenticationPrincipal Usuario us) {
+		try {
+			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
+			List<NotificacionUser> nUser = new ArrayList<NotificacionUser>();
+			Notificaciones = notrepo.getNotificaciosUser(us.getUsername());
+			if (Notificaciones.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			//notrepo.actualizaEstadoNotificaciosUser(us.getUsername());
+			for(Notificacion n : Notificaciones) {
+				//System.out.println(n.getEstado().toString());
+				nUser.add(new NotificacionUser(n));
+				if(n.getEstado() == EstadosNotificacion.ENTREGADA) {
+					n.setEstado(EstadosNotificacion.LEIDA);
+				}
+			}
+			notrepo.saveAll(Notificaciones);
+			
+			//Notificaciones.removeIf(n -> (n.getFechaeliminacion() != null));
+			return new ResponseEntity<>(nUser, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//Obtener notificaciones nuevas
+	@GetMapping("/notificaciones/nuevas")
+	public ResponseEntity<List<NotificacionUser>> getNewNotificaciones(@AuthenticationPrincipal Usuario us) {
+		try {
+			List<NotificacionUser> nUser = new ArrayList<NotificacionUser>();
+			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
+			Notificaciones = notrepo.getNews(us.getUsername());
+			if (Notificaciones.isEmpty()) {
+				System.out.println("Sin nuevas");
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			for(Notificacion n : Notificaciones) {
+				//System.out.println(n.getEstado().toString());
+				nUser.add(new NotificacionUser(n));
+				if(n.getEstado() == EstadosNotificacion.ENTREGADA) {
+					n.setEstado(EstadosNotificacion.LEIDA);
+				}
+			}
+			notrepo.saveAll(Notificaciones);
+			return new ResponseEntity<>(nUser, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	//Borrar una notificacion
+	@PostMapping("/notificaciones/delete")
+	public ResponseEntity<String> borrarNotificacion(@RequestBody IdNotificacion id){
+		System.out.println("Borrando");
+		if(id == null) {
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+		notrepo.borrarNotificacion(id.getId());
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
+	
+/////////////////////////////////////////////////////////////////////////
+////////             Pagina principal usuarios                    ///////
+/////////////////////////////////////////////////////////////////////////
 	
 	@GetMapping("/principal")
 	public ModelAndView getPaginaPrincipal(@AuthenticationPrincipal Usuario us) {
@@ -365,75 +397,10 @@ public class UserController {
 		}
 	}
 	
-	//A esto hay que meterle "seguridad", es decir, try y catch para las excepciones
-	@GetMapping("/busqueda/{area}/{institucion}/{horas}")
-	public ResponseEntity<List<MentorBusqueda>> buscar(@PathVariable("area") String area,  
-			@PathVariable("institucion") String institucion,  @PathVariable("horas") float horas) {
-		List<Mentor> mentores = new ArrayList<Mentor>();
-		if(area == null || area.equals("sin")) {
-			if(institucion == null || institucion.equals("sin")) {//Si no se selecciono institucion
-				if(horas == 0.0) {//Ni horas
-					mentores = mrepo.buscarTodos();
-				}
-				else {//Pero si horas
-					mentores = mrepo.buscarHoras(horas);
-				}
-			}
-			else {//Si se selecciono institucion
-				if(horas == 0.0) {//Pero no horas
-					mentores = mrepo.buscarInstitucion(institucion);
-				}
-				else {//Y horas
-					mentores = mrepo.buscarInstitucionHoras(institucion, horas);
-				}
-			}
-		}
-		else {
-			if(institucion == null || institucion.equals("sin")) {//Si no se selecciono institucion
-				if(horas == 0.0) {//Ni horas
-					mentores = mrepo.buscarArea(area);
-				}
-				else {//Pero si horas
-					mentores = mrepo.buscarAreaHoras(area, horas);
-				}
-			}
-			else {//Si se selecciono institucion
-				if(horas == 0.0) {//Pero no horas
-					mentores = mrepo.buscarAreaInstitucion(area, institucion);
-				}
-				else {//Y horas
-					mentores = mrepo.buscarCompleto(area, institucion, horas);
-				}
-			}
-			
-		}
-		try {
-			List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
-			return new ResponseEntity<>(resultado, HttpStatus.OK);
-		}catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-	}
+
 	
-	@PostMapping("/obtenermentor")
-	public ResponseEntity<Mentor> getPerfilBusqueda(@AuthenticationPrincipal Usuario us, @RequestBody String mentor) {
-		try {
-			Optional<Mentor> m = mrepo.findById(mentor);
-			if(m.isPresent()) {
-				return new ResponseEntity<>(m.get(), HttpStatus.OK);
-			}
-			else {
-				System.out.println("No hay mentor");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+	
+	
 	
 	
 	

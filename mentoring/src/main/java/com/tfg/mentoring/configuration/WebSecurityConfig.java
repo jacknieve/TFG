@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**", "/verify_success", "/verify_fail", "/auth/**").permitAll()
 				.antMatchers("/principalMentor").hasAuthority("MENTOR")
-				.antMatchers("/principalMentorizado").hasAuthority("MENTORIZADO")
+				.antMatchers("/principalMentorizado", "/user/mentorizado/**").hasAuthority("MENTORIZADO")
 				.anyRequest().authenticated()
 				.and()
 			.formLogin()

@@ -24,5 +24,50 @@
 			<div> <button ng-click="detenActualizacion()">Parar actualizacion</button></div>
 			<div> <button ng-click="iniciaNotificaciones()">Restear actualizacion</button></div>
 		</div>
+		
+		
+		<div ng-controller="peticionController">
+			<p>Peticiones pendientes <button ng-click="activarPeticiones()">Desplegar/Plegar Peticiones</button></p>
+			<div ng-show="mostrarPeticiones">
+			<div>
+			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<ul>
+			<li ng-repeat="peticion in peticiones">Nombre: {{peticion.nombre}}<br> 
+			Motivo: {{peticion.motivo}} <br>
+			Fecha de envio: {{peticion.fechaenv}} Nueva: {{peticion.nueva}}
+			<div> <button ng-hide="peticion.expandido" ng-click="obtenerPerfilPeticion(peticion)">Acceder a su perfil</button>
+			<button ng-click="aceptarPeticion(peticion)" ng-disabled="peticion.enAccion">Aceptar solicitud</button>
+			<button ng-click="rechazarPeticion(peticion)" ng-disabled="peticion.enAccion">Rechazar solicitud</button></div>
+			<div ng-show="peticion.expandido">
+			Descripcion : {{peticion.info.descripcion}}<br>
+			Institucion : {{peticion.info.institucionNombre}} Nivel de estudios: {{peticion.info.nivelEstudios}}<br>
+			<div> <button ng-show="peticion.expandido" ng-click="plegarPeticion(peticion)">Menos informacion</button></div>
+			</div>
+			</li>
+			</ul>
+			<p ng-show="sinresultados">No tienes ninguna petición pendiente</p>
+			</div>
+		</div>
+		
+		<div ng-controller="mentorMentorizacionController">
+			<p>Mentorizaciones <button ng-click="activarMentorizaciones()">Desplegar/Plegar Mentorizaciones</button></p>
+			<div ng-show="mostrarMentorizaciones">
+			<div>
+			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<ul>
+			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.nombre}} 
+			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button>
+			<div ng-show="mentorizacion.expandido">
+			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
+			Institucion : {{mentorizacion.uperfil.institucionNombre}} Nivel de estudios: {{mentorizacion.uperfil.nivelEstudios}}<br>
+			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
+			Fase : {{mentorizacion.fase}} 
+			<div> <button ng-show="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
+			</div>
+			</li>
+			</ul>
+			<p ng-show="sinresultados">No tienes ninguna mentorización activa</p>
+			</div>
+		</div>
     </body>
 </html>

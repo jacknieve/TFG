@@ -1,6 +1,5 @@
 package com.tfg.mentoring.repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -27,7 +26,7 @@ public interface NotificacionRepo extends JpaRepository<Notificacion, String>{
 	@Query(nativeQuery = true, value="UPDATE notificaciones SET estado = 2 WHERE id = ?1")
 	void borrarNotificacion(Long id);
 	
-	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND fechaenv >= ?2")
-	List<Notificacion> getNews(String user, Timestamp date);
+	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado = 0")
+	List<Notificacion> getNews(String user);
 
 }

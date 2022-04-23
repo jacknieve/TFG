@@ -62,7 +62,20 @@ public class Usuario implements UserDetails{
 		this.unlocked=true;
 		this.enable=true;
 	}
+	
+	
 
+
+	public Usuario( String username, String password, Roles rol, boolean unlocked,
+			boolean enable, String verificationCode) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.rol = rol;
+		this.unlocked = unlocked;
+		this.enable = enable;
+		this.verificationCode = verificationCode;
+	}
 
 	public void setUsername(String correo) {
 		this.username = correo;

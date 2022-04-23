@@ -60,6 +60,16 @@ public class Institucion implements Serializable{
 	public Institucion() {
 		super();
 	}
+	
+	public Institucion(String nombre) {
+		super();
+		this.nombre=nombre;
+		this.usuario = null;
+		this.color = null;
+		this.webpage = null;
+		this.direccion = null;
+		this.visibilidad = false;
+	}
 
 	public Institucion(Usuario usuario, String nombre, String color, String webpage, String direccion,
 			boolean visibilidad) {

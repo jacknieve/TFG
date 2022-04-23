@@ -17,8 +17,6 @@ es decir: enviar peticion, puntuar experiencia, registro...
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
 Cargar al comenzar las instituciones, areas de conocimiento y demas estatico
-Enviar peticion (v)
-Aceptar/rechazar peticion (v)
 Acceder a una mentorizacion (mentor) (v)
 Acceder a una mentorizacion (mentorizado) (v)
 Cerrar una relacion (mentor) (s)
@@ -26,9 +24,16 @@ Cerrar una relacion (mentorizado) (s)
 Puntuar una relacion (s)
 Añadir validacion a los campos (d)
 Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar. (d)
-Gestion de las notificaciones (borrarlas y demas)
+Borrar cuenta de usuario?
 Interfaz grafica
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
+
+Para el perfilMentorMentorizacion, hacer uso de MentorPerfil dentro de otro objeto, lo mismo para mentorizado
+Añadir errores y boton de recargar en js (cuando la busqueda da error)
+Tambien faltan comprobaciones de enviar una solicitud o aceptar una solicitud de que el otro usuario este enable
+Por otro lado, hay que tener en cuenta que si hago lo de borrar una cuenta, se deben de cerrar las peticiones, mentorizaciones,
+y demas del usuario, pero, por si el usuario que accede al perfil mientras se borra
+Y habria que hacer cosas para proteger de los doble-clicks-> Aplicar el ng-disable a todos los botones
 
 
 

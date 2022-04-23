@@ -65,7 +65,7 @@
     		</div >
     		<div>
         		<label>Institución</label>
-        		<select ng-model="usuario.institucion">
+        		<select ng-model="usuario.institucionNombre">
         			<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
         			</option>
         		</select>

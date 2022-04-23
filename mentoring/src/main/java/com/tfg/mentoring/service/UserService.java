@@ -23,6 +23,7 @@ import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
 import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
@@ -153,15 +154,30 @@ public class UserService {
     public List<MentorBusqueda> getMentorBusqueda(List<Mentor> mentores){
 		return mentores
 				.stream()
-				.map(this::convertEntitytoDto)
+				.map(this::convertMentortoMentorBusqueda)
 				.collect(Collectors.toList());
 	}
 	
-	private MentorBusqueda convertEntitytoDto(Mentor m) {
+	private MentorBusqueda convertMentortoMentorBusqueda(Mentor m) {
 		MentorBusqueda user = new MentorBusqueda();
 		user = maper.map(m, MentorBusqueda.class);
 		return user;
 	}
+	
+	public UsuarioPerfil getPerfilMentor(Mentor mentor){
+		UsuarioPerfil user = new UsuarioPerfil();
+		user = maper.map(mentor, UsuarioPerfil.class);
+		//System.out.println(user.toString());
+		return user;
+	}
+	
+	public UsuarioPerfil getPerfilMentorizado(Mentorizado mentorizado){
+		UsuarioPerfil user = new UsuarioPerfil();
+		user = maper.map(mentorizado, UsuarioPerfil.class);
+		//System.out.println(user.toString());
+		return user;
+	}
+	
     
     
 }

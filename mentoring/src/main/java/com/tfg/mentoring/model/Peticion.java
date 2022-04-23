@@ -24,7 +24,7 @@ public class Peticion {
 	private Mentor mentor;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("mentoriuzado")
+	@MapsId("mentorizado")
 	private Mentorizado mentorizado;
 	
 	@Column(name="fecha_resolucion")
@@ -41,11 +41,12 @@ public class Peticion {
 		
 	}
 	
-	public Peticion (Mentor mentor, Mentorizado mentorizado) {
+	public Peticion (Mentor mentor, Mentorizado mentorizado, String motivo) {
 		this.mentor=mentor;
 		this.mentorizado=mentorizado;
 		this.id = new PeticionId(mentor.getCorreo(),mentorizado.getCorreo());
 		this.estado = EstadosPeticion.ENVIADA;
+		this.motivo=motivo;
 	}
 	
 	
