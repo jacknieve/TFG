@@ -17,12 +17,8 @@ es decir: enviar peticion, puntuar experiencia, registro...
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
 Cargar al comenzar las instituciones, areas de conocimiento y demas estatico
-Acceder a una mentorizacion (mentor) (v)
-Acceder a una mentorizacion (mentorizado) (v)
-Cerrar una relacion (mentor) (s)
-Cerrar una relacion (mentorizado) (s)
-Puntuar una relacion (s)
 Añadir validacion a los campos (d)
+Avanzar en la hoja de ruta (d)
 Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar. (d)
 Borrar cuenta de usuario?
 Interfaz grafica
@@ -34,6 +30,11 @@ Tambien faltan comprobaciones de enviar una solicitud o aceptar una solicitud de
 Por otro lado, hay que tener en cuenta que si hago lo de borrar una cuenta, se deben de cerrar las peticiones, mentorizaciones,
 y demas del usuario, pero, por si el usuario que accede al perfil mientras se borra
 Y habria que hacer cosas para proteger de los doble-clicks-> Aplicar el ng-disable a todos los botones
+Tambien devolver bien los responses, con codigos adecuados
 
+->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar
+->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo)
+->Cambiar la comprobacion de si esta vacio en el backend a ver cual es el codigo de respuesta (204)
 
+contigopripo@gmail.com
 

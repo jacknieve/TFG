@@ -23,13 +23,15 @@ appConsumer.controller("userController", function($scope, $http){
 					$scope.usuario=response.data;
 					$scope.mydate = new Date(response.data.fnacimiento); 
 					//Aqui pasamos las areas a un mapa, para acceder directamente al añadir o borrar
-					for (var i=0;i<response.data.areas.length;i++){
-						areasUsuario.set(response.data.areas[i].area,response.data.areas[i]);
+					if(response.data.areas.length>0){
+						for (var i=0;i<response.data.areas.length;i++){
+							areasUsuario.set(response.data.areas[i].area,response.data.areas[i]);
+						}
+					}
+					else{
+						$scope.sinareas=true;
 					}
 					$scope.areaseleccioanda = "--Escoge una--";
-				}
-				else{
-					$scope.sinareas=true;
 				}
 				$scope.cargando = false;				
 			},
@@ -70,6 +72,7 @@ appConsumer.controller("userController", function($scope, $http){
 	
 	//Cambiarlo a add area
 	$scope.addArea = function (areaSelecionada){
+		$scope.sinareas=false;
 		if(areaSelecionada !== "--Escoge una--"){
 			if(areasUsuario.has(areaSelecionada)){
 				alert("Ya tienes esa area");
@@ -91,6 +94,9 @@ appConsumer.controller("userController", function($scope, $http){
 			areasUsuario.delete(area.area);
 			areasNuevas.delete(area.area);
 			console.log("Borrado solo en el frontend");
+			if($scope.usuario.areas.length == 0){
+				$scope.sinareas=true;
+			}
 		}
 		else{
 		$http.post("/user/areas/delete",area).then(
@@ -100,6 +106,9 @@ appConsumer.controller("userController", function($scope, $http){
 					index = $scope.usuario.areas.indexOf(area.area);
 					$scope.usuario.areas.splice(index,1);
 					areasUsuario.delete(area.area);
+					if($scope.usuario.areas.length == 0){
+						$scope.sinareas=true;
+					}
 				}
 				
 			},

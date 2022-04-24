@@ -55,7 +55,7 @@
 			<div>
 			<div ng-show="cargandoBusqueda">Cargando...</div>
 			<ul>
-			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.nombre}} 
+			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}} 
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button>
 			<div ng-show="mentorizacion.expandido">
 			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
@@ -63,6 +63,14 @@
 			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
 			Fase : {{mentorizacion.fase}} 
 			<div> <button ng-show="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
+			</div>
+			<button ng-hide="mentorizacion.aceptarcerrar" ng-click="confirmarCerrar(mentorizacion)">Cerrar la relación</button>
+			<div ng-show="mentorizacion.aceptarcerrar">
+				<div> 
+					¿Seguro que quieres cerrar esta relacion?
+					<button ng-click="cerrarMentorizacion(mentorizacion)">Confirmar</button>
+					<button ng-click="confirmarCerrar(mentorizacion)">Cancelar</button>
+				</div>
 			</div>
 			</li>
 			</ul>

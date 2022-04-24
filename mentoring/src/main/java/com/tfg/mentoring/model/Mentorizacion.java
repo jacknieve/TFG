@@ -40,6 +40,8 @@ public class Mentorizacion {
 	@Column(name="fase")
 	private FasesMentorizacion fase;
 	
+	//Quizas añadir un boolean para saber si esta puntuada o se rechazo puntuarla
+	
 	public Mentorizacion() {
 		
 	}

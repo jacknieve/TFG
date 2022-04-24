@@ -25,6 +25,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 		$http.get("/user/mentorizado/busqueda/" + $scope.areaseleccioanda + "/" + $scope.institucionseleccionada + "/" + $scope.horasmes).then(
 			function sucessCallback(response) {
 				console.log(response.data);
+				$scope.sinresultados = false;
 				$scope.mentores = response.data;
 				if (response.data.length > 0) {
 					//console.log(data);
@@ -40,6 +41,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 				$scope.cargandoBusqueda = false;
 			},
 			function errorCallback(response) {
+				console.log(response)
 				console.log("Fallo al acceder")
 				$scope.cargandoBusqueda = false;
 			}
@@ -159,6 +161,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 							}
 
 						} else {
+							$scope.peticiones = [];
 							$scope.sinresultados = true;
 						}
 						$scope.id = setInterval(() => {
@@ -174,6 +177,9 @@ appConsumer.controller("peticionController", function($scope, $http) {
 					}
 				)
 			}
+			else{
+				actualizar();
+			}
 		}
 	}
 
@@ -182,8 +188,12 @@ appConsumer.controller("peticionController", function($scope, $http) {
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					console.log(response.data);
+					$scope.sinresultados = false;
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.peticiones.push(response.data[i]);
+					}
+					if($scope.peticiones.length == 0){
+						$scope.sinresultados = true;
 					}
 				}
 
@@ -191,6 +201,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
+				$scope.detenActualizacion;
 			}
 		)
 	}
@@ -238,8 +249,8 @@ appConsumer.controller("peticionController", function($scope, $http) {
 						index = $scope.peticiones.indexOf(peticion);
 						$scope.peticiones.splice(index, 1);
 						if($scope.peticiones.length == 0){
-								$scope.sinresultados = true;
-							}
+							$scope.sinresultados = true;
+						}
 					}
 				},
 				function errorCallback(response) {
@@ -260,8 +271,8 @@ appConsumer.controller("peticionController", function($scope, $http) {
 						index = $scope.peticiones.indexOf(peticion);
 						$scope.peticiones.splice(index, 1);
 						if($scope.peticiones.length == 0){
-								$scope.sinresultados = true;
-							}
+							$scope.sinresultados = true;
+						}
 					}
 				},
 				function errorCallback(response) {
@@ -291,9 +302,13 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 		$http.get("/user/notificaciones/nuevas").then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
+					$scope.mostrarsin = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.notificaciones.push(response.data[i]);
+					}
+					if($scope.notificaciones.length == 0){
+						$scope.mostrarsin = true;
 					}
 				}
 
@@ -301,6 +316,7 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
+				$scope.detenActualizacion();
 			}
 		)
 	}
@@ -313,6 +329,7 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				$scope.notificaciones = response.data;
 				$scope.cargando = false;
 				if ($scope.notificaciones.length == 0) {
+					$scope.notificaciones = [];
 					$scope.mostrarsin = true;
 				}
 				$scope.id = setInterval(() => {
@@ -351,8 +368,8 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 					index = $scope.notificaciones.indexOf(notificacion);
 					$scope.notificaciones.splice(index, 1);
 					if($scope.notificaciones.length == 0){
-								$scope.mostrarsin = true;
-							}
+						$scope.mostrarsin = true;
+					}
 				}
 
 			},
@@ -376,6 +393,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 	$scope.cargandoBusqueda = false;
 	var yaObtenidas = false;
 	var lastload = new Date();
+	$scope.enAccion = false;
 
 	$scope.activarMentorizaciones = function() {
 		if ($scope.mostrarMentorizaciones) {
@@ -384,45 +402,55 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 			$scope.detenActualizacion();
 		}
 		else {
+			$scope.enAccion = true;
 			$scope.mostrarMentorizaciones = true;
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
 				console.log("Consulta lanzada")
 				$http.get("/user/mentor/mentorizaciones/").then(
 					function sucessCallback(response) {
-						console.log(response.data);
 						lastload = Date.now();
+						console.log(response.data);
 						$scope.mentorizaciones = response.data;
 						if (response.data.length > 0) {
 							for (var i = 0; i < response.data.length; i++) {
 								$scope.mentorizaciones[i].expandido = false;
 								$scope.mentorizaciones[i].enAccion = false;
+								$scope.mentorizaciones[i].aceptarcerrar = false;
 							}
 
 						} else {
 							$scope.sinresultados = true;
+							$scope.mentorizaciones = [];
 						}
 						$scope.id = setInterval(() => {
 							actualizar();
 						}, 60000);
 						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
 					},
 					function errorCallback(response) {
 						console.log("Fallo al acceder")
 						console.log(response)
 						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
+			}
+			else{
+				actualizar();
+				$scope.enAccion = false;
 			}
 		}
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentor/mentorizaciones/actualizar"+lastload).then(
+		$http.get("/user/mentor/mentorizaciones/actualizar/"+lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
+					$scope.sinresultados = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						var todelete = [];
@@ -436,9 +464,10 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento){
 								return todelete.indexOf(elemento.correo) == -1;
 							});
-							if($scope.mentorizaciones.length == 0){
-								$scope.sinresultados = true;
-							}
+							
+						}
+						if($scope.mentorizaciones.length == 0){
+							$scope.sinresultados = true;
 						}
 					}
 				}
@@ -468,6 +497,38 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 		if(mentorizacion.expandido) mentorizacion.expandido = false;
 		else mentorizacion.expandido = true;
 		
+	}
+	
+	
+	$scope.confirmarCerrar = function(mentorizacion) {
+		if(mentorizacion.aceptarcerrar) mentorizacion.aceptarcerrar = false;
+		else mentorizacion.aceptarcerrar = true;
+		
+	}
+
+
+	$scope.cerrarMentorizacion = function(mentorizacion) {
+				mentorizacion.enAccion = true;
+				console.log("Consulta lanzada")
+				$http.post("/user/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
+					function sucessCallback(response) {
+						console.log(response.data);
+						index = $scope.mentorizaciones.indexOf(mentorizacion);
+						$scope.mentorizaciones.splice(index, 1);
+						if($scope.mentorizaciones.length == 0){
+							$scope.sinresultados = true;
+						}
+						alert("La mentorizacion se ha cerrado con exito");
+						
+					},
+					function errorCallback(response) {
+						console.log("Fallo al acceder")
+						console.log(response)
+						mentorizacion.enAccion = false;
+						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+					}
+				)
+
 	}
 
 
@@ -482,14 +543,17 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 	$scope.cargandoBusqueda = false;
 	var yaObtenidas = false;
 	var lastload = new Date();
+	$scope.enAccion = false;
 
 	$scope.activarMentorizaciones = function() {
+		
 		if ($scope.mostrarMentorizaciones) {
 			$scope.mostrarMentorizaciones = false
 			yaObtenidas = true;
 			$scope.detenActualizacion();
 		}
 		else {
+			$scope.enAccion = true;
 			$scope.mostrarMentorizaciones = true;
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
@@ -503,32 +567,44 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 							for (var i = 0; i < response.data.length; i++) {
 								$scope.mentorizaciones[i].expandido = false;
 								$scope.mentorizaciones[i].enAccion = false;
+								$scope.mentorizaciones[i].cerrar = false;
+								$scope.mentorizaciones[i].comentario = "";
+								$scope.mentorizaciones[i].puntuacion = 0;
+								$scope.mentorizaciones[i].aceptarcerrar = false;
 							}
 
 						} else {
 							$scope.sinresultados = true;
+							$scope.mentorizaciones = [];
 						}
 						$scope.id = setInterval(() => {
 							actualizar();
 						}, 60000);
 						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
 					},
 					function errorCallback(response) {
 						console.log("Fallo al acceder")
 						console.log(response)
 						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
+			}
+			else{
+				actualizar();
+				$scope.enAccion = false;
 			}
 		}
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentorizado/mentorizaciones/actualizar"+lastload).then(
+		$http.get("/user/mentorizado/mentorizaciones/actualizar/"+lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
+					$scope.sinresultados = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						var todelete = [];
@@ -542,9 +618,10 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento){
 								return todelete.indexOf(elemento.correo) == -1;
 							});
-							if($scope.mentorizaciones.length == 0){
-								$scope.sinresultados = true;
-							}
+							
+						}
+						if($scope.mentorizaciones.length == 0){
+							$scope.sinresultados = true;
 						}
 					}
 				}
@@ -575,8 +652,182 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 		else mentorizacion.expandido = true;
 		
 	}
+	
+	$scope.abrirPuntuar = function(mentorizacion) {
+		if(mentorizacion.cerrar) {
+			mentorizacion.cerrar = false;
+			mentorizacion.aceptarcerrar = false;
+		}
+		else mentorizacion.cerrar = true;
+		
+	}
+	
+	$scope.confirmarCerrar = function(mentorizacion) {
+		mentorizacion.aceptarcerrar = true;
+		
+	}
 
 
+	$scope.cerrarMentorizacion = function(mentorizacion) {
+				mentorizacion.enAccion = true;
+				console.log("Consulta lanzada")
+				$http.post("/user/mentorizado/mentorizaciones/cerrar", {mentor : mentorizacion.correo, 
+					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : 0}).then(
+					function sucessCallback(response) {
+						console.log(response.data);
+						index = $scope.mentorizaciones.indexOf(mentorizacion);
+						$scope.mentorizaciones.splice(index, 1);
+						if($scope.mentorizaciones.length == 0){
+							$scope.sinresultados = true;
+						}
+						alert("La mentorizacion se ha cerrado con exito");
+						
+					},
+					function errorCallback(response) {
+						console.log("Fallo al acceder")
+						console.log(response)
+						mentorizacion.enAccion = false;
+						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+					}
+				)
+
+	}
+
+
+});
+
+appConsumer.controller("puntuarController", function($scope, $http) {
+
+	$scope.mostrarMentorizaciones = false;
+	$scope.sinresultados = false;
+	$scope.cargandoBusqueda = false;
+	var yaObtenidas = false;
+	var lastload = new Date();
+	$scope.enAccion = false;
+
+	$scope.activarMentorizaciones = function() {
+		
+		if ($scope.mostrarMentorizaciones) {
+			$scope.mostrarMentorizaciones = false
+			yaObtenidas = true;
+			$scope.detenActualizacion();
+		}
+		else {
+			$scope.enAccion = true;
+			$scope.mostrarMentorizaciones = true;
+			if (!yaObtenidas) {
+				$scope.cargandoBusqueda = true;
+				console.log("Consulta lanzada")
+				$http.get("/user/mentorizado/mentorizaciones/porpuntuar").then(
+					function sucessCallback(response) {
+						lastload = Date.now();
+						console.log(response.data);
+						$scope.mentorizaciones = response.data;
+						if (response.data.length > 0) {
+							for (var i = 0; i < response.data.length; i++) {
+								$scope.mentorizaciones[i].expandido = false;
+								$scope.mentorizaciones[i].enAccion = false;
+								$scope.mentorizaciones[i].cerrar = false;
+								$scope.mentorizaciones[i].comentario = "";
+								$scope.mentorizaciones[i].puntuacion = 0;
+							}
+
+						} else {
+							$scope.sinresultados = true;
+							$scope.mentorizaciones = [];
+						}
+						$scope.id = setInterval(() => {
+							actualizar();
+						}, 60000);
+						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
+					},
+					function errorCallback(response) {
+						console.log("Fallo al acceder")
+						console.log(response)
+						$scope.cargandoBusqueda = false;
+						$scope.enAccion = false;
+						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+					}
+				)
+			}
+			else{
+				actualizar();
+				$scope.enAccion = false;
+			}
+		}
+	}
+
+	var actualizar = function() {
+		$http.get("/user/mentorizado/mentorizaciones/porpuntuar/"+lastload).then(
+			function sucessCallback(response) {
+				if (response.status == 200) {
+					lastload = Date.now();
+					$scope.sinresultados = false;
+					console.log(response.data);
+					for (var i = 0; i < response.data.length; i++) {
+						$scope.mentorizaciones.push(response.data[i]); 
+					}
+				}
+
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				$scope.detenActualizacion();
+			}
+		)
+	}
+
+	$scope.detenActualizacion = function() {
+		if ($scope.id) {
+			clearInterval(this.id);
+		}
+	}
+
+	$scope.$on("$destroy", function() {
+		$scope.detenActualizacion();
+	});
+
+
+
+	$scope.plegarMentorizacion = function(mentorizacion) {
+		if(mentorizacion.expandido) mentorizacion.expandido = false;
+		else mentorizacion.expandido = true;
+		
+	}
+	
+	$scope.abrirPuntuar = function(mentorizacion) {
+		if(mentorizacion.cerrar) mentorizacion.cerrar = false;
+		else mentorizacion.cerrar = true;
+		
+	}
+
+
+	$scope.puntuarMentorizacion = function(mentorizacion) {
+				mentorizacion.enAccion = true;
+				console.log("Consulta lanzada")
+				$http.post("/user/mentorizado/mentorizaciones/puntuar", {mentor : mentorizacion.correo, 
+					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : mentorizacion.fecha_fin}).then(
+					function sucessCallback(response) {
+						console.log(response.data);
+						index = $scope.mentorizaciones.indexOf(mentorizacion);
+						$scope.mentorizaciones.splice(index, 1);
+						if($scope.mentorizaciones.length == 0){
+							$scope.sinresultados = true;
+						}
+						alert("La mentorizacion se ha puntuado con exito");
+						
+					},
+					function errorCallback(response) {
+						console.log("Fallo al acceder")
+						console.log(response)
+						mentorizacion.enAccion = false;
+						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+					}
+				)
+
+	}
 
 
 });

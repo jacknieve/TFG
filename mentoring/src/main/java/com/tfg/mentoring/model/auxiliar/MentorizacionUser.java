@@ -5,27 +5,27 @@ import com.tfg.mentoring.model.Mentorizacion;
 
 public class MentorizacionUser {
 	private String correo;
-	private String nombre;
 	private String foto;//Para la futura foto de perfil
 	private UsuarioPerfil uperfil;
 	private FasesMentorizacion fase;
+	private Long fecha_fin;
 	
-	public MentorizacionUser(String correo, String nombre, String foto, UsuarioPerfil uperfil, FasesMentorizacion fase) {
+	public MentorizacionUser(String correo, String foto, UsuarioPerfil uperfil, FasesMentorizacion fase, Long fecha_fin) {
 		super();
 		this.correo = correo;
-		this.nombre = nombre;
 		this.foto = foto;
 		this.uperfil = uperfil;
 		this.fase = fase;
+		this.fecha_fin = fecha_fin;
 	}
 	
-	public MentorizacionUser(Mentorizacion m, UsuarioPerfil up) {
+	public MentorizacionUser(Mentorizacion m, UsuarioPerfil up, String correo) {
 		super();
-		this.correo = m.getMentorizado().getCorreo();
-		this.nombre = m.getMentorizado().getNombre()+" "+m.getMentorizado().getPapellido()+" "+m.getMentorizado().getSapellido();
+		this.correo = correo;
 		this.foto = null;
 		this.uperfil=up;
 		this.fase=m.getFase();
+		this.fecha_fin=m.getFin().getTime();
 	}
 
 	public MentorizacionUser() {
@@ -40,13 +40,6 @@ public class MentorizacionUser {
 		this.correo = correo;
 	}
 
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
 
 	public String getFoto() {
 		return foto;
@@ -65,6 +58,15 @@ public class MentorizacionUser {
 	}
 	
 	
+	
+
+	public Long getFecha_fin() {
+		return fecha_fin;
+	}
+
+	public void setFecha_fin(Long fecha_fin) {
+		this.fecha_fin = fecha_fin;
+	}
 
 	public FasesMentorizacion getFase() {
 		return fase;
@@ -76,9 +78,13 @@ public class MentorizacionUser {
 
 	@Override
 	public String toString() {
-		return "MentorizacionUser [correo=" + correo + ", nombre=" + nombre + ", foto=" + foto + ", uperfil=" + uperfil
-				+ ", fase=" + fase + "]";
+		return "MentorizacionUser [correo=" + correo + ", foto=" + foto + ", uperfil=" + uperfil + ", fase=" + fase
+				+ ", fecha_fin=" + fecha_fin + "]";
 	}
+
+	
+
+	
 
 	
 

@@ -24,6 +24,7 @@ import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.EnvioPeticion;
 import com.tfg.mentoring.model.auxiliar.EstadosPeticion;
 import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
+import com.tfg.mentoring.model.auxiliar.MentorizacionCerrar;
 import com.tfg.mentoring.model.auxiliar.MentorizacionUser;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
 import com.tfg.mentoring.repository.MentorRepo;
@@ -158,7 +159,7 @@ public class MentorizadoController {
 			}
 			for (Mentorizacion m : mentorizaciones) {
 				// System.out.println(n.getEstado().toString());
-				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor())));
+				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 			}
 
 			return new ResponseEntity<>(mUser, HttpStatus.OK);
@@ -183,9 +184,9 @@ public class MentorizadoController {
 				}
 				for (Mentorizacion m : mentorizaciones) {
 					if (m.getFin() == null) {
-						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor())));
+						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 					} else {
-						mUser.add(new MentorizacionUser(m, null));
+						mUser.add(new MentorizacionUser(m, null, m.getMentor().getCorreo()));
 					}
 
 				}
@@ -200,6 +201,102 @@ public class MentorizadoController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@PostMapping("/mentorizaciones/cerrar")
+	public ResponseEntity<String> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
+			@RequestBody MentorizacionCerrar mentorizacion) {
+		try {
+			Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
+			Optional<Mentorizado> men = menrepo.findById(us.getUsername());
+			if (m.isPresent() && men.isPresent()) {
+				// Primero comprobar si ya existe una mentorizacion y si ya existe una peticion
+				mentorizacionrepo.cerrarPuntuarMentorizacion(mentorizacion.getPuntuacion(), mentorizacion.getComentario(),
+						mentorizacion.getMentor(), us.getUsername());
+				uservice.enviarNotificacion(m.get().getUsuario(), "Mentorizacion cerrada", "El usuario "+men.get().getNombre()+
+						" ha cerrado una mentorización que tenía abierta contigo.");
+				return new ResponseEntity<>(null, HttpStatus.OK);
+			} else {
+				System.out.println("Fallo al acceder a los usuarios");
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/mentorizaciones/porpuntuar")
+	public ResponseEntity<List<MentorizacionUser>> getMentorizacionesPorPuntuar(@AuthenticationPrincipal Usuario us) {
+		try {
+			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+			List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuar(us.getUsername());
+			if (mentorizaciones.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+			for (Mentorizacion m : mentorizaciones) {
+				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+			}
+
+			return new ResponseEntity<>(mUser, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/mentorizaciones/porpuntuar/{date}")
+	public ResponseEntity<List<MentorizacionUser>> getNewMentorizacionesPorPuntuar(@AuthenticationPrincipal Usuario us,
+			@PathVariable("date") Long date) {
+		if (date != null) {// Tambien ver si de primeras ya se puede ver si es parseable
+			try {
+				Timestamp fecha = new Timestamp(date);
+				List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+				List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+				mentorizaciones = mentorizacionrepo.getNuevasMentorizado(us.getUsername(), fecha);
+				if (mentorizaciones.isEmpty()) {
+					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				}
+				for (Mentorizacion m : mentorizaciones) {
+					mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+
+				}
+				// System.out.println(mUser.toString());
+				return new ResponseEntity<>(mUser, HttpStatus.OK);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			System.out.println("Date esta mal");
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/mentorizaciones/puntuar")
+	public ResponseEntity<String> puntuarMentorizacion(@AuthenticationPrincipal Usuario us,
+			@RequestBody MentorizacionCerrar mentorizacion) {
+		try {
+			Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
+			Optional<Mentorizado> men = menrepo.findById(us.getUsername());
+			if (m.isPresent() && men.isPresent()) {
+				// Primero comprobar si ya existe una mentorizacion y si ya existe una peticion
+				mentorizacionrepo.puntuarMentorizacion(mentorizacion.getPuntuacion(), mentorizacion.getComentario(),
+						mentorizacion.getMentor(), us.getUsername(), new Timestamp(mentorizacion.getFechafin()));
+				return new ResponseEntity<>(null, HttpStatus.OK);
+			} else {
+				System.out.println("Fallo al acceder a los usuarios");
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 
 	// Otro prototipo de busqueda, pero tampoco funciona bien, creo que le vuelven
 	// loco las areas

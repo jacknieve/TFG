@@ -185,7 +185,7 @@ public class MentorController {
 			}
 			for (Mentorizacion m : mentorizaciones) {
 				// System.out.println(n.getEstado().toString());
-				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado())));
+				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado()), m.getMentorizado().getCorreo()));
 			}
 
 			return new ResponseEntity<>(mUser, HttpStatus.OK);
@@ -209,10 +209,10 @@ public class MentorController {
 				}
 				for(Mentorizacion m : mentorizaciones) {
 					if(m.getFin() == null) {
-						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado())));
+						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado()), m.getMentorizado().getCorreo()));
 					}
 					else {
-						mUser.add(new MentorizacionUser(m, null));
+						mUser.add(new MentorizacionUser(m, null, m.getMentorizado().getCorreo()));
 					}
 					
 				}
@@ -228,5 +228,27 @@ public class MentorController {
 				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			}
 		}
+	
+	@PostMapping("/mentorizaciones/cerrar")
+	public ResponseEntity<String> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
+			@RequestBody String mentorizado) {
+		try {
+			Optional<Mentor> m = mrepo.findById(us.getUsername());
+			Optional<Mentorizado> men = menrepo.findById(mentorizado);
+			if (m.isPresent() && men.isPresent()) {
+				mentorizacionrepo.cerrarMentorizacion(us.getUsername(), mentorizado, new Timestamp(System.currentTimeMillis()));
+				uservice.enviarNotificacion(men.get().getUsuario(), "Mentorizacion cerrada", "El usuario "+m.get().getNombre()+
+						" ha cerrado una mentorización que tenía abierta contigo. Puedes proceder a puntuarla y comentarla en el apartado de puntuar.");
+				return new ResponseEntity<>(null, HttpStatus.OK);
+			} else {
+				System.out.println("Fallo al acceder a los usuarios");
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
