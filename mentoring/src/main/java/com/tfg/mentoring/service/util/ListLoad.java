@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.tfg.mentoring.model.AreaConocimiento;
+import com.tfg.mentoring.model.NivelEstudios;
+import com.tfg.mentoring.model.Puesto;
 
 @Component
 public class ListLoad {
@@ -19,8 +21,8 @@ public class ListLoad {
 	//@Autowired
 	//private ModelMapper modelMapper;
 
-	private ArrayList<String> puestos;
-	private ArrayList<String> estudios;
+	private List<Puesto> puestos;
+	private List<NivelEstudios> estudios;
 	private List<AreaConocimiento> areas;
 	private ArrayList<String> instituciones;
 	
@@ -28,29 +30,29 @@ public class ListLoad {
 		//To Do
 		//Aqui cambiar esto por una lectura de un fichero JSON o de la base de datos
 		puestos = new ArrayList<>();
-		puestos.add("Becario");
+		/*puestos.add("Becario");
 		puestos.add("Profesor");
 		puestos.add("Estudiante");
 		puestos.add("Empleado");
 		puestos.add("Jefe");
-		puestos.add("Otro");
+		puestos.add("Otro");*/
 		estudios = new ArrayList<>();
-		estudios.add("Basica");
+		/*estudios.add("Basica");
 		estudios.add("Secundaria");
 		estudios.add("Tecnico");
 		estudios.add("Bachillerato");
 		estudios.add("Graduado");
 		estudios.add("Master");
 		estudios.add("Doctorado");
-		estudios.add("Otros");
+		estudios.add("Otros");*/
 		//this.areas = arepo.findAll();
 	}
 
-	public ArrayList<String> getPuestos() {
+	public List<Puesto> getPuestos() {
 		return puestos;
 	}
 
-	public ArrayList<String> getEstudios() {
+	public List<NivelEstudios> getEstudios() {
 		return estudios;
 	}
 	
@@ -62,11 +64,11 @@ public class ListLoad {
 		this.areas = areas;
 	}
 
-	public void setPuestos(ArrayList<String> puestos) {
-		this.puestos = puestos;
+	public void setPuestos(List<Puesto> list) {
+		this.puestos = list;
 	}
 
-	public void setEstudios(ArrayList<String> estudios) {
+	public void setEstudios(List<NivelEstudios> estudios) {
 		this.estudios = estudios;
 	}
 

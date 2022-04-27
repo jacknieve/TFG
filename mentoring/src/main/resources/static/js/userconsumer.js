@@ -11,6 +11,8 @@ appConsumer.controller("userController", function($scope, $http){
 	const areasUsuario = new Map();
 	//Mapa para ver si un area es nueva al borrar, es decir, si aun no se ha guardado en el backend
 	const areasNuevas = new Map();
+	var copiaDatos;
+	$scope.confirmarBorrar=false;
 	
 	$scope.getInfo = function(){
 		$scope.cargando = true;
@@ -21,6 +23,7 @@ appConsumer.controller("userController", function($scope, $http){
 					//console.log(response);
 					console.log(response.data);
 					$scope.usuario=response.data;
+					copiaDatos = Object.assign({}, response.data);
 					$scope.mydate = new Date(response.data.fnacimiento); 
 					//Aqui pasamos las areas a un mapa, para acceder directamente al añadir o borrar
 					if(response.data.areas.length>0){
@@ -45,6 +48,8 @@ appConsumer.controller("userController", function($scope, $http){
 	$scope.getInfo();
 	
 	$scope.setInfo = function(usuario){
+		console.log($scope)
+		if($scope.form.$valid){
 		$scope.cargando = true;
 		console.log("Consulta lanzada")
 		usuario.fnacimiento = $scope.mydate;
@@ -66,9 +71,17 @@ appConsumer.controller("userController", function($scope, $http){
 				console.log(response)
 			}
 		)
+		}
+		else{
+			alert("Por favor, introduzca valores válidos en los campos");
+		}
 	}
 	
-	
+	$scope.deshacer = function (){
+		console.log(copiaDatos);
+		console.log($scope.usuario);
+		$scope.usuario = Object.assign({}, copiaDatos);
+	}
 	
 	//Cambiarlo a add area
 	$scope.addArea = function (areaSelecionada){

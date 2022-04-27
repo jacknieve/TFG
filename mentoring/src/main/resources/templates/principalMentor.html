@@ -40,7 +40,7 @@
 			<button ng-click="rechazarPeticion(peticion)" ng-disabled="peticion.enAccion">Rechazar solicitud</button></div>
 			<div ng-show="peticion.expandido">
 			Descripcion : {{peticion.info.descripcion}}<br>
-			Institucion : {{peticion.info.institucionNombre}} Nivel de estudios: {{peticion.info.nivelEstudios}}<br>
+			Institucion : {{peticion.info.institucionNombre}} Nivel de estudios: {{peticion.info.nivelEstudiosNivelestudios}}<br>
 			<div> <button ng-show="peticion.expandido" ng-click="plegarPeticion(peticion)">Menos informacion</button></div>
 			</div>
 			</li>
@@ -59,9 +59,33 @@
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button>
 			<div ng-show="mentorizacion.expandido">
 			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
-			Institucion : {{mentorizacion.uperfil.institucionNombre}} Nivel de estudios: {{mentorizacion.uperfil.nivelEstudios}}<br>
-			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
-			Fase : {{mentorizacion.fase}} 
+			Institucion : {{mentorizacion.uperfil.institucionNombre}} Nivel de estudios: {{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
+			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}} Fase : {{mentorizacion.fase}} <br>
+			<span>
+			<div>
+			Descripcion de la fase 1<br>
+			<button ng-disabled="mentorizacion.fase == 'NACIMIENTO'" ng-click="mentorizacion.fase = 'NACIMIENTO'">Cambiar a esta fase</button>
+			</div>
+			<span>
+			<span>
+			<div>
+			Descripcion de la fase 2<br>
+			<button ng-disabled="mentorizacion.fase == 'COMPROMISO'" ng-click="mentorizacion.fase = 'COMPROMISO'">Cambiar a esta fase</button>
+			</div>
+			<span>
+			<span>
+			<div>
+			Descripcion de la fase 3<br>
+			<button ng-disabled="mentorizacion.fase == 'SOSTENIMIENTO'" ng-click="mentorizacion.fase = 'SOSTENIMIENTO'">Cambiar a esta fase</button>
+			</div>
+			<span>
+			<span>
+			<div>
+			Descripcion de la fase 4<br>
+			<button ng-disabled="mentorizacion.fase == 'FIN'" ng-click="mentorizacion.fase = 'FIN'">Cambiar a esta fase</button>
+			</div>
+			<span>
+			<button ng-click="aceptarCambioFase(mentorizacion)">Aceptar el cambio de fase</button>
 			<div> <button ng-show="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
 			</div>
 			<button ng-hide="mentorizacion.aceptarcerrar" ng-click="confirmarCerrar(mentorizacion)">Cerrar la relación</button>

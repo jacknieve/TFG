@@ -38,8 +38,9 @@ public class Mentorizado {
 	private String papellido;
 	@Column(name = "sapellido")
 	private String sapellido;
-	@Column(name = "nivelestudios")
-	private String nivelEstudios;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="nivelestudios", nullable=false)
+	private NivelEstudios nivelEstudios;
 	@Column(name = "telefono")
 	private String telefono;
 	@Column(name = "descripcion", length = 500)
@@ -62,7 +63,7 @@ public class Mentorizado {
 	@JoinColumn(name="institucion", referencedColumnName = "nombre")
 	private Institucion institucion;
 	
-	public Mentorizado(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
+	public Mentorizado(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
 			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, Institucion institucion ) {
 		super();
 		this.usuario = usuario;
@@ -84,17 +85,22 @@ public class Mentorizado {
 		this.nombre=useraux.getNombre();
 		this.papellido=useraux.getPapellido();
 		this.sapellido=useraux.getSapellido();
-		this.nivelEstudios=useraux.getNivelEstudios();
+		this.nivelEstudios = new NivelEstudios(useraux.getNivelEstudios());
 		this.telefono=useraux.getTelefono();
 		this.descripcion=useraux.getDescripcion();
 		this.feliminacion=null;
 		this.fregistro= new Date();
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			this.fnacimiento=format.parse(useraux.getFnacimiento());
-		}catch (ParseException e) {
-			System.out.println(e.getMessage());
+		if(useraux.getFnacimiento() == null || useraux.getFnacimiento().equals("")) {
 			this.fnacimiento=null;
+		}
+		else {
+			try {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				this.fnacimiento=format.parse(useraux.getFnacimiento());
+			}catch (ParseException e) {
+				System.out.println(e.getMessage());
+				this.fnacimiento=null;
+			}
 		}
 		this.linkedin=useraux.getLinkedin();
 		this.institucion=institucion;		
@@ -137,11 +143,11 @@ public class Mentorizado {
 		this.sapellido = sapellido;
 	}
 
-	public String getNivelEstudios() {
+	public NivelEstudios getNivelEstudios() {
 		return nivelEstudios;
 	}
 
-	public void setNivelEstudios(String nivelEstudios) {
+	public void setNivelEstudios(NivelEstudios nivelEstudios) {
 		this.nivelEstudios = nivelEstudios;
 	}
 

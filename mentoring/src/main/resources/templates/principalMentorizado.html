@@ -46,14 +46,14 @@
     		</div>
 			<div ng-show="cargandoBusqueda">Cargando...</div>
 			<ul>
-			<li ng-repeat="mentor in mentores">Nombre: {{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}<br> Nivel de estudios: {{mentor.nivelEstudios}}, Horas por mes: {{mentor.horaspormes}}
+			<li ng-repeat="mentor in mentores">Nombre: {{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}<br> Nivel de estudios: {{mentor.nivelEstudiosNivelestudios}}, Horas por mes: {{mentor.horaspormes}}
 			<div> <button ng-hide="mentor.expandido" ng-click="obtenerMentor(mentor)">Mas informacion</button></div>
 			<div ng-show="mentor.expandido">
 			Descripcion : {{mentor.info.descripcion}}<br>
-			Institucion : {{mentor.info.institucionNombre}} Puesto: {{mentor.info.puesto}}<br>
+			Institucion : {{mentor.info.institucionNombre}} Puesto: {{mentor.info.puestoPuesto}}<br>
 			<button ng-click="mostrarOcultarSolicitud(mentor)">Enviar Solicitud</button>
 			<div ng-show="mentor.info.solicitud">
-			<textarea ng-model="mentor.info.motivo"></textarea>
+			<textarea ng-model="mentor.info.motivo" maxlength="300"></textarea>Caracteres restantes : {{300 - mentor.info.motivo.length}}
 			<button ng-click="enviarSolicitud(mentor.correo, mentor.info.motivo)">Enviar</button>
 			</div>
 			<div> <button ng-show="mentor.expandido" ng-click="plegarMentor(mentor)">Menos informacion</button></div>
@@ -61,6 +61,7 @@
 			</li>
 			</ul>
 			<p ng-show="sinresultados">No hay ningún mentor registrado que coincida con esos terminos</p>
+		</div>
 		</div>
 		<div ng-controller="mentorizadoMentorizacionController">
 			<p>Mentorizaciones <button ng-click="activarMentorizaciones()" ng-disabled="enAccion">Desplegar/Plegar Mentorizaciones</button></p>
@@ -71,21 +72,26 @@
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button> </div>
 			<div ng-show="mentorizacion.expandido">
 			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
-			Institucion : {{mentorizacion.uperfil.institucionNombre}} Puesto: {{mentorizacion.uperfil.puesto}}<br>
+			Institucion : {{mentorizacion.uperfil.institucionNombre}} Puesto: {{mentorizacion.uperfil.puestoPuesto}}<br>
 			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
 			Fase : {{mentorizacion.fase}} <br>
 			<div> <button ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
 			</div>
 			<button ng-hide="mentorizacion.cerrar" ng-click="abrirPuntuar(mentorizacion)">Cerrar la relación</button>
 			<div ng-show="mentorizacion.cerrar">
-				<textarea ng-model="mentorizacion.comentario"></textarea>
-				<input type="number" ng-model="mentorizacion.puntuacion"/> 
+				<form name="form">
+				<textarea ng-model="mentorizacion.comentario" maxlength="300"></textarea>Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
+				<input type="number" ng-model="mentorizacion.puntuacion" name="puntuacion" min="1" max="10"/> 
+				<span ng-show="form.puntuacion.$invalid">La puntuacion debe estar entre 1 y 10. </span>
+				
 				<div> 
 				<button ng-hide="mentorizacion.aceptarcerrar" ng-click="confirmarCerrar(mentorizacion)">Cerrar la relación</button>
+				<div ng-show="form.$invalid">Introduzca datos validos para cerrar una relacion. </div>
 				<div ng-show="mentorizacion.aceptarcerrar">
 					¿Seguro que quieres cerrar esta relacion?
-					<button ng-click="cerrarMentorizacion(mentorizacion)">Confirmar</button>
+					<button ng-click="cerrarMentorizacion(mentorizacion, form)">Confirmar</button>
 				</div>
+				</form>
 				<button ng-click="abrirPuntuar(mentorizacion)">Cancelar</button>
 				</div>
 			</div>
@@ -104,17 +110,22 @@
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button> </div>
 			<div ng-show="mentorizacion.expandido">
 			Descripcion : {{mentorizacion.uperfil.descripcion}}<br>
-			Institucion : {{mentorizacion.uperfil.institucionNombre}} Puesto: {{mentorizacion.uperfil.puesto}}<br>
+			Institucion : {{mentorizacion.uperfil.institucionNombre}} Puesto: {{mentorizacion.uperfil.puestoPuesto}}<br>
 			Correo : {{mentorizacion.correo}} Telefono: {{mentorizacion.uperfil.telefono}}<br>
 			<div> <button ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
 			</div>
 			<button ng-hide="mentorizacion.cerrar" ng-click="abrirPuntuar(mentorizacion)">Puntuar</button>
 			<div ng-show="mentorizacion.cerrar">
-				<textarea ng-model="mentorizacion.comentario"></textarea>
-				<input type="number" ng-model="mentorizacion.puntuacion"/> 
+				<form name="form">
+				<textarea ng-model="mentorizacion.comentario" maxlength="300"></textarea>Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
+				<input type="number" ng-model="mentorizacion.puntuacion" name="puntuacion" min="1" max="10" required/>
+				<span ng-show="form.puntuacion.$invalid">La puntuacion debe estar entre 1 y 10. </span> 
+				<div ng-show="form.$invalid">Introduzca datos validos para cerrar una relacion. </div>
+				
 				<div> 
-				<button ng-click="puntuarMentorizacion(mentorizacion)">Puntuar</button>
+				<button ng-click="puntuarMentorizacion(mentorizacion, form)">Puntuar</button>
 				<button ng-click="abrirPuntuar(mentorizacion)">Cancelar</button>
+				</form>
 				</div>
 			</div>
 			</li>

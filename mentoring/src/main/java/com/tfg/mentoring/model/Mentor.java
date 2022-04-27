@@ -39,8 +39,9 @@ public class Mentor {
 	private String papellido;
 	@Column(name = "sapellido")
 	private String sapellido;
-	@Column(name = "nivelestudios")
-	private String nivelEstudios;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="nivelestudios", nullable=false)
+	private NivelEstudios nivelEstudios;
 	@Column(name = "telefono")
 	private String telefono;
 	@Column(name = "descripcion", length = 500)
@@ -58,17 +59,18 @@ public class Mentor {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="area_mentor", joinColumns = { @JoinColumn(name = "correo") }, inverseJoinColumns = { @JoinColumn(name = "area") })
 	private List<AreaConocimiento> areas = new ArrayList<>();
-	@Column(name="puesto")
-	private String puesto;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name="puesto", nullable=false)
+	private Puesto puesto;
 	/*@Column(name="institucion")
 	private String institucion;*/
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="institucion", referencedColumnName = "nombre")
 	private Institucion institucion;
 
-	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, String nivelEstudios,
+	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
 			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Float horaspormes,
-			Date fnacimiento, String puesto, Institucion institucion) {
+			Date fnacimiento, Puesto puesto, Institucion institucion) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -92,21 +94,26 @@ public class Mentor {
 		this.nombre=useraux.getNombre();
 		this.papellido=useraux.getPapellido();
 		this.sapellido=useraux.getSapellido();
-		this.nivelEstudios=useraux.getNivelEstudios();
+		this.nivelEstudios=new NivelEstudios(useraux.getNivelEstudios());
 		this.telefono=useraux.getTelefono();
 		this.descripcion=useraux.getDescripcion();
 		this.feliminacion=null;
 		this.fregistro= new Date();
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			this.fnacimiento=format.parse(useraux.getFnacimiento());
-		}catch (ParseException e) {
-			System.out.println(e.getMessage());
+		if(useraux.getFnacimiento() == null || useraux.getFnacimiento().equals("")) {
 			this.fnacimiento=null;
+		}
+		else {
+			try {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				this.fnacimiento=format.parse(useraux.getFnacimiento());
+			}catch (ParseException e) {
+				System.out.println(e.getMessage());
+				this.fnacimiento=null;
+			}
 		}
 		this.linkedin=useraux.getLinkedin();
 		this.horaspormes=useraux.getHoraspormes();
-		this.puesto=useraux.getPuesto();
+		this.puesto=new Puesto(useraux.getPuesto());
 		this.institucion=institucion;		
 				
 	}
@@ -147,11 +154,11 @@ public class Mentor {
 		this.sapellido = sapellido;
 	}
 
-	public String getNivelEstudios() {
+	public NivelEstudios getNivelEstudios() {
 		return nivelEstudios;
 	}
 
-	public void setNivelEstudios(String nivelEstudios) {
+	public void setNivelEstudios(NivelEstudios nivelEstudios) {
 		this.nivelEstudios = nivelEstudios;
 	}
 
@@ -220,11 +227,11 @@ public class Mentor {
 	}
 	
 
-	public String getPuesto() {
+	public Puesto getPuesto() {
 		return puesto;
 	}
 
-	public void setPuesto(String puesto) {
+	public void setPuesto(Puesto puesto) {
 		this.puesto = puesto;
 	}
 

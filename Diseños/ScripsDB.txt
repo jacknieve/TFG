@@ -37,3 +37,19 @@ values ('mentor1','Telecomunicaciones'),
 ('mentorkk1', 'Informatica'),
 ('mentorkk2', 'Derecho');
 
+
+insert into usuarios (username, enable, password, rol, unlocked, verification_code)
+values ('usc@usc.es', true, 'falsa', 3, true, null),
+('uvigo@uvigo.es', true, 'falsa', 3, true, null),
+('empresafantasma@fraude.kk', true, 'falsa', 3, true, null);
+
+insert into instituciones (usuario_username, color, nombre, visibilidad, webpage, direccion)
+values ('usc@usc.es', '#3733FF', 'USC', true, null, null),
+('uvigo@uvigo.es', '#FF2513', 'UVigo', true, null, null),
+('empresafantasma@fraude.kk', '#FFFB13','Falsa', false, null, null);
+
+INSERT INTO nivelestudios (nivelestudios) VALUES ('Basica'), ('Secundaria'), ('Tecnico'), ('Bachillerato'),
+('Graduado'), ('Master'), ('Doctorado'), ('Otros');
+
+INSERT INTO puestos (puesto) VALUES ('Becario'), ('Profesor'), ('Estudiante'), ('Empleado'),
+('Jefe'), ('Otro');

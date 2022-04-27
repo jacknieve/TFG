@@ -34,7 +34,7 @@ import com.tfg.mentoring.repository.PeticionRepo;
 import com.tfg.mentoring.service.UserService;
 
 @RestController
-@RequestMapping("/user/mentorizado")
+@RequestMapping("/mentorizado")
 public class MentorizadoController {
 
 	@Autowired
@@ -48,42 +48,32 @@ public class MentorizadoController {
 
 	@Autowired
 	private UserService uservice;
-
-	// A esto hay que meterle "seguridad", es decir, try y catch para las
-	// excepciones
-	@GetMapping("/busqueda/{area}/{institucion}/{horas}")
-	public ResponseEntity<List<MentorBusqueda>> buscar(@PathVariable("area") String area,
-			@PathVariable("institucion") String institucion, @PathVariable("horas") float horas) {
-		List<Mentor> mentores = new ArrayList<Mentor>();
-		if (area == null || area.equals("sin")) {
-			if (institucion == null || institucion.equals("sin")) {// Si no se selecciono institucion
-				mentores = mrepo.buscarHoras(horas);
-			} else {// Si se selecciono institucion
-				mentores = mrepo.buscarInstitucionHoras(institucion, horas);
-			}
-		} else {
-			if (institucion == null || institucion.equals("sin")) {// Si no se selecciono institucion
-				mentores = mrepo.buscarAreaHoras(area, horas);
-			} else {// Si se selecciono institucion
-				mentores = mrepo.buscarCompleto(area, institucion, horas);
-			}
+	
+	// A esto hay que meterle "seguridad", es decir, try y catch para las excepciones y demas
+	@GetMapping("/busqueda/{area}/{institucion}/{horas}") public ResponseEntity<List<MentorBusqueda>> buscar(@PathVariable("area") String area,
+		 	@PathVariable("institucion") String institucion, @PathVariable("horas") float horas) { 
+		 	List<Mentor> mentores = new ArrayList<Mentor>();
+		 	if(area.equals("sin")) area=null; 
+		 	if(institucion.equals("sin")) institucion=null; 
+		 	mentores = mrepo.buscarPrototipo(institucion, horas, area);
+		 	try { 
+		 		List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
+		 		return new ResponseEntity<>(resultado, HttpStatus.OK); 
+		 	}catch (Exception e) {
+		 		// TODO: handle exception System.out.println(e.getMessage()); 
+		 		System.out.println(e.getMessage());
+		 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR); 
+		 	}
 		}
-		try {
-			List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
-			return new ResponseEntity<>(resultado, HttpStatus.OK);
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
+	
+	
 
 	@PostMapping("/obtenermentor")
 	public ResponseEntity<UsuarioPerfil> getPerfilBusqueda(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentor) {
 		try {
-			Optional<Mentor> m = mrepo.findById(mentor);
+			//Optional<Mentor> m = mrepo.findById(mentor);
+			Optional<Mentor> m = mrepo.findByUsuarioUsernameAndUsuarioEnable(mentor, true);
 			if (m.isPresent()) {
 				UsuarioPerfil up = uservice.getPerfilMentor(m.get());
 				return new ResponseEntity<>(up, HttpStatus.OK);
@@ -116,11 +106,18 @@ public class MentorizadoController {
 					List<Peticion> peticiones = prepo.comprobarPeticion(peticion.getMentor(), us.getUsername());
 					if (peticiones.isEmpty()) {// Comprobamos si no existe ya una peticion pendiente
 						Peticion p = new Peticion(m.get(), men.get(), peticion.getMotivo());
-						prepo.save(p);
+						//String nombre =prepo.save(p).getMentorizado().getNombre();
+						Peticion resultado = prepo.save(p);
+						if(resultado.getMentor().getUsuario().isEnabled()) {
 						// Solo vamos a enviar notificacion si es la primera vez
-						uservice.enviarNotificacion(m.get().getUsuario(), "Nueva peticion", "El usuario "
+							uservice.enviarNotificacion(m.get().getUsuario(), "Nueva peticion", "El usuario "
 								+ men.get().getNombre() + " te ha enviado una petición de mentorizacion.");
-						return new ResponseEntity<>(null, HttpStatus.OK);
+							return new ResponseEntity<>(null, HttpStatus.OK);
+						}
+						else {
+							System.out.println("No se envia notificacion porque el usuario esta disabled");
+							return new ResponseEntity<>(null, HttpStatus.OK);//Aqui un codigo de error para indicar que ha sido imposible enviar la peticion
+						}
 					} else {// Si ya la hay, la actualizamos
 						System.out.println("Se va a actualizar la peticion");
 						Peticion p = peticiones.get(0);// En teoria, solo podria haber como mucho una peticion pendiente
@@ -298,45 +295,33 @@ public class MentorizadoController {
 	
 	
 
-	// Otro prototipo de busqueda, pero tampoco funciona bien, creo que le vuelven
-	// loco las areas
-	/*
-	 @GetMapping("/busquedados/{area}/{institucion}/{horas}") public ResponseEntity<List<MentorBusqueda>> buscardos(@PathVariable("area") String area,
-	 	@PathVariable("institucion") String institucion, @PathVariable("horas") float horas) { 
-	 	List<Mentor> mentores = new ArrayList<Mentor>();
-	 	if(area.equals("sin")) area=null; 
-	 	if(institucion.equals("sin")) institucion=null; 
-	 	mentores = mrepo.buscarPrototipo(institucion, horas, area);
-	 	try { 
-	 		List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
-	 		return new ResponseEntity<>(resultado, HttpStatus.OK); 
-	 	}catch (Exception e) {
-	 		// TODO: handle exception System.out.println(e.getMessage()); 
-	 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR); 
-	 	}
-	}
-	 */
-	// Este es un prototipo de busqueda, pero no funciona, es mas simple, pero no
-	// filtra, trae todo
-	/*
-	 * @GetMapping("/busqueda/{area}/{institucion}/{horas}") public
-	 * ResponseEntity<List<MentorBusqueda>> buscar(@PathVariable("area") String
-	 * area,
-	 * 
-	 * @PathVariable("institucion") String institucion, @PathVariable("horas") float
-	 * horas) { System.out.println(area+" "+institucion+" "+horas); List<Mentor>
-	 * mentores = new ArrayList<Mentor>(); Mentor mentor = new Mentor(new
-	 * Usuario(null, null, null, true, true, null), null, null, null, null, null,
-	 * null, null, null, null, null, null, null, null); if(institucion != null &&
-	 * !institucion.equals("sin")) { mentor.setInstitucion(new
-	 * Institucion(institucion)); } if(area != null && !area.equals("sin")) {
-	 * mentor.getAreas().add(new AreaConocimiento(area)); } mentores =
-	 * mrepo.findAll(Example.of(mentor)); try { List<MentorBusqueda> resultado =
-	 * uservice.getMentorBusqueda(mentores); return new ResponseEntity<>(resultado,
-	 * HttpStatus.OK); }catch (Exception e) { // TODO: handle exception
-	 * System.out.println(e.getMessage()); return new ResponseEntity<>(null,
-	 * HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
+	//Busqueda antigua
+		/*@GetMapping("/busqueda/{area}/{institucion}/{horas}")
+		* public ResponseEntity<List<MentorBusqueda>> buscar(@PathVariable("area") String area,
+		* 		@PathVariable("institucion") String institucion, @PathVariable("horas") float horas) {
+		* 	List<Mentor> mentores = new ArrayList<Mentor>();
+		* 	if (area == null || area.equals("sin")) {
+		* 		if (institucion == null || institucion.equals("sin")) {// Si no se selecciono institucion
+		* 			mentores = mrepo.buscarHoras(horas);
+		* 		} else {// Si se selecciono institucion
+		* 			mentores = mrepo.buscarInstitucionHoras(institucion, horas);
+		* 		}
+		*	} else {
+		*		if (institucion == null || institucion.equals("sin")) {// Si no se selecciono institucion
+		*			mentores = mrepo.buscarAreaHoras(area, horas);
+		*		} else {// Si se selecciono institucion
+		*			mentores = mrepo.buscarCompleto(area, institucion, horas);
+		*		}
+		*	}
+		*	try {
+		*		List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
+		*		return new ResponseEntity<>(resultado, HttpStatus.OK);
+		*	} catch (Exception e) {
+		*		// TODO: handle exception
+		*		System.out.println(e.getMessage());
+		*		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		*	}
+		}*/
+	 
+	
 }

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.repository.AreasRepo;
+import com.tfg.mentoring.repository.EstudiosRepo;
 import com.tfg.mentoring.repository.InstitucionRepo;
+import com.tfg.mentoring.repository.PuestosRepo;
 
 @Component
 public class AppReadyListener implements ApplicationListener<ApplicationReadyEvent>{
@@ -20,11 +22,17 @@ public class AppReadyListener implements ApplicationListener<ApplicationReadyEve
 	@Autowired
 	private AreasRepo arepo;
 	@Autowired
+	private EstudiosRepo erepo;
+	@Autowired
+	private PuestosRepo prepo;
+	@Autowired
 	private InstitucionRepo irepo;
 	
 	@Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 		listas.setAreas(arepo.findAll());
+		listas.setPuestos(prepo.findAll());
+		listas.setEstudios(erepo.findAll());
 		List<Institucion> instituciones = irepo.findAll();
 		ArrayList<String> _instituciones = new ArrayList<>();
 		for(Institucion i : instituciones) {
@@ -36,7 +44,7 @@ public class AppReadyListener implements ApplicationListener<ApplicationReadyEve
 		//Map<String,Institucion> mapaInstituciones = instituciones.stream().collect(Collectors.toMap(Institucion::getNombre, Function.identity()));
 		listas.setInstituciones(_instituciones);
 		
-		listas.getEstudios().add("kakota");
+		//listas.getEstudios().add("kakota");
         // code here
     }
 	

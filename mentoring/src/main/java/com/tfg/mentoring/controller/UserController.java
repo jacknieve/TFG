@@ -7,12 +7,20 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.QueryTimeoutException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +31,9 @@ import com.tfg.mentoring.model.AreaConocimiento;
 import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
+import com.tfg.mentoring.model.NivelEstudios;
 import com.tfg.mentoring.model.Notificacion;
+import com.tfg.mentoring.model.Puesto;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.IdNotificacion;
@@ -32,8 +42,11 @@ import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
+import com.tfg.mentoring.repository.MentorizacionRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.NotificacionRepo;
+import com.tfg.mentoring.repository.PeticionRepo;
+import com.tfg.mentoring.repository.UsuarioRepo;
 import com.tfg.mentoring.service.UserService;
 import com.tfg.mentoring.service.util.ListLoad;
 
@@ -47,9 +60,16 @@ public class UserController {
 	@Autowired
 	private MentorRepo mrepo;
 	@Autowired
+	private UsuarioRepo urepo;
+	@Autowired
 	private NotificacionRepo notrepo;
 	@Autowired
 	private InstitucionRepo irepo;
+	@Autowired
+	private MentorizacionRepo mentorizacionrepo;
+	@Autowired
+	private PeticionRepo prepo;
+	
 	
 	@Autowired
     private UserService uservice;
@@ -77,12 +97,9 @@ public class UserController {
 					ModelAndView modelo = new ModelAndView("perfil");
 					modelo.addObject("correo", mentor.get().getCorreo());
 					modelo.addObject("rol", mentor.get().getUsuario().getRol());
-					modelo.addObject("nivelEstudios", mentor.get().getNivelEstudios());
 					modelo.addObject("fregistro", format.format(mentor.get().getFregistro()));
-					modelo.addObject("puestos", listas.getPuestos());
-				    modelo.addObject("estudios", listas.getEstudios());
-				    modelo.addObject("instituciones", listas.getInstituciones());
-				    modelo.addObject("areas", listas.getAreas());
+					modelo.addObject("password", "");
+					uservice.addListasModelo(modelo);
 					return modelo;
 				}
 				else {
@@ -98,12 +115,9 @@ public class UserController {
 					ModelAndView modelo = new ModelAndView("perfil");
 					modelo.addObject("correo", mentorizado.get().getCorreo());
 					modelo.addObject("rol", mentorizado.get().getUsuario().getRol());
-					modelo.addObject("nivelEstudios", mentorizado.get().getNivelEstudios());
 					modelo.addObject("fregistro", format.format(mentorizado.get().getFregistro()));
-					modelo.addObject("puestos", listas.getPuestos());
-				    modelo.addObject("estudios", listas.getEstudios());
-				    modelo.addObject("instituciones", listas.getInstituciones());
-				    modelo.addObject("areas", listas.getAreas());
+					modelo.addObject("password", "");
+					uservice.addListasModelo(modelo);
 					return modelo;
 				}
 				else {
@@ -133,6 +147,7 @@ public class UserController {
 					System.out.println(m.get().toString());
 					//UsuarioPerfil up = new UsuarioPerfil(m.get());
 					UsuarioPerfil up = uservice.getPerfilMentor(m.get());
+					up.setMentor(true);
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
 				}
@@ -145,6 +160,8 @@ public class UserController {
 				if(m.isPresent()) {
 					//UsuarioPerfil up = new UsuarioPerfil(m.get());
 					UsuarioPerfil up = uservice.getPerfilMentorizado(m.get());
+					up.setMentor(false);
+					up.setHoraspormes(4);//Aqui le ponemos este valor para que no se nos queje al intentar modificar la informacion del perfil de un mentorizado
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
 				}
@@ -177,12 +194,14 @@ public class UserController {
 					men.setFnacimiento(up.getFnacimiento());
 					men.setHoraspormes(up.getHoraspormes());
 					men.setLinkedin(up.getLinkedin());
-					men.setNivelEstudios(up.getNivelEstudios());
-					men.setPuesto(up.getPuesto());
+					men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
+					//men.setNivelEstudios(up.getNivelEstudios());
+					//men.setPuesto(up.getPuesto());
+					men.setPuesto(new Puesto(up.getPuestoPuesto()));
 					men.setTelefono(up.getTelefono());
 					if(!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
-						Institucion i = irepo.getById(up.getInstitucionNombre());
-						men.setInstitucion(i);
+						List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
+						men.setInstitucion(i.get(0));
 					}
 					men.setAreas(up.getAreas());
 					try {
@@ -208,11 +227,12 @@ public class UserController {
 					men.setDescripcion(up.getDescripcion());
 					men.setFnacimiento(up.getFnacimiento());
 					men.setLinkedin(up.getLinkedin());
-					men.setNivelEstudios(up.getNivelEstudios());
+					men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
+					//men.setNivelEstudios(up.getNivelEstudios());
 					men.setTelefono(up.getTelefono());
 					if(!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
-						Institucion i = irepo.getById(up.getInstitucionNombre());
-						men.setInstitucion(i);
+						List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
+						men.setInstitucion(i.get(0));
 					}
 					men.setAreas(up.getAreas());
 					try {
@@ -220,6 +240,8 @@ public class UserController {
 					}catch (Exception e) {
 						// TODO: handle exception
 						//Aqui una salida de fallo
+						System.out.println(e.getMessage());
+						System.out.println(e);
 						return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 					return new ResponseEntity<>(null, HttpStatus.OK);
@@ -346,6 +368,7 @@ public class UserController {
 		if(id == null) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
+		//Aqui falta un try catch
 		notrepo.borrarNotificacion(id.getId());
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
@@ -389,6 +412,71 @@ public class UserController {
 				System.out.println("Otro rol");
 				return new ModelAndView("error_page");
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out.println(e.getLocalizedMessage());
+			System.out.println(e.toString());
+			return new ModelAndView("error_page");
+		}
+	}
+	
+	
+	
+	@PostMapping("/eliminar")
+	public ModelAndView eliminarCuentaUsuario(@AuthenticationPrincipal Usuario us, @ModelAttribute("password") String password, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			System.out.println(password);
+			if(uservice.comprobarPassword(password, us)) {
+				String username = us.getUsername();
+				if(us.getRol() == Roles.MENTOR) {
+					try {
+						//Aqui tambien faltaria alguna notificacion a los mentorizados
+						prepo.borrarPeticionesMentor(username);
+						mentorizacionrepo.borrarMentorizacionesMentor(username);
+						mrepo.borrarMentor(username);
+						urepo.borrarUsuario(username);//Esto lo ultimo, para que, en el peor de los casos, un usuario pueda volver a
+						//logearse para intentar volver a borrar de nuevo su cuenta
+					}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos
+						// TODO: handle exception
+						System.out.println(e.getMessage());
+						return new ModelAndView("error_page");//Esto ponerle un mensaje
+					}	
+				}
+				else if(us.getRol() == Roles.MENTORIZADO){
+					try {
+						//Aqui tambien faltaria alguna notificacion a los mentores
+						prepo.borrarPeticionesMentorizado(username);
+						mentorizacionrepo.borrarMentorizacionesMentorizado(username);
+						menrepo.borrarMentorizado(username);
+						urepo.borrarUsuario(username);//Esto lo ultimo, para que, en el peor de los casos, un usuario pueda volver a
+						//logearse para intentar volver a borrar de nuevo su cuenta
+					}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos
+						// TODO: handle exception
+						System.out.println(e.getMessage());
+						return new ModelAndView("error_page");//Esto ponerle un mensaje
+					}
+					
+				}
+				//Cerramos sesion con el usuario
+				Authentication auth = SecurityContextHolder.getContext().getAuthentication();  
+			    if (auth != null){      
+			        new SecurityContextLogoutHandler().logout(request, response, auth);  
+			    }  
+			    return new ModelAndView("home");
+			}
+			else {
+				System.out.println("La contraseña no coincide");
+				//Si lo de borrar esta en un desplegable, quizas habria que pasar por path que se despliegue
+				ModelAndView modelo = new ModelAndView("perfil");
+				modelo.addObject("correo", us.getUsername());
+				modelo.addObject("rol", us.getRol());
+				modelo.addObject("password", "");
+				//modelo.addObject("fregistro", format.format(up.)); //Reemplazar la fecha de registro por el error en la plantilla
+				uservice.addListasModelo(modelo);
+				modelo.addObject("error", "La contraseña no es correcta");
+				return modelo;
+			}
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println(e.getLocalizedMessage());

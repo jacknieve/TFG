@@ -10,70 +10,71 @@
 </head>
 <body ng-app="appRegister">
 <h1 th:text="Formulario">form</h1>
-<form action='#' th:action="@{/auth/register}" method="POST" enctype="utf8" ng-controller="registerController">
+<form action='#' th:action="@{/auth/register}" method="POST" th:object="${useraux}" enctype="utf8" ng-controller="registerController">
+	<div th:if="${errorGlobal}"><span th:text="${errorGlobal}"/></div>
     <div>
         <label th:text="Correo">Correo</label>
-        <input type="email" th:field="${user.username}"/><!-- ng-model="usuario"-->
-        <!--<p th:each="error: ${#fields.errors('username')}"
-          th:text="${error}">Validation error</p>-->
+        <input type="email" th:field="*{correo}"/><!-- ng-model="usuario"-->
+        <p th:each="error: ${#fields.errors('correo')}"
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="'Contraseña'">Contraseña</label>
-        <input type="password" th:field="${user.password}"/>
-        <!--<p th:each="error : ${#fields.errors('password')}" 
-          th:text="${error}">Validation error</p>-->
+        <input type="password" th:field="*{password}"/>
+        <p th:each="error : ${#fields.errors('password')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="Mentor">Mentor </label>
-        <input type="checkbox" th:field="${useraux.mentor}" ng-model="mentor"></input>
+        <input type="checkbox" th:field="*{mentor}" ng-model="mentor"></input>
     </div>
     <div>
         <label th:text="Nombre">Nombre</label>
-        <input th:field="${useraux.nombre}"/>
-        <!--<p th:each="error: ${#fields.errors('nombre')}" 
-          th:text="${error}">Validation error</p>-->
+        <input th:field="*{nombre}"/>
+        <p th:each="error: ${#fields.errors('nombre')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="'Primer apellido'">Primer apellido</label>
-        <input th:field="${useraux.papellido}"/>
-        <!--<p th:each="error: ${#fields.errors('papellido')}" 
-          th:text="${error}">Validation error</p>-->
+        <input th:field="*{papellido}"/>
+        <p th:each="error: ${#fields.errors('papellido')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="'Segundo apellido'">Segundo apellido</label>
-        <input th:field="${useraux.sapellido}"/>
-        <!--<p th:each="error: ${#fields.errors('sapellido')}" 
-          th:text="${error}">Validation error</p>-->
+        <input th:field="*{sapellido}"/>
+        <p th:each="error: ${#fields.errors('sapellido')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="Telefono">Telefono</label>
-        <input type="tel" th:field="${useraux.telefono}"/>
-        <!--<p th:each="error: ${#fields.errors('telefono')}" 
-          th:text="${error}">Validation error</p>-->
+        <input type="tel" th:field="*{telefono}"/>
+        <p th:each="error: ${#fields.errors('telefono')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div>
         <label th:text="'Nivel de estudios'">Nivel de estudios</label>
-        <select th:field="${useraux.nivelEstudios}">
+        <select th:field="*{nivelEstudios}">
         	<option th:value="Otros" th:text="'--Escoge uno--'"></option>
-        	<option th:each="i : ${estudios}" th:value="${i}" th:text="${i}">
+        	<option th:each="i : ${estudios}" th:value="${i.nivelestudios}" th:text="${i.nivelestudios}">
         	</option>
         </select>
     </div>
     <div>
         <label th:text="'Tu linkedin'">Tu linkedin</label>
-        <input type="url" th:field="${useraux.linkedin}"/>
+        <input type="url" th:field="*{linkedin}"/>
         <!--<p th:each="error: ${#fields.errors('linkedin')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div ng-show="mentor">
         <label th:text="'Horas por mes'">Horas por mes</label>
-        <input type="number" th:field="${useraux.horaspormes}"/>
+        <input type="number" th:field="*{horaspormes}" min=4 max=80/>
         <!--<p th:each="error: ${#fields.errors('horaspormes')}" 
           th:text="${error}">Validation error</p>-->
     </div>
     <div>
         <label th:text="'Fecha de nacimiento'">Fecha de nacimiento:</label>
-        <input type="date" th:field="${useraux.fnacimiento}"/>
+        <input type="date" th:field="*{fnacimiento}"/>
     </div>
     <!--<div th:object="${useraux}">
         <label th:text="'Fecha de nacimiento'">Fecha de nacimiento:</label>
@@ -81,7 +82,7 @@
     </div>-->
     <div>
     	<label th:text="'Institución'">Institución</label>
-        <select th:field="${useraux.institucion}">
+        <select th:field="*{institucion}">
         	<option th:value="Otra" th:text="'--Escoge una--'"></option>
         	<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
         	</option>
@@ -92,9 +93,9 @@
     <!--<p>{{mentor}}</p>-->
     <div ng-show="mentor">
         <label th:text="Puesto">Puesto</label>
-        <select th:field="${useraux.puesto}">
+        <select th:field="*{puesto}">
         	<option th:value="Otro" th:text="'--Escoge uno--'"></option>
-        	<option th:each="i : ${puestos}" th:value="${i}" th:text="${i}">
+        	<option th:each="i : ${puestos}" th:value="${i.puesto}" th:text="${i.puesto}">
         	</option>
         </select>
     </div>

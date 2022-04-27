@@ -7,12 +7,14 @@ import java.io.UnsupportedEncodingException;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +26,6 @@ import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.UserAux;
 import com.tfg.mentoring.service.UserService;
-import com.tfg.mentoring.service.util.ListLoad;
 
 //@CrossOrigin(origins = "http://localhost:8080")
 @RestController
@@ -37,8 +38,6 @@ public class RegisterController {
 	@Autowired
     private UserService uservice;
 	
-	@Autowired
-	private ListLoad listas;
 	
 	
 	
@@ -61,21 +60,55 @@ public class RegisterController {
 	//Probar a pasar en el prototipo argumentos a un metodo como este
 	@GetMapping("/registration")
 	public ModelAndView showRegistrationForm(HttpServletRequest request) {
-		Usuario user = new Usuario();
+		//Usuario user = new Usuario();
 	    UserAux useraux = new UserAux();
+	    useraux.setHoraspormes(4);
 	    ModelAndView model = new ModelAndView("register");
 	    //System.out.println(getSiteURL(request));
-	    model.addObject("user", user);
+	    //model.addObject("user", user);
 	    //System.out.println(useraux.toString());
 	    model.addObject("useraux", useraux);
-	    model.addObject("puestos", listas.getPuestos());
-	    model.addObject("estudios", listas.getEstudios());
-	    model.addObject("instituciones", listas.getInstituciones());
+	    uservice.addListasModeloSinAreas(model);
 	    return model;
 	}
 	
 	
 	@PostMapping("/register")
+	public ModelAndView registerUserAccount(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result, HttpServletRequest request) {
+		if (result.hasErrors()) {
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("useraux", useraux);
+			uservice.addListasModeloSinAreas(model);
+		    return model;
+		}
+		try {
+	    	
+	    	uservice.register(useraux, getSiteURL(request));
+	    }catch (MessagingException | UnsupportedEncodingException e) {
+	    	//return new ModelAndView("error_page");
+	    	System.out.println(e.getMessage());
+			System.out.println(e);
+	    	uservice.limpiarUsuario(useraux);
+	    	ModelAndView model = new ModelAndView("register");
+			model.addObject("useraux", useraux);
+		    uservice.addListasModeloSinAreas(model);
+		    //Habria que eliminar el usuario introducido
+		    model.addObject("errorGlobal", "Se ha producido un problema al intentar enviar el correo, por favor, intente registrarse más tarde");
+		    return model;
+		}catch (ExcepcionDB e) {
+			System.out.println(e.getMessage());
+			System.out.println(e);
+			ModelAndView model = new ModelAndView("register");
+			model.addObject("useraux", useraux);
+			uservice.addListasModeloSinAreas(model);
+		    //Habria que eliminar el usuario introducido
+		    model.addObject("errorGlobal", "El correo indicado ya está registrado");
+		    return model;
+		}
+	    return new ModelAndView("login");
+	}
+	
+	/*@PostMapping("/register")
 	public ModelAndView registerUserAccount(@ModelAttribute("user") Usuario user, @ModelAttribute("useraux") UserAux useraux,
 			HttpServletRequest request) {
 	    try {
@@ -92,7 +125,7 @@ public class RegisterController {
 			return modelo;
 		}
 	    return new ModelAndView("login");
-	}
+	}*/
 	
 	@GetMapping("/verify")
 	public ModelAndView verificarUsuario(@Param("code") String code) {

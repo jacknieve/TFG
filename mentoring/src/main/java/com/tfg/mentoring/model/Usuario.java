@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,11 +25,8 @@ public class Usuario implements UserDetails{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name = "username", nullable=false)
-	@NotBlank(message = "El correo no puede estar vacío")
-	@Email(message = "Formato no válido")
 	private String username;
 	@Column(name = "password", nullable=false)
-	@NotBlank(message = "La contrasela no puede estar vacía")
 	private String password;
 	@Column(name = "rol", nullable=false)
 	private Roles rol;
@@ -63,7 +58,15 @@ public class Usuario implements UserDetails{
 		this.enable=true;
 	}
 	
-	
+	public Usuario(String correo, String password, boolean enable, String verificationCode) {
+		super();
+		this.username = correo;
+		this.password = password;
+		this.rol = null;
+		this.unlocked=true;
+		this.enable=enable;
+		this.verificationCode = verificationCode;
+	}
 
 
 	public Usuario( String username, String password, Roles rol, boolean unlocked,

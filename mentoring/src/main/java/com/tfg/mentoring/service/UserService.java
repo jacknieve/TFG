@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.model.Mentor;
@@ -29,6 +30,7 @@ import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.NotificacionRepo;
 import com.tfg.mentoring.repository.UsuarioRepo;
+import com.tfg.mentoring.service.util.ListLoad;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -59,16 +61,15 @@ public class UserService {
 	@Autowired
 	private ModelMapper maper;
     
+	@Autowired
+	private ListLoad listas;
     
     
-    
-    public void register(Usuario user, UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB{
-    	user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB{
     	String random = RandomString.make(64);
-    	user.setEnable(false);
-    	user.setVerificationCode(random);
-    	System.out.println(user.toString());
-    	System.out.println(useraux.toString());
+    	Usuario user = new Usuario(useraux.getCorreo(), passwordEncoder.encode(useraux.getPassword()), false, random);
+    	//System.out.println(user.toString());
+    	//System.out.println(useraux.toString());
 	    if(useraux.getMentor()) {
 	    	user.setRol(Roles.MENTOR);
 	    	Mentor mentor = new Mentor(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
@@ -125,6 +126,7 @@ public class UserService {
          
         helper.setText(content, true);
          
+        //Aqui crear una excepcion personalizada en caso de excepcion
         mailSender.send(message);
     }
     
@@ -176,6 +178,34 @@ public class UserService {
 		user = maper.map(mentorizado, UsuarioPerfil.class);
 		//System.out.println(user.toString());
 		return user;
+	}
+	
+	public void limpiarUsuario(UserAux user) {
+		if(user.getMentor()) {
+			mrepo.deleteById(user.getCorreo());
+		}
+		else {
+			menrepo.deleteById(user.getCorreo());
+		}
+		//Quizas solo haga falta quitar esta o de error, no estoy seguro
+		urepo.deleteById(user.getCorreo());
+	}
+	
+	public void addListasModelo(ModelAndView modelo) {
+		modelo.addObject("puestos", listas.getPuestos());
+	    modelo.addObject("estudios", listas.getEstudios());
+	    modelo.addObject("instituciones", listas.getInstituciones());
+	    modelo.addObject("areas", listas.getAreas());
+	}
+	
+	public void addListasModeloSinAreas(ModelAndView modelo) {
+		modelo.addObject("puestos", listas.getPuestos());
+	    modelo.addObject("estudios", listas.getEstudios());
+	    modelo.addObject("instituciones", listas.getInstituciones());
+	}
+	
+	public boolean comprobarPassword(String password, Usuario u) {
+		return passwordEncoder.matches(password, u.getPassword());
 	}
 	
     

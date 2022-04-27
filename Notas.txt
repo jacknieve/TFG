@@ -3,10 +3,7 @@ Cosas que faltan por probar:
 Mas cosas que hacer:
 -Empezar informe
 -Seguir diseño
--Empezar a programar de verdad
 -En algun momento quizas añadir una clase de excepciones para salidas personalizadas?
--Para los formularios, todos los que se puedan, usar el modelo de thymeleaf (para los post)
-es decir: enviar peticion, puntuar experiencia, registro...
 -Probar con ngResource, a ver si así funciona bien cors
 
 -Acordarse de añadir lo de JavaMail en la introduccion de la memoria
@@ -16,21 +13,32 @@ es decir: enviar peticion, puntuar experiencia, registro...
 
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
-Cargar al comenzar las instituciones, areas de conocimiento y demas estatico
-Añadir validacion a los campos (d)
-Avanzar en la hoja de ruta (d)
-Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar. (d)
-Borrar cuenta de usuario?
+Añadir validacion a los campos:
+-A la contraseña en eliminar usuario
+Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar.
 Interfaz grafica
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
+->Evitar doble click <---
+->Mensaje error (clase) y ver en que casos se suelta la pagina de error
+->Descartar puntuar <----
+->Notificar por correo (añadir la opcion de que si quieren o no ser notificados por correo y enviar una notificacion por correo inicial de saludo y explicando cuando llegaran los correos y que puede desactivarlos) <-----
+->Enlaces a secciones desde otras paginas
+->Ocultar login y registro a los ya registrados
+->Otra pagina incial para version logeado
+->Ver que excepciones hay (añadir las que puse al cerrar en las demas)
+->Cambiar casos de uso para ser menos restrictivos en las excepciones?
+->Ver si podemos pasarle atributo al registro para que si da fallo, reenviar el atributo de vuelta
 
-Para el perfilMentorMentorizacion, hacer uso de MentorPerfil dentro de otro objeto, lo mismo para mentorizado
 Añadir errores y boton de recargar en js (cuando la busqueda da error)
-Tambien faltan comprobaciones de enviar una solicitud o aceptar una solicitud de que el otro usuario este enable
 Por otro lado, hay que tener en cuenta que si hago lo de borrar una cuenta, se deben de cerrar las peticiones, mentorizaciones,
 y demas del usuario, pero, por si el usuario que accede al perfil mientras se borra
 Y habria que hacer cosas para proteger de los doble-clicks-> Aplicar el ng-disable a todos los botones
-Tambien devolver bien los responses, con codigos adecuados
+Tambien devolver bien los responses, con codigos adecuados o con un mensaje ya desde el servidor en caso de no devolver nada de serie.
+->Añadir al nivel de estudios un entero para indicar una jerarquia y hacer busquedas por estudios minimos?
+
+->Cambiar lo del registro para no usar angular para nada? (con un boton que vuelve a llamar al backend indicando que lo que se quiere es registrarse con el otro rol, por path variable por ejemplo (/{mentor}), haria falta otro pequeño form que mandase a una direccion, tal
+vez pasada en el modelo (metodo post para distinguirlo del otro), y que el booleano de mentor lo cambiase ya el backend y lo fijase incialmente segun la eleccion inicial.
+
 
 ->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar
 ->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo)
@@ -38,3 +46,9 @@ Tambien devolver bien los responses, con codigos adecuados
 
 contigopripo@gmail.com
 
+(Cosas futuro)
+->Lo de las consultas multiples en sql es transaction y comit, a ver si hay algo similar????
+->Podriamos poner en el futuro de al borrar un usuario, eliminar algunos datos a null o pasarlo a otra tabla de usuarios borrados
+->Añadir tambien en un futuro lo de recuperar una cuenta
+->Añadir notificaciones para los usuarios 
+->Añadir un script periodico para realizar limpieza de la base de datos

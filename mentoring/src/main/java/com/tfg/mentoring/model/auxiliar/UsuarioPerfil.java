@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.tfg.mentoring.model.AreaConocimiento;
-import com.tfg.mentoring.model.Mentor;
-import com.tfg.mentoring.model.Mentorizado;
 
 
 //Clase que contiene los datos que se le devolverán a un usuario al acceder a su perfil
@@ -15,68 +13,35 @@ public class UsuarioPerfil {
 	private String nombre;
 	private String papellido;
 	private String sapellido;
-	private String nivelEstudios;
+	private String nivelEstudiosNivelestudios;//Este nonbre es tan raro y largo para el mapeo
 	private String telefono;
 	private String descripcion;
 	private String linkedin;
 	private float horaspormes;
 	private Date fnacimiento;
 	private List<AreaConocimiento> areas = new ArrayList<>();
-	private String puesto;
+	private String puestoPuesto;
 	private String institucionNombre;
 	private boolean mentor;
 
-	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudios,
+	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudiosNivelestudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			Date fnacimiento, String puesto, String institucionNombre, boolean mentor) {
+			Date fnacimiento, String puestoPuesto, String institucionNombre, boolean mentor) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
 		this.sapellido = sapellido;
-		this.nivelEstudios = nivelEstudios;
+		this.nivelEstudiosNivelestudios = nivelEstudiosNivelestudios;
 		this.telefono = telefono;
 		this.descripcion = descripcion;
 		this.linkedin = linkedin;
 		this.horaspormes = horaspormes;
 		this.fnacimiento = fnacimiento;
-		this.puesto = puesto;
+		this.puestoPuesto = puestoPuesto;
 		this.institucionNombre = institucionNombre;
 		this.mentor=mentor;
 	}
 	
-	public UsuarioPerfil(Mentor m) {
-		super();
-		this.nombre = m.getNombre();
-		this.papellido = m.getPapellido();
-		this.sapellido = m.getSapellido();
-		this.nivelEstudios = m.getNivelEstudios();
-		this.telefono = m.getTelefono();
-		this.descripcion = m.getDescripcion();
-		this.linkedin = m.getLinkedin();
-		this.horaspormes = m.getHoraspormes();
-		this.fnacimiento=m.getFnacimiento();
-		this.puesto = m.getPuesto();
-		this.institucionNombre = m.getInstitucion().getNombre();
-		this.areas=m.getAreas();
-		this.mentor=true;
-	}
-	
-	public UsuarioPerfil(Mentorizado m) {
-		super();
-		this.nombre = m.getNombre();
-		this.papellido = m.getPapellido();
-		this.sapellido = m.getSapellido();
-		this.nivelEstudios = m.getNivelEstudios();
-		this.telefono = m.getTelefono();
-		this.descripcion = m.getDescripcion();
-		this.linkedin = m.getLinkedin();
-		this.horaspormes = 0;
-		this.fnacimiento=m.getFnacimiento();
-		this.puesto = null;
-		this.institucionNombre = m.getInstitucion().getNombre();
-		this.areas=m.getAreas();
-		this.mentor=false;
-	}
 
 	public UsuarioPerfil() {
 		super();
@@ -107,12 +72,12 @@ public class UsuarioPerfil {
 		this.sapellido = sapellido;
 	}
 
-	public String getNivelEstudios() {
-		return nivelEstudios;
+	public String getNivelEstudiosNivelestudios() {
+		return nivelEstudiosNivelestudios;
 	}
 
-	public void setNivelEstudios(String nivelEstudios) {
-		this.nivelEstudios = nivelEstudios;
+	public void setNivelEstudiosNivelestudios(String nivelEstudiosNivelestudios) {
+		this.nivelEstudiosNivelestudios = nivelEstudiosNivelestudios;
 	}
 
 	public String getTelefono() {
@@ -164,12 +129,12 @@ public class UsuarioPerfil {
 	}
 	
 
-	public String getPuesto() {
-		return puesto;
+	public String getPuestoPuesto() {
+		return puestoPuesto;
 	}
 
-	public void setPuesto(String puesto) {
-		this.puesto = puesto;
+	public void setPuestoPuesto(String puestoPuesto) {
+		this.puestoPuesto = puestoPuesto;
 	}
 
 	public String getInstitucionNombre() {
@@ -180,9 +145,6 @@ public class UsuarioPerfil {
 		this.institucionNombre = institucionNombre;
 	}
 	
-	
-
-
 
 	public boolean isMentor() {
 		return mentor;
@@ -192,14 +154,17 @@ public class UsuarioPerfil {
 		this.mentor = mentor;
 	}
 
+
 	@Override
 	public String toString() {
 		return "UsuarioPerfil [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
-				+ ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion=" + descripcion
-				+ ", linkedin=" + linkedin + ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento
-				+ ", areas=" + areas + ", puesto=" + puesto + ", institucion=" + institucionNombre + ", mentor=" + mentor
-				+ "]";
+				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
+				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
+				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", puestoPuesto=" + puestoPuesto
+				+ ", institucionNombre=" + institucionNombre + ", mentor=" + mentor + "]";
 	}
+
+	
 
 	
 }

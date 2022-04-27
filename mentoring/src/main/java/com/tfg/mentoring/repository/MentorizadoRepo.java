@@ -14,5 +14,10 @@ public interface MentorizadoRepo extends JpaRepository<Mentorizado, String>{
 	@Modifying
 	@Query(nativeQuery = true, value="DELETE FROM area_mentorizado WHERE correo = ?1 AND area = ?2")
 	void borrarArea(String username, String area);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery = true, value="UPDATE mentorizados SET feliminacion = current_timestamp WHERE usuario_username = ?1 ")
+	void borrarMentorizado(String username);
 
 }

@@ -22,8 +22,9 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 		$scope.cargandoBusqueda = true;
 		console.log("Consulta lanzada")
 		if ($scope.horasmes == null) $scope.horasmes = 0.0;
-		$http.get("/user/mentorizado/busqueda/" + $scope.areaseleccioanda + "/" + $scope.institucionseleccionada + "/" + $scope.horasmes).then(
+		$http.get("/mentorizado/busqueda/" + $scope.areaseleccioanda + "/" + $scope.institucionseleccionada + "/" + $scope.horasmes).then(
 			function sucessCallback(response) {
+				//Si la peticion tiene los Path variables mal, o no es correcto, suelta un 400, y si el ultimo es vacio, suelta un 404
 				console.log(response.data);
 				$scope.sinresultados = false;
 				$scope.mentores = response.data;
@@ -51,7 +52,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 	/*$scope.buscardos = function(){
 		$scope.cargandoBusqueda = true;
 		console.log("Consulta lanzada")
-		$http.get("/user/busquedados/"+$scope.areaseleccioanda+"/"+$scope.institucionseleccionada+"/"+$scope.horasmes).then(
+		$http.get("/mentorizado/busquedados/"+$scope.areaseleccioanda+"/"+$scope.institucionseleccionada+"/"+$scope.horasmes).then(
 			function sucessCallback(response){
 				console.log(response.data);
 				$scope.mentoresdos = response.data;
@@ -65,6 +66,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 			},
 			function errorCallback(response){
 				console.log("Fallo al acceder")
+				console.log(response)
 			}
 		)
 	}*/
@@ -76,7 +78,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 		else {
 			$scope.cargandoBusqueda = true;
 			console.log("Consulta lanzada")
-			$http.post("/user/mentorizado/obtenermentor", mentor.correo).then(
+			$http.post("/mentorizado/obtenermentor", mentor.correo).then(
 				function sucessCallback(response) {
 					console.log(response.data);
 					mentor.expandido = true;
@@ -107,7 +109,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 
 	$scope.enviarSolicitud = function(mentor, motivo) {
 		console.log("Consulta lanzada")
-		$http.post("/user/mentorizado/enviarsolicitud", { mentor: mentor, motivo: motivo }).then(
+		$http.post("/mentorizado/enviarsolicitud", { mentor: mentor, motivo: motivo }).then(
 			function sucessCallback(response) {
 				console.log(response.data);
 				if (response.status == 200) {
@@ -149,7 +151,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
 				console.log("Consulta lanzada")
-				$http.get("/user/mentor/peticiones/").then(
+				$http.get("/mentor/peticiones/").then(
 					function sucessCallback(response) {
 						console.log(response.data);
 						$scope.peticiones = response.data;
@@ -184,7 +186,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentor/peticiones/actualizar").then(
+		$http.get("/mentor/peticiones/actualizar").then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					console.log(response.data);
@@ -224,7 +226,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 		}
 		else {
 			console.log("Consulta lanzada")
-			$http.post("/user/mentor/peticiones/perfil", peticion.mentorizado).then(
+			$http.post("/mentor/peticiones/perfil", peticion.mentorizado).then(
 				function sucessCallback(response) {
 					console.log(response.data);
 					peticion.expandido = true;
@@ -242,7 +244,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 	$scope.aceptarPeticion = function(peticion) {
 		peticion.enAccion = true;
 			console.log("Consulta lanzada")
-			$http.post("/user/mentor/peticiones/aceptar", peticion.mentorizado).then(
+			$http.post("/mentor/peticiones/aceptar", peticion.mentorizado).then(
 				function sucessCallback(response) {
 					console.log(response);
 					if (response.status == 200) {
@@ -264,7 +266,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 	$scope.rechazarPeticion = function(peticion) {
 		peticion.enAccion = true;
 			console.log("Consulta lanzada")
-			$http.post("/user/mentor/peticiones/rechazar", peticion.mentorizado).then(
+			$http.post("/mentor/peticiones/rechazar", peticion.mentorizado).then(
 				function sucessCallback(response) {
 					console.log(response);
 					if (response.status == 200) {
@@ -407,19 +409,19 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
 				console.log("Consulta lanzada")
-				$http.get("/user/mentor/mentorizaciones/").then(
+				$http.get("/mentor/mentorizaciones/").then(
 					function sucessCallback(response) {
 						lastload = Date.now();
-						console.log(response.data);
-						$scope.mentorizaciones = response.data;
-						if (response.data.length > 0) {
+						if (response.status == 200) {
+							console.log(response.data);
+							$scope.mentorizaciones = response.data;
+							console.log(typeof($scope.mentorizaciones[0].fase));
 							for (var i = 0; i < response.data.length; i++) {
 								$scope.mentorizaciones[i].expandido = false;
 								$scope.mentorizaciones[i].enAccion = false;
 								$scope.mentorizaciones[i].aceptarcerrar = false;
 							}
-
-						} else {
+						} else if (response.status == 204){
 							$scope.sinresultados = true;
 							$scope.mentorizaciones = [];
 						}
@@ -446,7 +448,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentor/mentorizaciones/actualizar/"+lastload).then(
+		$http.get("/mentor/mentorizaciones/actualizar/"+lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
@@ -510,7 +512,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 	$scope.cerrarMentorizacion = function(mentorizacion) {
 				mentorizacion.enAccion = true;
 				console.log("Consulta lanzada")
-				$http.post("/user/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
+				$http.post("/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
 					function sucessCallback(response) {
 						console.log(response.data);
 						index = $scope.mentorizaciones.indexOf(mentorizacion);
@@ -532,6 +534,24 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 	}
 
 
+	$scope.aceptarCambioFase = function(mentorizacion) {
+				mentorizacion.enAccion = true;
+				console.log("Consulta lanzada")
+				$http.post("/mentor/mentorizaciones/cambiarfase", {correo : mentorizacion.correo, fase : mentorizacion.fase}).then(
+					function sucessCallback(response) {
+						console.log(response.data);
+						alert("La fase se ha cambiado con exito");
+						
+					},
+					function errorCallback(response) {
+						console.log("Fallo al acceder")
+						console.log(response)
+						mentorizacion.enAccion = false;
+						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+					}
+				)
+
+	}
 
 
 });
@@ -558,22 +578,21 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
 				console.log("Consulta lanzada")
-				$http.get("/user/mentorizado/mentorizaciones/").then(
+				$http.get("/mentorizado/mentorizaciones/").then(
 					function sucessCallback(response) {
 						lastload = Date.now();
-						console.log(response.data);
-						$scope.mentorizaciones = response.data;
-						if (response.data.length > 0) {
+						if (response.status == 200) {
+							console.log(response.data);
+							$scope.mentorizaciones = response.data;
 							for (var i = 0; i < response.data.length; i++) {
 								$scope.mentorizaciones[i].expandido = false;
 								$scope.mentorizaciones[i].enAccion = false;
 								$scope.mentorizaciones[i].cerrar = false;
 								$scope.mentorizaciones[i].comentario = "";
-								$scope.mentorizaciones[i].puntuacion = 0;
+								$scope.mentorizaciones[i].puntuacion = null;
 								$scope.mentorizaciones[i].aceptarcerrar = false;
 							}
-
-						} else {
+						} else if(response.status == 204){
 							$scope.sinresultados = true;
 							$scope.mentorizaciones = [];
 						}
@@ -600,7 +619,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentorizado/mentorizaciones/actualizar/"+lastload).then(
+		$http.get("/mentorizado/mentorizaciones/actualizar/"+lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
@@ -663,15 +682,18 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 	}
 	
 	$scope.confirmarCerrar = function(mentorizacion) {
-		mentorizacion.aceptarcerrar = true;
+			mentorizacion.aceptarcerrar = true;
 		
 	}
 
 
-	$scope.cerrarMentorizacion = function(mentorizacion) {
+	$scope.cerrarMentorizacion = function(mentorizacion, form) {
+		
+		if(form.$valid){
 				mentorizacion.enAccion = true;
+				if(mentorizacion.puntuacion == null) mentorizacion.puntuacion=-1;
 				console.log("Consulta lanzada")
-				$http.post("/user/mentorizado/mentorizaciones/cerrar", {mentor : mentorizacion.correo, 
+				$http.post("/mentorizado/mentorizaciones/cerrar", {mentor : mentorizacion.correo, 
 					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : 0}).then(
 					function sucessCallback(response) {
 						console.log(response.data);
@@ -690,6 +712,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
+		}
 
 	}
 
@@ -718,21 +741,21 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 			if (!yaObtenidas) {
 				$scope.cargandoBusqueda = true;
 				console.log("Consulta lanzada")
-				$http.get("/user/mentorizado/mentorizaciones/porpuntuar").then(
+				$http.get("/mentorizado/mentorizaciones/porpuntuar").then(
 					function sucessCallback(response) {
 						lastload = Date.now();
-						console.log(response.data);
-						$scope.mentorizaciones = response.data;
-						if (response.data.length > 0) {
+						if (response.status == 200) {
+							console.log(response.data);
+							$scope.mentorizaciones = response.data;
 							for (var i = 0; i < response.data.length; i++) {
 								$scope.mentorizaciones[i].expandido = false;
 								$scope.mentorizaciones[i].enAccion = false;
 								$scope.mentorizaciones[i].cerrar = false;
 								$scope.mentorizaciones[i].comentario = "";
-								$scope.mentorizaciones[i].puntuacion = 0;
+								$scope.mentorizaciones[i].puntuacion = null;
 							}
 
-						} else {
+						} else if (response.status == 204){
 							$scope.sinresultados = true;
 							$scope.mentorizaciones = [];
 						}
@@ -759,7 +782,7 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 	}
 
 	var actualizar = function() {
-		$http.get("/user/mentorizado/mentorizaciones/porpuntuar/"+lastload).then(
+		$http.get("/mentorizado/mentorizaciones/porpuntuar/"+lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
@@ -804,10 +827,13 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 	}
 
 
-	$scope.puntuarMentorizacion = function(mentorizacion) {
+	$scope.puntuarMentorizacion = function(mentorizacion, form) {
+		console.log($scope)
+		console.log(form.$valid)
+		if(form.$valid){
 				mentorizacion.enAccion = true;
 				console.log("Consulta lanzada")
-				$http.post("/user/mentorizado/mentorizaciones/puntuar", {mentor : mentorizacion.correo, 
+				$http.post("/mentorizado/mentorizaciones/puntuar", {mentor : mentorizacion.correo, 
 					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : mentorizacion.fecha_fin}).then(
 					function sucessCallback(response) {
 						console.log(response.data);
@@ -826,6 +852,10 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
+		}
+		else{
+			alert("Por favor, introduzca datos correctos")
+		}
 
 	}
 

@@ -1,14 +1,28 @@
 package com.tfg.mentoring.model.auxiliar;
 
-
-
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class UserAux {
 
+	@Email
+	@NotEmpty(message = "El correo no puede estar vacío")
+	@Size(max=255)
+	private String correo;
+	@NotEmpty(message = "La contraseña no puede estar vacía")
+	@Size(max=255)
+	private String password;
+	@NotEmpty(message = "Es necesario introducir un nombre")
+	@Size(max=255)
 	private String nombre;//
+	@Size(max=255)
 	private String papellido;//
+	@Size(max=255)
 	private String sapellido;//
 	private String nivelEstudios;//
+	@Pattern(regexp = "([+][0-9]{2})?[0-9]{9}", message = "Por favor, introduzca un formato de telefono valido")
 	private String telefono;//
 	private String descripcion;//
 	private String linkedin;//
@@ -20,7 +34,7 @@ public class UserAux {
 	
 	public UserAux(String nombre, String papellido, String sapellido, String nivelEstudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			String fnacimiento, String puesto, String institucion, Boolean mentor) {
+			String fnacimiento, String puesto, String institucion, Boolean mentor, String correo, String password) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -34,6 +48,8 @@ public class UserAux {
 		this.puesto = puesto;
 		this.institucion = institucion;
 		this.mentor = mentor;
+		this.correo=correo;
+		this.password=password;
 	}
 
 	public UserAux() {
@@ -130,7 +146,21 @@ public class UserAux {
 		this.institucion = institucion;
 	}
 	
-	
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public Boolean getMentor() {
 		return mentor;
@@ -142,11 +172,14 @@ public class UserAux {
 
 	@Override
 	public String toString() {
-		return "UserAux [nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
-				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion="
-				+ descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes + ", fnacimiento="
-				+ fnacimiento + ", puesto=" + puesto + ", institucion=" + institucion + ", mentor=" + mentor + "]";
+		return "UserAux [correo=" + correo + ", password=" + password + ", nombre=" + nombre + ", papellido="
+				+ papellido + ", sapellido=" + sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono
+				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
+				+ ", fnacimiento=" + fnacimiento + ", puesto=" + puesto + ", institucion=" + institucion + ", mentor="
+				+ mentor + "]";
 	}
+
+	
 
 	
 	

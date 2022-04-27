@@ -25,7 +25,12 @@ public class MentorizacionUser {
 		this.foto = null;
 		this.uperfil=up;
 		this.fase=m.getFase();
-		this.fecha_fin=m.getFin().getTime();
+		if(m.getFin() != null) {
+			this.fecha_fin=m.getFin().getTime();
+		}
+		else {
+			this.fecha_fin=null;
+		}
 	}
 
 	public MentorizacionUser() {

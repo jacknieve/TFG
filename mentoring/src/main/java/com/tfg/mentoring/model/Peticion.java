@@ -26,7 +26,7 @@ public class Peticion {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("mentorizado")
 	private Mentorizado mentorizado;
-	
+	//Esta es necesaria??? (de quitarla, hay que actualizar las consultas de borrar usuario que la fijan a la actual)
 	@Column(name="fecha_resolucion")
 	private Date resolucion;
 	
