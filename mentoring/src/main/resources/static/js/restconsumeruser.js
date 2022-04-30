@@ -1,8 +1,13 @@
-var appConsumer = angular.module('appConsumer', []);
+var appConsumer = angular.module('appConsumer', ['ngAnimate']);
+
+var kk = "culo";
 
 appConsumer.config(function($httpProvider) {
 	//Enable cross domain calls
 	$httpProvider.defaults.useXDomain = true;
+});
+appConsumer.controller("globalController", function($rootScope) {
+	$rootScope.popUpAbierto = false;
 });
 
 appConsumer.controller("busquedaController", function($scope, $http) {
@@ -12,6 +17,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 	$scope.areaseleccioanda = "sin";
 	$scope.institucionseleccionada = "sin";
 	$scope.horasmes = 0.0;
+	$scope.cargando = false;
 
 	$scope.activarBusqueda = function() {
 		if ($scope.mostrarBusqueda) $scope.mostrarBusqueda = false
@@ -19,7 +25,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 	}
 
 	$scope.buscar = function() {
-		$scope.cargandoBusqueda = true;
+		$scope.cargando = true;
 		console.log("Consulta lanzada")
 		if ($scope.horasmes == null) $scope.horasmes = 0.0;
 		$http.get("/mentorizado/busqueda/" + $scope.areaseleccioanda + "/" + $scope.institucionseleccionada + "/" + $scope.horasmes).then(
@@ -33,24 +39,25 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.mentores[i].expandido = false;
 						$scope.mentores[i].obtenido = false;
+						$scope.mentores[i].cargando = false;
 					}
 
 				} else {
 					$scope.sinresultados = true;
 				}
 
-				$scope.cargandoBusqueda = false;
+				$scope.cargando = false;
 			},
 			function errorCallback(response) {
 				console.log(response)
 				console.log("Fallo al acceder")
-				$scope.cargandoBusqueda = false;
+				$scope.cargando = false;
 			}
 		)
 	}
 
 	/*$scope.buscardos = function(){
-		$scope.cargandoBusqueda = true;
+		$scope.cargando = true;
 		console.log("Consulta lanzada")
 		$http.get("/mentorizado/busquedados/"+$scope.areaseleccioanda+"/"+$scope.institucionseleccionada+"/"+$scope.horasmes).then(
 			function sucessCallback(response){
@@ -62,7 +69,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 					$scope.mentoresdos[i].obtenido = false;
 				}
 				
-				$scope.cargandoBusqueda = false;
+				$scope.cargando = false;
 			},
 			function errorCallback(response){
 				console.log("Fallo al acceder")
@@ -76,7 +83,7 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 			mentor.expandido = true;
 		}
 		else {
-			$scope.cargandoBusqueda = true;
+			mentor.cargando = true;
 			console.log("Consulta lanzada")
 			$http.post("/mentorizado/obtenermentor", mentor.correo).then(
 				function sucessCallback(response) {
@@ -87,11 +94,12 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 					mentor.info.solicitud = false;
 					mentor.info.motivo = "";
 
-					$scope.cargandoBusqueda = false;
+					mentor.cargando = false;
 				},
 				function errorCallback(response) {
 					console.log("Fallo al acceder")
 					console.log(response)
+					mentor.cargando = false;
 				}
 			)
 		}
@@ -108,13 +116,16 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 
 
 	$scope.enviarSolicitud = function(mentor, motivo) {
+		mentor.cargando = true;
 		console.log("Consulta lanzada")
-		$http.post("/mentorizado/enviarsolicitud", { mentor: mentor, motivo: motivo }).then(
+		$http.post("/mentorizado/enviarsolicitud", { mentor: mentor.correo, motivo: motivo }).then(
 			function sucessCallback(response) {
 				console.log(response.data);
 				if (response.status == 200) {
 					alert("Peticion enviada con exito");
 				}
+				mentor.cargando = false;
+				mentor.info.solicitud = false;
 				/*mentor.expandido = true;
 				mentor.obtenido = true;
 				mentor.info = response.data;*/
@@ -126,75 +137,103 @@ appConsumer.controller("busquedaController", function($scope, $http) {
 				}
 				console.log("Fallo al acceder")
 				console.log(response)
-
+				mentor.cargando = false;
 			}
 		)
 	}
 
 });
 
-appConsumer.controller("peticionController", function($scope, $http) {
+appConsumer.controller("peticionController", function($scope, $http, $rootScope) {
 
 	$scope.mostrarPeticiones = false;
 	$scope.sinresultados = false;
-	$scope.cargandoBusqueda = false;
+	$scope.cargando = false;
 	var yaObtenidas = false;
+	$scope.enError = false;
+	$scope.mensajeError = "";
+	$scope.errorBusqueda = false; //Esto nos sirve para que si falla la busqueda inicial, al plegar y volver a desplegar se pueda volver a intentar
+	$scope.errorActualizar = false; //Esto nos sirve para si falla la actualización, mostrar un mesajito
+
+	var inciarObtenerPeticiones = function() {
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.get("/mentor/peticiones/").then(
+			function sucessCallback(response) {
+				console.log(response.data);
+				$scope.peticiones = response.data;
+				if (response.data.length > 0) {
+					for (var i = 0; i < response.data.length; i++) {
+						$scope.peticiones[i].expandido = false;
+						$scope.peticiones[i].obtenido = false;
+					}
+
+				} else {
+					$scope.peticiones = [];
+					$scope.sinresultados = true;
+				}
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
+				$scope.cargando = false;
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				if (response.status == 503) {
+					abrirError("Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes, por favor" +
+						"vuelva a intentarlo más tarde");
+				}
+				else if (response.status == 500) {
+					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else {
+					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes"+
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				$scope.errorBusqueda = true;
+				$scope.cargando = false;
+				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+			}
+		)
+	}
 
 	$scope.activarPeticiones = function() {
 		if ($scope.mostrarPeticiones) {
 			$scope.mostrarPeticiones = false
-			yaObtenidas = true;
+			if (!$scope.errorBusqueda) yaObtenidas = true;
+			$scope.errorBusqueda = false;
+			$scope.errorActualizar = false;
 			$scope.detenActualizacion();
 		}
 		else {
 			$scope.mostrarPeticiones = true;
 			if (!yaObtenidas) {
-				$scope.cargandoBusqueda = true;
-				console.log("Consulta lanzada")
-				$http.get("/mentor/peticiones/").then(
-					function sucessCallback(response) {
-						console.log(response.data);
-						$scope.peticiones = response.data;
-						if (response.data.length > 0) {
-							for (var i = 0; i < response.data.length; i++) {
-								$scope.peticiones[i].expandido = false;
-								$scope.peticiones[i].obtenido = false;
-								$scope.peticiones[i].enAccion = false;
-							}
-
-						} else {
-							$scope.peticiones = [];
-							$scope.sinresultados = true;
-						}
-						$scope.id = setInterval(() => {
-							actualizar();
-						}, 60000);
-						$scope.cargandoBusqueda = false;
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						$scope.cargandoBusqueda = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
-					}
-				)
+				inciarObtenerPeticiones();
 			}
-			else{
-				actualizar();
+			else {
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
 			}
 		}
 	}
 
 	var actualizar = function() {
+		console.log("actualizando peticiones");
 		$http.get("/mentor/peticiones/actualizar").then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					console.log(response.data);
 					$scope.sinresultados = false;
 					for (var i = 0; i < response.data.length; i++) {
+						response.data[i].expandido = false;
+						response.data[i].obtenido = false;
 						$scope.peticiones.push(response.data[i]);
 					}
-					if($scope.peticiones.length == 0){
+					if ($scope.peticiones.length == 0) {
 						$scope.sinresultados = true;
 					}
 				}
@@ -203,6 +242,20 @@ appConsumer.controller("peticionController", function($scope, $http) {
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
+				if (response.status == 503) {
+					abrirError("Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes para obtener las nuevas, por favor" +
+						"vuelva a intentarlo más tarde");
+				}
+				else if (response.status == 500) {
+					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes nuevas, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else {
+					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes nuevas"+
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				$scope.errorActualizar = true;
 				$scope.detenActualizacion;
 			}
 		)
@@ -221,6 +274,7 @@ appConsumer.controller("peticionController", function($scope, $http) {
 
 
 	$scope.obtenerPerfilPeticion = function(peticion) {
+		$scope.cargando = true;
 		if (peticion.obtenido) {
 			peticion.expandido = true;
 		}
@@ -232,57 +286,85 @@ appConsumer.controller("peticionController", function($scope, $http) {
 					peticion.expandido = true;
 					peticion.obtenido = true;
 					peticion.info = response.data;
+					$scope.cargando = false;
 				},
 				function errorCallback(response) {
 					console.log("Fallo al acceder")
 					console.log(response)
+					if (response.status == 503) {
+					abrirError("Se ha producido un fallo al intentar acceder al repositorio para obtener la información del mentorizado que envió la solicitud, por favor" +
+						"vuelva a intentarlo más tarde");
+				}
+				else if (response.status == 500) {
+					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener obtener la información del mentorizado que "+
+					"envió la solicitud, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 400) {
+					abrirError("Se ha producido un fallo en la petición al servidor para obtener la información del mentorizado que envió la solicitud" +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else {
+					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener la información del mentorizado que envió la solicitud"+
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+					$scope.cargando = false;
 				}
 			)
 		}
 	}
-	
+
 	$scope.aceptarPeticion = function(peticion) {
-		peticion.enAccion = true;
-			console.log("Consulta lanzada")
-			$http.post("/mentor/peticiones/aceptar", peticion.mentorizado).then(
-				function sucessCallback(response) {
-					console.log(response);
-					if (response.status == 200) {
-						index = $scope.peticiones.indexOf(peticion);
-						$scope.peticiones.splice(index, 1);
-						if($scope.peticiones.length == 0){
-							$scope.sinresultados = true;
-						}
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.post("/mentor/peticiones/aceptar", peticion.mentorizado).then(
+			function sucessCallback(response) {
+				console.log(response);
+				if (response.status == 200) {
+					index = $scope.peticiones.indexOf(peticion);
+					$scope.peticiones.splice(index, 1);
+					if ($scope.peticiones.length == 0) {
+						$scope.sinresultados = true;
 					}
-				},
-				function errorCallback(response) {
-					console.log("Fallo al acceder")
-					console.log(response)
-					peticion.enAccion = false;
 				}
-			)
+				$scope.cargando = false;
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				abrirError(response.data.mensaje);
+				$scope.cargando = false;
+			}
+		)
+
 	}
-	
+
 	$scope.rechazarPeticion = function(peticion) {
-		peticion.enAccion = true;
-			console.log("Consulta lanzada")
-			$http.post("/mentor/peticiones/rechazar", peticion.mentorizado).then(
-				function sucessCallback(response) {
-					console.log(response);
-					if (response.status == 200) {
-						index = $scope.peticiones.indexOf(peticion);
-						$scope.peticiones.splice(index, 1);
-						if($scope.peticiones.length == 0){
-							$scope.sinresultados = true;
-						}
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.post("/mentor/peticiones/rechazar", peticion.mentorizado).then(
+			function sucessCallback(response) {
+				console.log(response);
+				if (response.status == 200) {
+					index = $scope.peticiones.indexOf(peticion);
+					$scope.peticiones.splice(index, 1);
+					if ($scope.peticiones.length == 0) {
+						$scope.sinresultados = true;
 					}
-				},
-				function errorCallback(response) {
-					console.log("Fallo al acceder")
-					console.log(response)
-					peticion.enAccion = false;
+					
 				}
-			)
+				$scope.cargando = false;
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				peticion.error = true;
+				abrirError(response.data.mensaje);
+				$scope.cargando = false;
+			}
+		)
 	}
 
 
@@ -290,6 +372,19 @@ appConsumer.controller("peticionController", function($scope, $http) {
 	$scope.plegarPeticion = function(peticion) {
 		peticion.expandido = false;
 	}
+	
+	var abrirError = function(mensaje) {
+		$scope.enError = true;
+		$scope.mensajeError = mensaje;
+		$rootScope.popUpAbierto = true;
+	}
+
+	$scope.cerrarError = function() {
+		$scope.enError = false;
+		$scope.mensajeError = "";
+		$rootScope.popUpAbierto = false;
+	}
+
 
 
 
@@ -299,8 +394,12 @@ appConsumer.controller("peticionController", function($scope, $http) {
 appConsumer.controller("notificacionController", function($scope, $http) {
 
 	$scope.mostrarsin = false;
+	$scope.cargando = false;
+	$scope.enfallo = false;
+	$scope.mensajeError = "";
 
 	var actualizar = function() {
+		$scope.cargando = true;
 		$http.get("/user/notificaciones/nuevas").then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
@@ -309,38 +408,71 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.notificaciones.push(response.data[i]);
 					}
-					if($scope.notificaciones.length == 0){
-						$scope.mostrarsin = true;
-					}
+					console.log("Nuevas");
 				}
+				$scope.cargando = false;
 
 			},
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
 				$scope.detenActualizacion();
+				$scope.enfallo = true;
+				if (response.status == 503) {
+					$scope.mensajeError = "Se ha producido un fallo al intentar acceder al repositorio que contiene las notificaciones, por favor" +
+						"vuelva a intentarlo más tarde";
+				}
+				else if (response.status == 500) {
+					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				else {
+					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				$scope.cargando = false;
 			}
 		)
 	}
 
 	$scope.iniciaNotificaciones = function() {
+		$scope.cargando = false;
 		console.log("Consulta lanzada")
 		$http.get("/user/notificaciones").then(
 			function sucessCallback(response) {
-				console.log(response.data);
-				$scope.notificaciones = response.data;
-				$scope.cargando = false;
-				if ($scope.notificaciones.length == 0) {
+				if (response.status == 200) {
+					console.log(response.data);
+					$scope.notificaciones = response.data;
+					$scope.cargando = false;
+				}
+				else if (response.status == 204) {
 					$scope.notificaciones = [];
 					$scope.mostrarsin = true;
 				}
 				$scope.id = setInterval(() => {
 					actualizar();
-				}, 10000);
+				}, 60000);
+				$scope.cargando = false;
 			},
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
+				$scope.enfallo = true;
+				if (response.status == 503) {
+					$scope.mensajeError = "Se ha producido un fallo al intentar acceder al repositorio que contiene las notificaciones, por favor" +
+						"vuelva a intentarlo más tarde";
+				}
+				else if (response.status == 500) {
+					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				else {
+					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				$scope.cargando = false;
 			}
 		)
 
@@ -354,30 +486,39 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 			clearInterval(this.id);
 		}
 	}
+	
+	$scope.reiniciarActualizacion = function() {
+		$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
+	}
+
 
 	$scope.$on("$destroy", function() {
 		$scope.detenActualizacion();
 	});
 
-	//JSON.stringify({"id":id})
-
 	$scope.borrarNotificacion = function(notificacion) {
-
+		$scope.cargando = true;
 		$http.post("/user/notificaciones/delete", notificacion.id).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					console.log(response.data);
 					index = $scope.notificaciones.indexOf(notificacion);
 					$scope.notificaciones.splice(index, 1);
-					if($scope.notificaciones.length == 0){
+					if ($scope.notificaciones.length == 0) {
 						$scope.mostrarsin = true;
 					}
 				}
+				$scope.cargando = false;
 
 			},
 			function errorCallback(response) {
 				console.log("Fallo al eliminar");
 				console.log(response);
+				$scope.enfallo = true;
+				$scope.mensajeError = response.data.mensaje;
+				$scope.cargando = false;
 			}
 		)
 	}
@@ -388,67 +529,92 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 });
 
 
-appConsumer.controller("mentorMentorizacionController", function($scope, $http) {
+appConsumer.controller("mentorMentorizacionController", function($scope, $http, $rootScope) {
 
 	$scope.mostrarMentorizaciones = false;
 	$scope.sinresultados = false;
-	$scope.cargandoBusqueda = false;
+	$scope.cargando = false;
 	var yaObtenidas = false;
 	var lastload = new Date();
-	$scope.enAccion = false;
+	$scope.enError = false;
+	$scope.mensajeError = "";
+	$scope.errorBusqueda = false; //Esto nos sirve para que si falla la busqueda inicial, al plegar y volver a desplegar se pueda volver a intentar
+	$scope.errorActualizar = false; //Esto nos sirve para si falla la actualización, mostrar un mesajito
+	$scope.enAcierto = false;
+
+
+	var inciarObtenerMentorizaciones = function() {
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.get("/mentor/mentorizaciones/").then(
+			function sucessCallback(response) {
+				lastload = Date.now();
+				if (response.status == 200) {
+					console.log(response.data);
+					console.log(response);
+					$scope.mentorizaciones = response.data;
+					console.log(typeof ($scope.mentorizaciones[0].fase));
+					for (var i = 0; i < response.data.length; i++) {
+						$scope.mentorizaciones[i].expandido = false;
+						$scope.mentorizaciones[i].aceptarcerrar = false;
+					}
+				} else if (response.status == 204) {
+					$scope.sinresultados = true;
+					$scope.mentorizaciones = [];
+				}
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
+				$scope.cargando = false;
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				if (response.status == 503) {
+					abrirError("Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones, por favor" +
+						"vuelva a intentarlo más tarde");
+				}
+				else if (response.status == 500) {
+					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
+						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else {
+					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones"+
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				$scope.cargando = false;
+				$scope.errorBusqueda = true;
+				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+			}
+		)
+
+
+	}
 
 	$scope.activarMentorizaciones = function() {
 		if ($scope.mostrarMentorizaciones) {
 			$scope.mostrarMentorizaciones = false
-			yaObtenidas = true;
+			if (!$scope.errorBusqueda) yaObtenidas = true;
+			$scope.errorBusqueda = false;
 			$scope.detenActualizacion();
+			$scope.errorActualizar = false;
 		}
 		else {
-			$scope.enAccion = true;
 			$scope.mostrarMentorizaciones = true;
 			if (!yaObtenidas) {
-				$scope.cargandoBusqueda = true;
-				console.log("Consulta lanzada")
-				$http.get("/mentor/mentorizaciones/").then(
-					function sucessCallback(response) {
-						lastload = Date.now();
-						if (response.status == 200) {
-							console.log(response.data);
-							$scope.mentorizaciones = response.data;
-							console.log(typeof($scope.mentorizaciones[0].fase));
-							for (var i = 0; i < response.data.length; i++) {
-								$scope.mentorizaciones[i].expandido = false;
-								$scope.mentorizaciones[i].enAccion = false;
-								$scope.mentorizaciones[i].aceptarcerrar = false;
-							}
-						} else if (response.status == 204){
-							$scope.sinresultados = true;
-							$scope.mentorizaciones = [];
-						}
-						$scope.id = setInterval(() => {
-							actualizar();
-						}, 60000);
-						$scope.cargandoBusqueda = false;
-						$scope.enAccion = false;
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						$scope.cargandoBusqueda = false;
-						$scope.enAccion = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
-					}
-				)
+				inciarObtenerMentorizaciones();
 			}
-			else{
-				actualizar();
-				$scope.enAccion = false;
+			else {
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
 			}
 		}
 	}
 
 	var actualizar = function() {
-		$http.get("/mentor/mentorizaciones/actualizar/"+lastload).then(
+		$http.get("/mentor/mentorizaciones/actualizar/" + lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
@@ -456,19 +622,22 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						var todelete = [];
-						if(response.data[i].uperfil == null){
+						if (response.data[i].uperfil == null) {
+
 							todelete.push(response.data[i].correo);
 						}
-						else{
-							$scope.mentorizaciones.push(response.data[i]); 
+						else {
+							response.data[i].expandido = false;
+							response.data[i].aceptarcerrar = false;
+							$scope.mentorizaciones.push(response.data[i]);
 						}
-						if(todelete.length > 0){
-							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento){
+						if (todelete.length > 0) {
+							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento) {
 								return todelete.indexOf(elemento.correo) == -1;
 							});
-							
+
 						}
-						if($scope.mentorizaciones.length == 0){
+						if ($scope.mentorizaciones.length == 0) {
 							$scope.sinresultados = true;
 						}
 					}
@@ -478,6 +647,26 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
+				if (response.status == 503) {
+					abrirError("Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones para acceder a las nuevas, por favor" +
+						"vuelva a intentarlo más tarde");
+				}
+				else if (response.status == 500) {
+					abrirError("Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones" +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 400) {
+					abrirError("Se ha producido un fallo en la petición al servidor para traer mentorizaciones nuevas" +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else {
+					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones"+
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
+						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
 			}
 		)
@@ -496,77 +685,101 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http) 
 
 
 	$scope.plegarMentorizacion = function(mentorizacion) {
-		if(mentorizacion.expandido) mentorizacion.expandido = false;
+		if (mentorizacion.expandido) mentorizacion.expandido = false;
 		else mentorizacion.expandido = true;
-		
 	}
-	
-	
+
+
 	$scope.confirmarCerrar = function(mentorizacion) {
-		if(mentorizacion.aceptarcerrar) mentorizacion.aceptarcerrar = false;
-		else mentorizacion.aceptarcerrar = true;
-		
+		if (mentorizacion.aceptarcerrar) {
+			mentorizacion.aceptarcerrar = false;
+			$rootScope.popUpAbierto = false;
+		}
+		else {
+			mentorizacion.aceptarcerrar = true;
+			$rootScope.popUpAbierto = true;
+		}
 	}
 
 
 	$scope.cerrarMentorizacion = function(mentorizacion) {
-				mentorizacion.enAccion = true;
-				console.log("Consulta lanzada")
-				$http.post("/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
-					function sucessCallback(response) {
-						console.log(response.data);
-						index = $scope.mentorizaciones.indexOf(mentorizacion);
-						$scope.mentorizaciones.splice(index, 1);
-						if($scope.mentorizaciones.length == 0){
-							$scope.sinresultados = true;
-						}
-						alert("La mentorizacion se ha cerrado con exito");
-						
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						mentorizacion.enAccion = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
-					}
-				)
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.post("/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
+			function sucessCallback(response) {
+				console.log(response.data);
+				index = $scope.mentorizaciones.indexOf(mentorizacion);
+				$scope.mentorizaciones.splice(index, 1);
+				if ($scope.mentorizaciones.length == 0) {
+					$scope.sinresultados = true;
+				}
+				//$rootScope.popUpAbierto = false;
+				//alert("La mentorizacion se ha cerrado con exito");
+				mentorizacion.aceptarcerrar=false;
+				$scope.enAcierto = true;
+				$scope.cargando = false;
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				abrirError(response.data.mensaje);
+				$scope.cargando = false;
+				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+			}
+		)
 
 	}
 
 
 	$scope.aceptarCambioFase = function(mentorizacion) {
-				mentorizacion.enAccion = true;
-				console.log("Consulta lanzada")
-				$http.post("/mentor/mentorizaciones/cambiarfase", {correo : mentorizacion.correo, fase : mentorizacion.fase}).then(
-					function sucessCallback(response) {
-						console.log(response.data);
-						alert("La fase se ha cambiado con exito");
-						
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						mentorizacion.enAccion = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
-					}
-				)
+		$scope.cargando = true;
+		console.log("Consulta lanzada")
+		$http.post("/mentor/mentorizaciones/cambiarfase", { correo: mentorizacion.correo, fase: mentorizacion.fase }).then(
+			function sucessCallback(response) {
+				console.log(response.data);
+				//alert("La fase se ha cambiado con exito");
+				$scope.cargando = false;
+
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				abrirError(response.data.mensaje);
+				$scope.cargando = false;
+			}
+		)
 
 	}
 
+	var abrirError = function(mensaje) {
+		$scope.enError = true;
+		$scope.mensajeError = mensaje;
+		$rootScope.popUpAbierto = true;
+	}
+
+	$scope.cerrarError = function() {
+		$scope.enError = false;
+		$scope.mensajeError = "";
+		$rootScope.popUpAbierto = false;
+	}
+	
+	$scope.cerrarAcierto = function() {
+		$scope.enAcierto = false;
+		$rootScope.popUpAbierto = false;
+	}
 
 });
 
-appConsumer.controller("mentorizadoMentorizacionController", function($scope, $http) {
+appConsumer.controller("mentorizadoMentorizacionController", function($scope, $http, $rootScope) {
 
 	$scope.mostrarMentorizaciones = false;
 	$scope.sinresultados = false;
-	$scope.cargandoBusqueda = false;
+	$scope.cargando = false;
 	var yaObtenidas = false;
 	var lastload = new Date();
 	$scope.enAccion = false;
 
 	$scope.activarMentorizaciones = function() {
-		
 		if ($scope.mostrarMentorizaciones) {
 			$scope.mostrarMentorizaciones = false
 			yaObtenidas = true;
@@ -576,7 +789,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 			$scope.enAccion = true;
 			$scope.mostrarMentorizaciones = true;
 			if (!yaObtenidas) {
-				$scope.cargandoBusqueda = true;
+				$scope.cargando = true;
 				console.log("Consulta lanzada")
 				$http.get("/mentorizado/mentorizaciones/").then(
 					function sucessCallback(response) {
@@ -592,34 +805,36 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 								$scope.mentorizaciones[i].puntuacion = null;
 								$scope.mentorizaciones[i].aceptarcerrar = false;
 							}
-						} else if(response.status == 204){
+						} else if (response.status == 204) {
 							$scope.sinresultados = true;
 							$scope.mentorizaciones = [];
 						}
 						$scope.id = setInterval(() => {
 							actualizar();
 						}, 60000);
-						$scope.cargandoBusqueda = false;
+						$scope.cargando = false;
 						$scope.enAccion = false;
 					},
 					function errorCallback(response) {
 						console.log("Fallo al acceder")
 						console.log(response)
-						$scope.cargandoBusqueda = false;
+						$scope.cargando = false;
 						$scope.enAccion = false;
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
 			}
-			else{
-				actualizar();
+			else {
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
 				$scope.enAccion = false;
 			}
 		}
 	}
 
 	var actualizar = function() {
-		$http.get("/mentorizado/mentorizaciones/actualizar/"+lastload).then(
+		$http.get("/mentorizado/mentorizaciones/actualizar/" + lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
@@ -627,19 +842,19 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						var todelete = [];
-						if(response.data[i].uperfil == null){
+						if (response.data[i].uperfil == null) {
 							todelete.push(response.data[i].correo);
 						}
-						else{
-							$scope.mentorizaciones.push(response.data[i]); 
+						else {
+							$scope.mentorizaciones.push(response.data[i]);
 						}
-						if(todelete.length > 0){
-							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento){
+						if (todelete.length > 0) {
+							$scope.mentorizaciones = $scope.mentorizaciones.filter(function(elemento) {
 								return todelete.indexOf(elemento.correo) == -1;
 							});
-							
+
 						}
-						if($scope.mentorizaciones.length == 0){
+						if ($scope.mentorizaciones.length == 0) {
 							$scope.sinresultados = true;
 						}
 					}
@@ -667,51 +882,53 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 
 
 	$scope.plegarMentorizacion = function(mentorizacion) {
-		if(mentorizacion.expandido) mentorizacion.expandido = false;
+		if (mentorizacion.expandido) mentorizacion.expandido = false;
 		else mentorizacion.expandido = true;
-		
+
 	}
-	
+
 	$scope.abrirPuntuar = function(mentorizacion) {
-		if(mentorizacion.cerrar) {
+		if (mentorizacion.cerrar) {
 			mentorizacion.cerrar = false;
 			mentorizacion.aceptarcerrar = false;
 		}
 		else mentorizacion.cerrar = true;
-		
+
 	}
-	
+
 	$scope.confirmarCerrar = function(mentorizacion) {
-			mentorizacion.aceptarcerrar = true;
-		
+		mentorizacion.aceptarcerrar = true;
+
 	}
 
 
 	$scope.cerrarMentorizacion = function(mentorizacion, form) {
-		
-		if(form.$valid){
-				mentorizacion.enAccion = true;
-				if(mentorizacion.puntuacion == null) mentorizacion.puntuacion=-1;
-				console.log("Consulta lanzada")
-				$http.post("/mentorizado/mentorizaciones/cerrar", {mentor : mentorizacion.correo, 
-					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : 0}).then(
-					function sucessCallback(response) {
-						console.log(response.data);
-						index = $scope.mentorizaciones.indexOf(mentorizacion);
-						$scope.mentorizaciones.splice(index, 1);
-						if($scope.mentorizaciones.length == 0){
-							$scope.sinresultados = true;
-						}
-						alert("La mentorizacion se ha cerrado con exito");
-						
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						mentorizacion.enAccion = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+
+		if (form.$valid) {
+			mentorizacion.enAccion = true;
+			if (mentorizacion.puntuacion == null) mentorizacion.puntuacion = -1;
+			console.log("Consulta lanzada")
+			$http.post("/mentorizado/mentorizaciones/cerrar", {
+				mentor: mentorizacion.correo,
+				comentario: mentorizacion.comentario, puntuacion: mentorizacion.puntuacion, fechafin: 0
+			}).then(
+				function sucessCallback(response) {
+					console.log(response.data);
+					index = $scope.mentorizaciones.indexOf(mentorizacion);
+					$scope.mentorizaciones.splice(index, 1);
+					if ($scope.mentorizaciones.length == 0) {
+						$scope.sinresultados = true;
 					}
-				)
+					alert("La mentorizacion se ha cerrado con exito");
+
+				},
+				function errorCallback(response) {
+					console.log("Fallo al acceder")
+					console.log(response)
+					mentorizacion.enAccion = false;
+					//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+				}
+			)
 		}
 
 	}
@@ -723,13 +940,13 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 
 	$scope.mostrarMentorizaciones = false;
 	$scope.sinresultados = false;
-	$scope.cargandoBusqueda = false;
+	$scope.cargando = false;
 	var yaObtenidas = false;
 	var lastload = new Date();
 	$scope.enAccion = false;
 
 	$scope.activarMentorizaciones = function() {
-		
+
 		if ($scope.mostrarMentorizaciones) {
 			$scope.mostrarMentorizaciones = false
 			yaObtenidas = true;
@@ -739,7 +956,7 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 			$scope.enAccion = true;
 			$scope.mostrarMentorizaciones = true;
 			if (!yaObtenidas) {
-				$scope.cargandoBusqueda = true;
+				$scope.cargando = true;
 				console.log("Consulta lanzada")
 				$http.get("/mentorizado/mentorizaciones/porpuntuar").then(
 					function sucessCallback(response) {
@@ -755,41 +972,43 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 								$scope.mentorizaciones[i].puntuacion = null;
 							}
 
-						} else if (response.status == 204){
+						} else if (response.status == 204) {
 							$scope.sinresultados = true;
 							$scope.mentorizaciones = [];
 						}
 						$scope.id = setInterval(() => {
 							actualizar();
 						}, 60000);
-						$scope.cargandoBusqueda = false;
+						$scope.cargando = false;
 						$scope.enAccion = false;
 					},
 					function errorCallback(response) {
 						console.log("Fallo al acceder")
 						console.log(response)
-						$scope.cargandoBusqueda = false;
+						$scope.cargando = false;
 						$scope.enAccion = false;
 						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 					}
 				)
 			}
-			else{
-				actualizar();
+			else {
+				$scope.id = setInterval(() => {
+					actualizar();
+				}, 60000);
 				$scope.enAccion = false;
 			}
 		}
 	}
 
 	var actualizar = function() {
-		$http.get("/mentorizado/mentorizaciones/porpuntuar/"+lastload).then(
+		$http.get("/mentorizado/mentorizaciones/porpuntuar/" + lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
 					$scope.sinresultados = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
-						$scope.mentorizaciones.push(response.data[i]); 
+						$scope.mentorizaciones.push(response.data[i]);
 					}
 				}
 
@@ -815,47 +1034,76 @@ appConsumer.controller("puntuarController", function($scope, $http) {
 
 
 	$scope.plegarMentorizacion = function(mentorizacion) {
-		if(mentorizacion.expandido) mentorizacion.expandido = false;
+		if (mentorizacion.expandido) mentorizacion.expandido = false;
 		else mentorizacion.expandido = true;
-		
+
 	}
-	
+
 	$scope.abrirPuntuar = function(mentorizacion) {
-		if(mentorizacion.cerrar) mentorizacion.cerrar = false;
+		if (mentorizacion.cerrar) mentorizacion.cerrar = false;
 		else mentorizacion.cerrar = true;
-		
+
 	}
 
 
 	$scope.puntuarMentorizacion = function(mentorizacion, form) {
 		console.log($scope)
 		console.log(form.$valid)
-		if(form.$valid){
-				mentorizacion.enAccion = true;
-				console.log("Consulta lanzada")
-				$http.post("/mentorizado/mentorizaciones/puntuar", {mentor : mentorizacion.correo, 
-					comentario : mentorizacion.comentario, puntuacion : mentorizacion.puntuacion, fechafin : mentorizacion.fecha_fin}).then(
-					function sucessCallback(response) {
-						console.log(response.data);
-						index = $scope.mentorizaciones.indexOf(mentorizacion);
-						$scope.mentorizaciones.splice(index, 1);
-						if($scope.mentorizaciones.length == 0){
-							$scope.sinresultados = true;
-						}
-						alert("La mentorizacion se ha puntuado con exito");
-						
-					},
-					function errorCallback(response) {
-						console.log("Fallo al acceder")
-						console.log(response)
-						mentorizacion.enAccion = false;
-						//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+		if (form.$valid) {
+			mentorizacion.enAccion = true;
+			console.log("Consulta lanzada")
+			$http.post("/mentorizado/mentorizaciones/puntuar", {
+				mentor: mentorizacion.correo,
+				comentario: mentorizacion.comentario, puntuacion: mentorizacion.puntuacion, fechafin: mentorizacion.fecha_fin
+			}).then(
+				function sucessCallback(response) {
+					console.log(response.data);
+					index = $scope.mentorizaciones.indexOf(mentorizacion);
+					$scope.mentorizaciones.splice(index, 1);
+					if ($scope.mentorizaciones.length == 0) {
+						$scope.sinresultados = true;
 					}
-				)
+					alert("La mentorizacion se ha puntuado con exito");
+
+				},
+				function errorCallback(response) {
+					console.log("Fallo al acceder")
+					console.log(response)
+					mentorizacion.enAccion = false;
+					//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+				}
+			)
 		}
-		else{
+		else {
 			alert("Por favor, introduzca datos correctos")
 		}
+
+	}
+
+	$scope.descartarPuntuar = function(mentorizacion) {
+		mentorizacion.enAccion = true;
+		console.log("Consulta lanzada")
+		$http.post("/mentorizado/mentorizaciones/puntuar", {
+			mentor: mentorizacion.correo,
+			comentario: null, puntuacion: -1, fechafin: mentorizacion.fecha_fin
+		}).then(
+			function sucessCallback(response) {
+				console.log(response.data);
+				index = $scope.mentorizaciones.indexOf(mentorizacion);
+				$scope.mentorizaciones.splice(index, 1);
+				if ($scope.mentorizaciones.length == 0) {
+					$scope.sinresultados = true;
+				}
+				alert("Ha rechazado puntuar la mentorizacion");
+
+			},
+			function errorCallback(response) {
+				console.log("Fallo al acceder")
+				console.log(response)
+				mentorizacion.enAccion = false;
+				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
+			}
+		)
 
 	}
 

@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.QueryTimeoutException;
+
+import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,7 @@ import com.tfg.mentoring.model.Peticion;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.CambioFase;
 import com.tfg.mentoring.model.auxiliar.EstadosPeticion;
+import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.MentorizacionUser;
 import com.tfg.mentoring.model.auxiliar.PeticionUser;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
@@ -71,7 +75,11 @@ public class MentorController {
 
 			// Notificaciones.removeIf(n -> (n.getFechaeliminacion() != null));
 			return new ResponseEntity<>(pUser, HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -97,15 +105,24 @@ public class MentorController {
 			}
 			prepo.saveAll(peticiones);
 			return new ResponseEntity<>(pUser, HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	
 	@PostMapping("/peticiones/perfil")
 	public ResponseEntity<UsuarioPerfil> getPerfilPeticion(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentorizado) {
+		if(mentorizado ==null) {
+			System.out.println("El mentorizado estaba null");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		try {
 			Optional<Mentorizado> m = menrepo.findById(mentorizado);
 			if (m.isPresent()) {
@@ -113,22 +130,36 @@ public class MentorController {
 				return new ResponseEntity<>(up, HttpStatus.OK);
 			} else {
 				System.out.println("No hay mentorizado");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (Exception e) {//Habria que tener en cuenta que se pueden soltar excepciones de mapeo, pero las considero un error interno
+			//En caso de hacer lo de los logs, si que habría que diferenciarlas
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	
 	@PostMapping("/peticiones/aceptar")
-	public ResponseEntity<String> aceptarPeticion(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> aceptarPeticion(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentorizado) {
+		if(mentorizado == null || us.getUsername() == null) {
+			System.out.println("El mentorizado estaba null");
+			//Esto no deberia pasar nunca si se llama desde la aplicacion
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+					"la del mentorizado, por favor,  si recibe este mensaje,"+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+		}
 		try {
 			// Aqui, como en las demas, deberia hacerse una comprobacion de que el usuario
 			// esta enable
-			Optional<Mentor> m = mrepo.findById(us.getUsername());
+			Optional<Mentor> m = mrepo.findById(us.getUsername());//Asumimos que el username nunca va a ser null
 			Optional<Mentorizado> men = menrepo.findById(mentorizado);
 			if (m.isPresent() && men.isPresent()) {// Asuminos no hay problemas con el username del usuario, y que no
 													// debe haber ya una mentorizacion
@@ -145,23 +176,44 @@ public class MentorController {
 					else {
 						resultado.setFin(new Date());
 						mentorizacionrepo.save(resultado);
-						return new ResponseEntity<>(null, HttpStatus.OK);//Aqui un codigo de error para indicar a angular el suceso
+						return new ResponseEntity<>(new MensajeError("El mentorizado ya no se encuentra disponible, no se creará mentorización."), HttpStatus.GONE);
+						//Aqui un codigo de error para indicar a angular el suceso
 					}
 					
 			} else {
 				System.out.println("No hay usuarios");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				//Esto no deberia pasar nunca si se llama desde la aplicacion
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+						"la del mentorizado, por favor,  si recibe este mensaje,"+
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
 			}
 
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) {//Aqui concretar mas las excepciones, esta es de prueba
+			//Acceso a la base de datos
+			//Fallo al enviar notificacion? (correo)
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	
 	@PostMapping("/peticiones/rechazar")
-	public ResponseEntity<String> rechazarPeticion(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> rechazarPeticion(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentorizado) {
+		if(mentorizado ==null || us.getUsername() == null) {
+			System.out.println("El mentorizado estaba null");
+			//Esto no deberia pasar nunca si se llama desde la aplicacion
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+					"la del mentorizado, por favor,  si recibe este mensaje,"+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+		}
 		try {
 			Optional<Mentorizado> men = menrepo.findById(mentorizado);
 			Optional<Mentor> m = mrepo.findById(us.getUsername());
@@ -175,12 +227,21 @@ public class MentorController {
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
 				System.out.println("No hay usuarios");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+						"la del mentorizado, por favor,  si recibe este mensaje,"+
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
 			}
 
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -199,7 +260,11 @@ public class MentorController {
 			}
 
 			return new ResponseEntity<>(mUser, HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		}
+		catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -209,39 +274,49 @@ public class MentorController {
 	@GetMapping("/mentorizaciones/actualizar/{date}")
 		public ResponseEntity<List<MentorizacionUser>> getNewMentorizaciones(@AuthenticationPrincipal Usuario us, @PathVariable("date") Long date) {
 			if(date != null) {//Tambien ver si de primeras ya se puede ver si es parseable
-			try {
-				Timestamp fecha = new Timestamp(date);
-				List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-				List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
-				mentorizaciones = mentorizacionrepo.getNuevasMentor(us.getUsername(), fecha);
-				if (mentorizaciones.isEmpty()) {
-					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-				}
-				for(Mentorizacion m : mentorizaciones) {
-					if(m.getFin() == null) {
-						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado()), m.getMentorizado().getCorreo()));
+				try {
+					Timestamp fecha = new Timestamp(date);
+					List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+					List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+					mentorizaciones = mentorizacionrepo.getNuevasMentor(us.getUsername(), fecha);
+					if (mentorizaciones.isEmpty()) {
+						return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 					}
-					else {
-						mUser.add(new MentorizacionUser(m, null, m.getMentorizado().getCorreo()));
+					for(Mentorizacion m : mentorizaciones) {
+						if(m.getFin() == null) {
+							mUser.add(new MentorizacionUser(m, uservice.getPerfilMentorizado(m.getMentorizado()), m.getMentorizado().getCorreo()));
+						}
+						else {
+							mUser.add(new MentorizacionUser(m, null, m.getMentorizado().getCorreo()));
+						}
 					}
-					
-				}
-				//System.out.println(mUser.toString());
-				return new ResponseEntity<>(mUser, HttpStatus.OK);
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+					return new ResponseEntity<>(mUser, HttpStatus.OK);
+				 }catch (JDBCConnectionException | QueryTimeoutException e) {
+					 System.out.println(e.getMessage());
+					 return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+				 }
+				 catch (Exception e) {
+					 System.out.println(e.getMessage());
+					 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+				 }
 			}
 			else {
 				System.out.println("Date esta mal");
 				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			}
 		}
-	
+	//Aqui comprobar que el String este bien
 	@PostMapping("/mentorizaciones/cerrar")
-	public ResponseEntity<String> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentorizado) {
+		if(mentorizado == null || us.getUsername() == null) {
+			System.out.println("El mentorizado o el username estaba null");
+			//Esto no deberia pasar nunca si se llama desde la aplicacion
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+					"la del mentorizado, por favor,  si recibe este mensaje,"+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+		}
 		try {
 			Optional<Mentor> m = mrepo.findById(us.getUsername());
 			Optional<Mentorizado> men = menrepo.findById(mentorizado);
@@ -250,20 +325,36 @@ public class MentorController {
 				uservice.enviarNotificacion(men.get().getUsuario(), "Mentorizacion cerrada", "El usuario "+m.get().getNombre()+
 						" ha cerrado una mentorización que tenía abierta contigo. Puedes proceder a puntuarla y comentarla en el apartado de puntuar.");
 				return new ResponseEntity<>(null, HttpStatus.OK);
-			} else {
+			} else {//Esto, en teoria, no deberia pasar nunca
 				System.out.println("Fallo al acceder a los usuarios");
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+						"la del mentorizado, por favor,  si recibe este mensaje,"+
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
 			}
 
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) { //Otro fallo
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@PostMapping("/mentorizaciones/cambiarfase")
-	public ResponseEntity<String> cambiarFase(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> cambiarFase(@AuthenticationPrincipal Usuario us,
 			@RequestBody CambioFase fase) {
+		if(fase == null || us.getUsername() == null || fase.getCorreo() == null || fase.getFase() == null) {
+			System.out.println("Algo estaba a null");
+			//Esto no deberia pasar nunca si se llama desde la aplicacion
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar realizar la petición o al acceder a su cuenta, "+
+					"por favor,  si recibe este mensaje, pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+		}
 		try {
 			System.out.println(fase.toString());
 			Optional<Mentor> m = mrepo.findById(us.getUsername());
@@ -273,12 +364,21 @@ public class MentorController {
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
 				System.out.println("Fallo al acceder a los usuarios");
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
+						"la del mentorizado, por favor,  si recibe este mensaje,"+
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
 			}
 
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) { //Otro fallo
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

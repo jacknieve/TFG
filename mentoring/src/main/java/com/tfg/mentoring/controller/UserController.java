@@ -1,11 +1,13 @@
 package com.tfg.mentoring.controller;
 
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.QueryTimeoutException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +39,7 @@ import com.tfg.mentoring.model.Puesto;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.IdNotificacion;
+import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.NotificacionUser;
 import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
@@ -147,6 +150,7 @@ public class UserController {
 					System.out.println(m.get().toString());
 					//UsuarioPerfil up = new UsuarioPerfil(m.get());
 					UsuarioPerfil up = uservice.getPerfilMentor(m.get());
+					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());//Esto se podria meter en el mapeo cambiandole el nombre
 					up.setMentor(true);
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
@@ -160,6 +164,7 @@ public class UserController {
 				if(m.isPresent()) {
 					//UsuarioPerfil up = new UsuarioPerfil(m.get());
 					UsuarioPerfil up = uservice.getPerfilMentorizado(m.get());
+					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
 					up.setMentor(false);
 					up.setHoraspormes(4);//Aqui le ponemos este valor para que no se nos queje al intentar modificar la informacion del perfil de un mentorizado
 					System.out.println(up.toString());
@@ -204,6 +209,7 @@ public class UserController {
 						men.setInstitucion(i.get(0));
 					}
 					men.setAreas(up.getAreas());
+					men.getUsuario().setNotificar_correo(up.isNotificar_correo());
 					try {
 						mrepo.save(men);
 					}catch (Exception e) {
@@ -235,6 +241,7 @@ public class UserController {
 						men.setInstitucion(i.get(0));
 					}
 					men.setAreas(up.getAreas());
+					men.getUsuario().setNotificar_correo(up.isNotificar_correo());
 					try {
 						menrepo.save(men);
 					}catch (Exception e) {
@@ -262,43 +269,47 @@ public class UserController {
 	
 	//Eliminar areas de conocimiento de un usuario
 	@PostMapping("/areas/delete")
-	public ResponseEntity<String> borrarAreaUsuario(@AuthenticationPrincipal Usuario us, @RequestBody AreaConocimiento area){
+	public ResponseEntity<MensajeError> borrarAreaUsuario(@AuthenticationPrincipal Usuario us, @RequestBody AreaConocimiento area){
 		System.out.println("Borrando");
-		if(area == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		if(area == null) {//Esto nunca deberia pasar, al menos no desde la aplicacion
+			return new ResponseEntity<>(new MensajeError("No se ha seleccionado ningun área de conocimiento."), HttpStatus.BAD_REQUEST);
 		}
 		if(us.getRol() == Roles.MENTOR) {
 			Optional<Mentor> m = mrepo.findById(us.getUsername());
 			if(m.isPresent()) {
 				try {
 				mrepo.borrarArea(us.getUsername(), area.getArea());
-				}catch (Exception e) {
+				}catch (JDBCConnectionException | QueryTimeoutException e) {
 					System.out.println(e.getMessage());
-					return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+					return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			}
 			else {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder a su información, "+
+						"por favor, vuelva a intentarlo más tarde."), HttpStatus.NOT_FOUND);
 			}
 		}else if(us.getRol() == Roles.MENTORIZADO){
 			Optional<Mentorizado> m = menrepo.findById(us.getUsername());
 			if(m.isPresent()) {
 				try {
 				menrepo.borrarArea(us.getUsername(), area.getArea());
-				}catch (Exception e) {
+				}catch (JDBCConnectionException | QueryTimeoutException e) {
 					// TODO: handle exception
 					System.out.println(e.getMessage());
-					return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+					return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+							"por favor, vuelva a intentarlo más tarde."), HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			}
 			else {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder a su información, "+
+						"por favor, vuelva a intentarlo más tarde."), HttpStatus.NOT_FOUND);
 			}
 		}else {
-			//Esto cambiarlo a otro para decir que no es un rol permitido
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			//Esto, en principio, no deberia pasar, puesto que solo puede acceder aqui los que tengan de rol mentor o mentorizado
+			return new ResponseEntity<>(new MensajeError("No tienes permiso para hacer esto"), HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
 		}
 	}
 	
@@ -319,7 +330,6 @@ public class UserController {
 			}
 			//notrepo.actualizaEstadoNotificaciosUser(us.getUsername());
 			for(Notificacion n : Notificaciones) {
-				//System.out.println(n.getEstado().toString());
 				nUser.add(new NotificacionUser(n));
 				if(n.getEstado() == EstadosNotificacion.ENTREGADA) {
 					n.setEstado(EstadosNotificacion.LEIDA);
@@ -329,7 +339,11 @@ public class UserController {
 			
 			//Notificaciones.removeIf(n -> (n.getFechaeliminacion() != null));
 			return new ResponseEntity<>(nUser, HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {//Fallo al acceder a la base de datos o demasiado tiempo
+			//Estas dos excepciones de momento las vamos a meter en el mismo saco, pero se podrian separar, ya que la segunda es recuperable
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) { //Otro fallo
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -347,7 +361,6 @@ public class UserController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			for(Notificacion n : Notificaciones) {
-				//System.out.println(n.getEstado().toString());
 				nUser.add(new NotificacionUser(n));
 				if(n.getEstado() == EstadosNotificacion.ENTREGADA) {
 					n.setEstado(EstadosNotificacion.LEIDA);
@@ -355,7 +368,11 @@ public class UserController {
 			}
 			notrepo.saveAll(Notificaciones);
 			return new ResponseEntity<>(nUser, HttpStatus.OK);
-		} catch (Exception e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {//Fallo al acceder a la base de datos o demasiado tiempo
+			//Estas dos excepciones de momento las vamos a meter en el mismo saco, pero se podrian separar, ya que la segunda es recuperable
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) { //Otro fallo
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -363,13 +380,23 @@ public class UserController {
 	
 	//Borrar una notificacion
 	@PostMapping("/notificaciones/delete")
-	public ResponseEntity<String> borrarNotificacion(@RequestBody IdNotificacion id){
+	public ResponseEntity<MensajeError> borrarNotificacion(@RequestBody IdNotificacion id){
 		System.out.println("Borrando");
 		if(id == null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MensajeError("No se ha seleccionado ninguna notificacion."), HttpStatus.BAD_REQUEST);
 		}
-		//Aqui falta un try catch
+		try {
 		notrepo.borrarNotificacion(id.getId());
+		}catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "+
+					"por favor, vuelva a intentarlo más tarde."), HttpStatus.SERVICE_UNAVAILABLE);
+		} catch (Exception e) { //Otro fallo
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
+					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 	
@@ -385,7 +412,7 @@ public class UserController {
 				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
 				if(mentor.isPresent()) {
 					//Aqeui habria que recuperar cosas de su institucion para la pagina
-					ModelAndView modelo = new ModelAndView("principalMentor");
+					ModelAndView modelo = new ModelAndView("prMentor");
 					return modelo;
 				}
 				else {
@@ -436,10 +463,19 @@ public class UserController {
 						mrepo.borrarMentor(username);
 						urepo.borrarUsuario(username);//Esto lo ultimo, para que, en el peor de los casos, un usuario pueda volver a
 						//logearse para intentar volver a borrar de nuevo su cuenta
+						uservice.notificarPorCorreo(us, "Cuenta de mentoring eliminada", 
+								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"+
+						"volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"+
+										"Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
+						//Aqui falta enviar un correo
 					}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos
 						// TODO: handle exception
 						System.out.println(e.getMessage());
 						return new ModelAndView("error_page");//Esto ponerle un mensaje
+					}catch (MessagingException | UnsupportedEncodingException e) {//Si falla el envio del correo
+						// TODO: handle exception
+						System.out.println(e.getMessage());
+						//return new ModelAndView("error_page");
 					}	
 				}
 				else if(us.getRol() == Roles.MENTORIZADO){
@@ -450,10 +486,18 @@ public class UserController {
 						menrepo.borrarMentorizado(username);
 						urepo.borrarUsuario(username);//Esto lo ultimo, para que, en el peor de los casos, un usuario pueda volver a
 						//logearse para intentar volver a borrar de nuevo su cuenta
+						uservice.notificarPorCorreo(us, "Cuenta de mentoring eliminada", 
+								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"+
+						"volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"+
+										"Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
 					}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos
 						// TODO: handle exception
 						System.out.println(e.getMessage());
 						return new ModelAndView("error_page");//Esto ponerle un mensaje
+					}catch (MessagingException | UnsupportedEncodingException e) {//Si falla el envio del correo
+						// TODO: handle exception
+						System.out.println(e.getMessage());
+						//return new ModelAndView("error_page");
 					}
 					
 				}

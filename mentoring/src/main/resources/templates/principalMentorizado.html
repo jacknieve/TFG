@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <title>Hello Mentorizado!</title>
 		<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"></script>
     	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
     </head>
     <body ng-app="appConsumer">
@@ -16,14 +17,13 @@
 			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="notificacion in notificaciones">Titulo: {{notificacion.titulo}} <br> Descripcion: {{notificacion.descripcion}}<br> Nueva: {{notificacion.nueva}}, Fecha envio: {{notificacion.fechaenv}}
-			<div> <button ng-click="borrarNotificacion(notificacion)">Borrar notificacion</button></div>
+			<div> <button ng-click="borrarNotificacion(notificacion)" ng-disabled="cargando">Borrar notificacion</button></div>
 			</li>
 			</ul>
 			<p  ng-show="mostrarsin"> No tiene notificaciones pendientes</p>
 			<div> <button ng-click="detenActualizacion()">Parar actualizacion</button></div>
 			<div> <button ng-click="iniciaNotificaciones()">Restear actualizacion</button></div>
-		</div>
-		
+		</div>	
 		<div ng-controller="busquedaController">
 			<p>Busqueda de mentores <button ng-click="activarBusqueda()">Desplegar/Plegar busqueda</button></p>
 			<div ng-show="mostrarBusqueda">
@@ -42,31 +42,32 @@
         		</select>
         		<label >Horas minimas por mes</label>
         		<input type="number" ng-model="horasmes"/>
-        		<button ng-click="buscar()">Buscar</button>
+        		<button ng-click="buscar()" ng-disabled="cargando">Buscar</button>
     		</div>
-			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="mentor in mentores">Nombre: {{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}<br> Nivel de estudios: {{mentor.nivelEstudiosNivelestudios}}, Horas por mes: {{mentor.horaspormes}}
-			<div> <button ng-hide="mentor.expandido" ng-click="obtenerMentor(mentor)">Mas informacion</button></div>
+			<div> <button ng-hide="mentor.expandido" ng-click="obtenerMentor(mentor)" ng-disabled="mentor.cargando">Mas informacion</button></div>
+			<span ng-show="mentor.cargando">Cargando...</span>
 			<div ng-show="mentor.expandido">
 			Descripcion : {{mentor.info.descripcion}}<br>
 			Institucion : {{mentor.info.institucionNombre}} Puesto: {{mentor.info.puestoPuesto}}<br>
 			<button ng-click="mostrarOcultarSolicitud(mentor)">Enviar Solicitud</button>
 			<div ng-show="mentor.info.solicitud">
 			<textarea ng-model="mentor.info.motivo" maxlength="300"></textarea>Caracteres restantes : {{300 - mentor.info.motivo.length}}
-			<button ng-click="enviarSolicitud(mentor.correo, mentor.info.motivo)">Enviar</button>
+			<button ng-click="enviarSolicitud(mentor, mentor.info.motivo)" ng-disabled="mentor.cargando">Enviar</button>
 			</div>
 			<div> <button ng-show="mentor.expandido" ng-click="plegarMentor(mentor)">Menos informacion</button></div>
 			</div>
 			</li>
 			</ul>
 			<p ng-show="sinresultados">No hay ningún mentor registrado que coincida con esos terminos</p>
-		</div>
+			</div>
 		</div>
 		<div ng-controller="mentorizadoMentorizacionController">
 			<p>Mentorizaciones <button ng-click="activarMentorizaciones()" ng-disabled="enAccion">Desplegar/Plegar Mentorizaciones</button></p>
 			<div ng-show="mostrarMentorizaciones">
-			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}} 
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button> </div>
@@ -89,7 +90,7 @@
 				<div ng-show="form.$invalid">Introduzca datos validos para cerrar una relacion. </div>
 				<div ng-show="mentorizacion.aceptarcerrar">
 					¿Seguro que quieres cerrar esta relacion?
-					<button ng-click="cerrarMentorizacion(mentorizacion, form)">Confirmar</button>
+					<button ng-click="cerrarMentorizacion(mentorizacion, form)" ng-disabled="mentorizacion.enAccion">Confirmar</button>
 				</div>
 				</form>
 				<button ng-click="abrirPuntuar(mentorizacion)">Cancelar</button>
@@ -104,7 +105,7 @@
 		<div ng-controller="puntuarController">
 			<p>Mentorizaciones por puntuar <button ng-click="activarMentorizaciones()" ng-disabled="enAccion">Desplegar/Plegar Mentorizaciones por puntuar</button></p>
 			<div ng-show="mostrarMentorizaciones">
-			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}} 
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button> </div>
@@ -123,7 +124,8 @@
 				<div ng-show="form.$invalid">Introduzca datos validos para cerrar una relacion. </div>
 				
 				<div> 
-				<button ng-click="puntuarMentorizacion(mentorizacion, form)">Puntuar</button>
+				<button ng-click="puntuarMentorizacion(mentorizacion, form)" ng-disabled="mentorizacion.enAccion">Puntuar</button>
+				<button ng-click="descartarPuntuar(mentorizacion)" ng-disabled="mentorizacion.enAccion">Descartar</button>
 				<button ng-click="abrirPuntuar(mentorizacion)">Cancelar</button>
 				</form>
 				</div>

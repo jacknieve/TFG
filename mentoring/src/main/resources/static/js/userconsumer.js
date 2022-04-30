@@ -12,7 +12,8 @@ appConsumer.controller("userController", function($scope, $http){
 	//Mapa para ver si un area es nueva al borrar, es decir, si aun no se ha guardado en el backend
 	const areasNuevas = new Map();
 	var copiaDatos;
-	$scope.confirmarBorrar=false;
+	$scope.confirmarBorrar = false;
+	$scope.cargando = false;
 	
 	$scope.getInfo = function(){
 		$scope.cargando = true;
@@ -36,11 +37,12 @@ appConsumer.controller("userController", function($scope, $http){
 					}
 					$scope.areaseleccioanda = "--Escoge una--";
 				}
-				$scope.cargando = false;				
+				$scope.cargando = false;			
 			},
 			function errorCallback(response){
 				console.log("Fallo al acceder")
 				console.log(response)
+				$scope.cargando = false;	
 			}
 		)
 	}
@@ -50,27 +52,28 @@ appConsumer.controller("userController", function($scope, $http){
 	$scope.setInfo = function(usuario){
 		console.log($scope)
 		if($scope.form.$valid){
-		$scope.cargando = true;
-		console.log("Consulta lanzada")
-		usuario.fnacimiento = $scope.mydate;
-		$http.post("/user/setinfo", usuario).then(
-			function sucessCallback(response){
-				if(response.status == 200){
-					//console.log(response);
-					console.log(response);
-					areasNuevas.clear(); //Borramos las areas para no intentar solo eliminar del frontend un area
-					alert("La operacion ha sido un exito");
+			$scope.cargando = true;
+			console.log("Consulta lanzada")
+			usuario.fnacimiento = $scope.mydate;
+			$http.post("/user/setinfo", usuario).then(
+				function sucessCallback(response){
+					if(response.status == 200){
+						//console.log(response);
+						console.log(response);
+						areasNuevas.clear(); //Borramos las areas para no intentar solo eliminar del frontend un area
+						alert("La operacion ha sido un exito");
+					}
+					else{
+						$scope.sinareas=true;
+					}
+					$scope.cargando = false;			
+				},
+				function errorCallback(response){
+					console.log("Fallo al acceder")
+					console.log(response)
+					$scope.cargando = false;
 				}
-				else{
-					$scope.sinareas=true;
-				}
-				$scope.cargando = false;				
-			},
-			function errorCallback(response){
-				console.log("Fallo al acceder")
-				console.log(response)
-			}
-		)
+			)
 		}
 		else{
 			alert("Por favor, introduzca valores válidos en los campos");
@@ -85,6 +88,7 @@ appConsumer.controller("userController", function($scope, $http){
 	
 	//Cambiarlo a add area
 	$scope.addArea = function (areaSelecionada){
+		$scope.cargando = true;
 		$scope.sinareas=false;
 		if(areaSelecionada !== "--Escoge una--"){
 			if(areasUsuario.has(areaSelecionada)){
@@ -97,12 +101,15 @@ appConsumer.controller("userController", function($scope, $http){
 				areasNuevas.set(areaSelecionada,areaSelecionada);
 			}
 		}
+		$scope.cargando = false;
 	}
 	
 	
 	$scope.borrarArea = function (area){
+		$scope.cargando = true;
 		if(areasNuevas.has(area.area)){
-			index = $scope.usuario.areas.indexOf(area.area);
+			index = $scope.usuario.areas.indexOf(area);
+			console.log(index);
 			$scope.usuario.areas.splice(index,1);
 			areasUsuario.delete(area.area);
 			areasNuevas.delete(area.area);
@@ -110,6 +117,7 @@ appConsumer.controller("userController", function($scope, $http){
 			if($scope.usuario.areas.length == 0){
 				$scope.sinareas=true;
 			}
+			$scope.cargando = false;
 		}
 		else{
 		$http.post("/user/areas/delete",area).then(
@@ -122,12 +130,14 @@ appConsumer.controller("userController", function($scope, $http){
 					if($scope.usuario.areas.length == 0){
 						$scope.sinareas=true;
 					}
+					$scope.cargando = false;
 				}
 				
 			},
 			function errorCallback(response){
 				console.log("Fallo al eliminar");
 				console.log(response);
+				$scope.cargando = false;
 			}
 		)
 		}

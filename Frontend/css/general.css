@@ -1,0 +1,197 @@
+.header{
+	background-color: #8DFFC7;
+}
+
+#borderIcono {
+border-right: 5px solid #1C6EA4;
+border-bottom: 5px solid #1C6EA4;
+border-radius: 40px;
+}
+
+.headerLink {
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 19px;
+letter-spacing: 0px;
+word-spacing: 0px;
+color: #000000;
+font-weight: 400;
+text-decoration: none;
+font-style: normal;
+font-variant: normal;
+text-transform: none;
+}
+
+.linkNavRight {
+align-self: flex-end center;
+}
+
+.buttonNav {
+	background-color: #B6B6B6;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.buttonNav:hover {
+	background-color: #868686;
+	border: 3px solid #464646;
+	color: white;
+}
+
+
+a:hover {
+	text-decoration: none;
+}
+
+button:hover{
+	background-color: #858585;
+}
+
+.espacioEntreSecciones{
+	height: 10px;
+	margin: 5px;
+}
+
+.encabezadoSeccion{
+	background-color: #8EFBF6;
+	border: 3px solid #464646;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 15px 15px 0px 0px;
+	font-weight: 700;
+}
+
+.cuerpoSeccion{
+	background-color: #E2E2E2;
+	border: 1px solid black;
+	font-family: Tahoma, Geneva, sans-serif;
+	border-radius: 0px 0px 15px 15px;
+	overflow-y: scroll;
+	height: 500px;
+}
+
+.elementoRepetible{
+	border-bottom: 1px solid black;
+}
+
+.elementoRepetibleDos{
+	border: 1px solid black;
+}
+
+.subSeccion{
+	border: 1px solid black;
+	margin: 0px;
+}
+
+
+.botonBorrarNotificacion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: red;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.botonSeccion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: blue;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.fotoPerfil {
+	border: 5px solid #1C6EA4;
+	border-radius: 80px;
+	height: 120px;
+	width: 120px;	
+}
+
+.textoContacto{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+}
+
+.botonFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 120px;
+	height: 32px;
+	color: black;
+}
+
+.textoDescripcionFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 11px;
+	text-align: justify;
+}
+
+.areaConocimiento{
+	border: 2px solid #464646;
+	border-radius: 5px;
+	height: 32px;
+	background-color: #ECECEC;
+}
+
+.botonInterfaz{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 15px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.popup{
+	position: relative;
+	z-index: 100;
+	top: -100px;
+	left: 25%;
+	text-align: center;
+	vertical-align: middle;
+	width: 300px;
+	height: 70px;
+	background-color: #DCDCDC;
+	border: 3px solid black;
+}
+
+.div-disabled
+{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.sinResultados{
+	vertical-align: middle;
+	text-align: center;
+}
+.redoBoton{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+}

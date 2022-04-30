@@ -34,6 +34,8 @@ public class Usuario implements UserDetails{
 	private boolean unlocked;
 	@Column(name = "enable")
 	private boolean enable;
+	@Column(name = "notificar_correo")
+	private boolean notificar_correo;
 	@Column(name = "verification_code", length = 64)
     private String verificationCode;
 	//orphanRemoval para indicar que la entidad hija sera eliminada directamente al dejar de
@@ -56,6 +58,7 @@ public class Usuario implements UserDetails{
 		this.rol = rol;
 		this.unlocked=true;
 		this.enable=true;
+		this.notificar_correo=true;
 	}
 	
 	public Usuario(String correo, String password, boolean enable, String verificationCode) {
@@ -66,11 +69,12 @@ public class Usuario implements UserDetails{
 		this.unlocked=true;
 		this.enable=enable;
 		this.verificationCode = verificationCode;
+		this.notificar_correo=true;
 	}
 
 
 	public Usuario( String username, String password, Roles rol, boolean unlocked,
-			boolean enable, String verificationCode) {
+			boolean enable, String verificationCode, boolean notificar_correo) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -78,6 +82,7 @@ public class Usuario implements UserDetails{
 		this.unlocked = unlocked;
 		this.enable = enable;
 		this.verificationCode = verificationCode;
+		this.notificar_correo=notificar_correo;
 	}
 
 	public void setUsername(String correo) {
@@ -158,12 +163,25 @@ public class Usuario implements UserDetails{
 	public void setVerificationCode(String verificationCode) {
 		this.verificationCode = verificationCode;
 	}
+	
+	
+
+	public boolean isNotificar_correo() {
+		return notificar_correo;
+	}
+
+	public void setNotificar_correo(boolean notificar_correo) {
+		this.notificar_correo = notificar_correo;
+	}
 
 	@Override
 	public String toString() {
-		return "Usuario [correo=" + username + ", password=" + password + ", rol=" + rol + ", unlocked="
-				+ unlocked + ", enable=" + enable + "]";
+		return "Usuario [username=" + username + ", password=" + password + ", rol=" + rol + ", unlocked=" + unlocked
+				+ ", enable=" + enable + ", notificar_correo=" + notificar_correo + ", verificationCode="
+				+ verificationCode + "]";
 	}
+
+	
 	
 
 	

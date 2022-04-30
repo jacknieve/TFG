@@ -1,12 +1,18 @@
 package com.tfg.mentoring.service;
 
 import java.io.UnsupportedEncodingException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.QueryTimeoutException;
 
+import org.hibernate.exception.JDBCConnectionException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +31,7 @@ import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
 import com.tfg.mentoring.model.auxiliar.Roles;
 import com.tfg.mentoring.model.auxiliar.UserAux;
 import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
+import com.tfg.mentoring.model.auxiliar.UsuariosActivos;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
@@ -63,6 +70,9 @@ public class UserService {
     
 	@Autowired
 	private ListLoad listas;
+	
+	@Autowired
+	private UsuariosActivos usuariosActivos;
     
     
     public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB{
@@ -79,12 +89,7 @@ public class UserService {
 	    		throw new ExcepcionDB("Clave duplicada");
 	    	}
 	    	sendVerificationEmail(user, mentor.getNombre(), siteURL);
-	    	//Aqui, los titulos y la descripcion se podría extraer de la base de datos al arrancar el servidor y tenerlo en un
-	    	//hashmap o similar, dado que en principio no deberian cambiar, y así el administrador podría llegar a cambiarlo desde
-	    	//su interfaz de control
-	    	enviarNotificacion(user, "Bienvenido/a "+mentor.getNombre(), 
-	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
-	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar, o su descripción.");
+	    	
 	    }
 	    else {
 	    	user.setRol(Roles.MENTORIZADO);
@@ -95,9 +100,7 @@ public class UserService {
 	    		throw new ExcepcionDB("Clave duplicada");
 	    	}
 	    	sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
-	    	enviarNotificacion(user, "Bienvenido/a "+mentorizado.getNombre(), 
-	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
-	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.");
+	    	
 	    }
     }
      //https://mail.codejava.net/frameworks/spring-boot/email-verification-example
@@ -139,7 +142,20 @@ public class UserService {
             user.setVerificationCode(null);
             user.setEnable(true);
             urepo.save(user);
-             
+            if(user.getRol() == Roles.MENTOR) {
+            	//Aqui, los titulos y la descripcion se podría extraer de la base de datos al arrancar el servidor y tenerlo en un
+    	    	//hashmap o similar, dado que en principio no deberian cambiar, y así el administrador podría llegar a cambiarlo desde
+    	    	//su interfaz de control
+    	    	enviarNotificacion(user, "Bienvenido/a ", 
+    	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
+    	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar, o su descripción.");
+            }
+            else if(user.getRol() == Roles.MENTORIZADO) {
+            	enviarNotificacion(user, "Bienvenido/a ", 
+    	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
+    	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.");
+            }
+            user.setNotificar_correo(false);
             return true;
         }
          
@@ -148,7 +164,45 @@ public class UserService {
     
     public void enviarNotificacion(Usuario u, String titulo, String descripcion) {
     	Notificacion notificacion = new Notificacion(u, titulo, descripcion);
-    	nrepo.save(notificacion);
+    	try {
+    		nrepo.save(notificacion);
+    	}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos o tarda mucho
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+    	if(u.isNotificar_correo() && !usuariosActivos.getUsers().contains(u.getUsername())) {
+    		try {
+    			notificarPorCorreo(u, titulo, descripcion);
+    		}
+    		catch (MessagingException | UnsupportedEncodingException e) {//Aqui habria que tratarla mejor
+    			//Estas excepciones saltarian sobre todo si la cuenta de correo del usuario no existe, pero, para que se lance este metodo
+    			//Debe existir
+    			System.out.println(e.getMessage());
+    		}
+    	}
+    }
+    
+    public void notificarPorCorreo(Usuario u, String titulo, String descripcion) throws MessagingException, UnsupportedEncodingException{
+    	String toAddress = u.getUsername();
+        String fromAddress = "mentoring.pablo@gmail.com";
+        String senderName = "Mentoring";
+        String subject = titulo;
+        String content = "Saludos,<br>"
+                + descripcion
+                + "<br>Muchas gracias por su atención,<br>"
+                + "Mentoring.";
+         
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+         
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+         
+        helper.setText(content, true);
+         
+        //Aqui crear una excepcion personalizada en caso de excepcion
+        mailSender.send(message);
     }
     
     
@@ -169,6 +223,11 @@ public class UserService {
 	public UsuarioPerfil getPerfilMentor(Mentor mentor){
 		UsuarioPerfil user = new UsuarioPerfil();
 		user = maper.map(mentor, UsuarioPerfil.class);
+		if(user.getFnacimiento() != null) {
+			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
+		}
+		
 		//System.out.println(user.toString());
 		return user;
 	}
@@ -176,6 +235,11 @@ public class UserService {
 	public UsuarioPerfil getPerfilMentorizado(Mentorizado mentorizado){
 		UsuarioPerfil user = new UsuarioPerfil();
 		user = maper.map(mentorizado, UsuarioPerfil.class);
+		if(user.getFnacimiento() != null) {
+			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
+		}
+		
 		//System.out.println(user.toString());
 		return user;
 	}

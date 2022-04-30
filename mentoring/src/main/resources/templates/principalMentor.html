@@ -17,7 +17,7 @@
 			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="notificacion in notificaciones">Titulo: {{notificacion.titulo}} <br> Descripcion: {{notificacion.descripcion}}<br> Nueva: {{notificacion.nueva}}, Fecha envio: {{notificacion.fechaenv}}
-			<div> <button ng-click="borrarNotificacion(notificacion)">Borrar notificacion</button></div>
+			<div> <button ng-click="borrarNotificacion(notificacion)" ng-disabled="cargando">Borrar notificacion</button></div>
 			</li>
 			</ul>
 			<p ng-show="mostrarsin">No tiene notificaciones</p>
@@ -27,10 +27,10 @@
 		
 		
 		<div ng-controller="peticionController">
-			<p>Peticiones pendientes <button ng-click="activarPeticiones()">Desplegar/Plegar Peticiones</button></p>
+			<p>Peticiones pendientes <button ng-click="activarPeticiones()" ng-disabled="cargando">Desplegar/Plegar Peticiones</button></p>
 			<div ng-show="mostrarPeticiones">
 			<div>
-			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="peticion in peticiones">Nombre: {{peticion.nombre}}<br> 
 			Motivo: {{peticion.motivo}} <br>
@@ -38,6 +38,8 @@
 			<div> <button ng-hide="peticion.expandido" ng-click="obtenerPerfilPeticion(peticion)">Acceder a su perfil</button>
 			<button ng-click="aceptarPeticion(peticion)" ng-disabled="peticion.enAccion">Aceptar solicitud</button>
 			<button ng-click="rechazarPeticion(peticion)" ng-disabled="peticion.enAccion">Rechazar solicitud</button></div>
+			<div ng-show="peticion.enAccion">Cargando... (esto puede llevar unos segundos si es necesario notificar por correo al mentorizado)</div>
+			<div ng-show="peticion.error">{{peticion.mensajeError}}</div>
 			<div ng-show="peticion.expandido">
 			Descripcion : {{peticion.info.descripcion}}<br>
 			Institucion : {{peticion.info.institucionNombre}} Nivel de estudios: {{peticion.info.nivelEstudiosNivelestudios}}<br>
@@ -50,10 +52,10 @@
 		</div>
 		
 		<div ng-controller="mentorMentorizacionController">
-			<p>Mentorizaciones <button ng-click="activarMentorizaciones()">Desplegar/Plegar Mentorizaciones</button></p>
+			<p>Mentorizaciones <button ng-click="activarMentorizaciones()" ng-disabled="enAccion">Desplegar/Plegar Mentorizaciones</button></p>
 			<div ng-show="mostrarMentorizaciones">
 			<div>
-			<div ng-show="cargandoBusqueda">Cargando...</div>
+			<div ng-show="cargando">Cargando...</div>
 			<ul>
 			<li ng-repeat="mentorizacion in mentorizaciones">Nombre: {{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}} 
 			<div> <button ng-hide="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Acceder a su perfil</button>
@@ -85,14 +87,14 @@
 			<button ng-disabled="mentorizacion.fase == 'FIN'" ng-click="mentorizacion.fase = 'FIN'">Cambiar a esta fase</button>
 			</div>
 			<span>
-			<button ng-click="aceptarCambioFase(mentorizacion)">Aceptar el cambio de fase</button>
+			<button ng-click="aceptarCambioFase(mentorizacion)" ng-disabled="mentorizacion.enAccion">Aceptar el cambio de fase</button>
 			<div> <button ng-show="mentorizacion.expandido" ng-click="plegarMentorizacion(mentorizacion)">Menos informacion</button></div>
 			</div>
 			<button ng-hide="mentorizacion.aceptarcerrar" ng-click="confirmarCerrar(mentorizacion)">Cerrar la relación</button>
 			<div ng-show="mentorizacion.aceptarcerrar">
 				<div> 
 					¿Seguro que quieres cerrar esta relacion?
-					<button ng-click="cerrarMentorizacion(mentorizacion)">Confirmar</button>
+					<button ng-click="cerrarMentorizacion(mentorizacion)" ng-disabled="mentorizacion.enAccion">Confirmar</button>
 					<button ng-click="confirmarCerrar(mentorizacion)">Cancelar</button>
 				</div>
 			</div>

@@ -26,7 +26,7 @@ public class UsuarioLogeado implements HttpSessionBindingListener{
 	        List<String> users = usuariosActivos.getUsers();
 	        UsuarioLogeado user = (UsuarioLogeado) event.getValue();
 	        if (!users.contains(user.getUsername())) {
-	        	System.out.println("Añadido usuario");
+	        	System.out.println("Añadido usuario : " + user.getUsername());
 	            users.add(user.getUsername());
 	        }
 	    }

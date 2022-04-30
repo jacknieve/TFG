@@ -14,7 +14,7 @@ public interface NotificacionRepo extends JpaRepository<Notificacion, String>{
 	//Guardo aqui esto porque el fecha eliminacion si que serviria para cosas que se van a actualizar desde "fuera del usuario"
 	//@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE fechaenv >= ?1 OR fechaeliminacion >= ?1")
 	
-	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado <> 2")
+	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado <> 2 ORDER BY fechaenv DESC")
 	List<Notificacion> getNotificaciosUser(String user);
 	
 	@Modifying

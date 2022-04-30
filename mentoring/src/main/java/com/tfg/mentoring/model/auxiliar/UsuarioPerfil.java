@@ -10,23 +10,25 @@ import com.tfg.mentoring.model.AreaConocimiento;
 //Clase que contiene los datos que se le devolverán a un usuario al acceder a su perfil
 public class UsuarioPerfil {
 
-	private String nombre;
-	private String papellido;
-	private String sapellido;
+	private String nombre;//
+	private String papellido;//
+	private String sapellido;//
 	private String nivelEstudiosNivelestudios;//Este nonbre es tan raro y largo para el mapeo
-	private String telefono;
-	private String descripcion;
+	private String telefono;//
+	private String descripcion;//
 	private String linkedin;
-	private float horaspormes;
-	private Date fnacimiento;
+	private float horaspormes;//-
+	private Date fnacimiento;//
 	private List<AreaConocimiento> areas = new ArrayList<>();
-	private String puestoPuesto;
+	private String puestoPuesto;//-
 	private String institucionNombre;
-	private boolean mentor;
+	private boolean mentor;//
+	private boolean notificar_correo;//
+	private int edad;
 
 	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudiosNivelestudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			Date fnacimiento, String puestoPuesto, String institucionNombre, boolean mentor) {
+			Date fnacimiento, String puestoPuesto, String institucionNombre, boolean mentor, boolean notificar_correo) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -40,6 +42,7 @@ public class UsuarioPerfil {
 		this.puestoPuesto = puestoPuesto;
 		this.institucionNombre = institucionNombre;
 		this.mentor=mentor;
+		this.notificar_correo=notificar_correo;
 	}
 	
 
@@ -153,6 +156,28 @@ public class UsuarioPerfil {
 	public void setMentor(boolean mentor) {
 		this.mentor = mentor;
 	}
+	
+	
+
+
+	public int getEdad() {
+		return edad;
+	}
+
+
+	public void setEdad(int edad) {
+		this.edad = edad;
+	}
+
+
+	public boolean isNotificar_correo() {
+		return notificar_correo;
+	}
+
+
+	public void setNotificar_correo(boolean notificar_correo) {
+		this.notificar_correo = notificar_correo;
+	}
 
 
 	@Override
@@ -161,9 +186,15 @@ public class UsuarioPerfil {
 				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
 				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
 				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", puestoPuesto=" + puestoPuesto
-				+ ", institucionNombre=" + institucionNombre + ", mentor=" + mentor + "]";
+				+ ", institucionNombre=" + institucionNombre + ", mentor=" + mentor + ", notificar_correo="
+				+ notificar_correo + ", edad=" + edad + "]";
 	}
 
+
+	
+
+
+	
 	
 
 	

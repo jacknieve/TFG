@@ -10,7 +10,8 @@
 </head>
 <body ng-app="appRegister">
 <h1 th:text="Formulario">form</h1>
-<form action='#' th:action="@{/auth/register}" method="POST" th:object="${useraux}" enctype="utf8" ng-controller="registerController">
+<!--th:action="${useraux.mentor} == true ? @{/auth/register?m=1} : @{/auth/register?m=0}"-->
+<form action='#' th:action="${useraux.mentor} == true ? @{/auth/register?m=1} : @{/auth/register?m=0}" method="POST" th:object="${useraux}" enctype="utf8" ng-controller="registerController">
 	<div th:if="${errorGlobal}"><span th:text="${errorGlobal}"/></div>
     <div>
         <label th:text="Correo">Correo</label>

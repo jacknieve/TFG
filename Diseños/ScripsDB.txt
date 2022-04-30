@@ -1,15 +1,15 @@
 --Insercion de mentores de prueba--
-insert into usuarios (username, enable, password, rol, unlocked, verification_code)
-values ('mentor1', true, 'falsa', 1, true, null),
-('mentor2', true, 'falsa', 1, true, null),
-('mentor3', true, 'falsa', 1, true, null),
-('mentor4', true, 'falsa', 1, true, null),
-('mentor5', true, 'falsa', 1, true, null),
-('mentor6', true, 'falsa', 1, true, null),
-('mentor7', true, 'falsa', 1, true, null),
-('mentorkk1', false, 'falsa', 1, true, null),
-('mentorkk2', true, 'falsa', 1, false, null),
-('mentorkk3', false, 'falsa', 1, false, null);
+insert into usuarios (username, enable, password, rol, unlocked, verification_code, notificar_correo)
+values ('mentor1', true, 'falsa', 1, true, null, false),
+('mentor2', true, 'falsa', 1, true, null, false),
+('mentor3', true, 'falsa', 1, true, null, false),
+('mentor4', true, 'falsa', 1, true, null, false),
+('mentor5', true, 'falsa', 1, true, null, false),
+('mentor6', true, 'falsa', 1, true, null, false),
+('mentor7', true, 'falsa', 1, true, null, false),
+('mentorkk1', false, 'falsa', 1, true, null, false),
+('mentorkk2', true, 'falsa', 1, false, null, false),
+('mentorkk3', false, 'falsa', 1, false, null, false);
 
 insert into mentores (usuario_mentor, fnacimiento, feliminacion, fregistro, horaspormes, linkedin, nivelestudios, descripcion, nombre, papellido, sapellido, puesto, telefono, institucion)
 values ('mentor1', current_timestamp, null, current_timestamp, 5.0, null, 'Graduado', null, 'Juan', null, null, 'Otro', null, 'Otra'),
@@ -38,10 +38,10 @@ values ('mentor1','Telecomunicaciones'),
 ('mentorkk2', 'Derecho');
 
 
-insert into usuarios (username, enable, password, rol, unlocked, verification_code)
-values ('usc@usc.es', true, 'falsa', 3, true, null),
-('uvigo@uvigo.es', true, 'falsa', 3, true, null),
-('empresafantasma@fraude.kk', true, 'falsa', 3, true, null);
+insert into usuarios (username, enable, password, rol, unlocked, verification_code, notificar_correo)
+values ('usc@usc.es', true, 'falsa', 3, true, null, false),
+('uvigo@uvigo.es', true, 'falsa', 3, true, null, false),
+('empresafantasma@fraude.kk', true, 'falsa', 3, true, null, false);
 
 insert into instituciones (usuario_username, color, nombre, visibilidad, webpage, direccion)
 values ('usc@usc.es', '#3733FF', 'USC', true, null, null),

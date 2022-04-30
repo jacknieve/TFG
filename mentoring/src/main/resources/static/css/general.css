@@ -1,0 +1,270 @@
+.header{
+	background-color: #8DFFC7;
+}
+
+body {
+  overflow-y: scroll;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+#borderIcono {
+border-right: 5px solid #1C6EA4;
+border-bottom: 5px solid #1C6EA4;
+border-radius: 40px;
+}
+
+.headerLink {
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 19px;
+letter-spacing: 0px;
+word-spacing: 0px;
+color: #000000;
+font-weight: 400;
+text-decoration: none;
+font-style: normal;
+font-variant: normal;
+text-transform: none;
+}
+
+.linkNavRight {
+align-self: flex-end center;
+}
+
+.buttonNav {
+	background-color: #B6B6B6;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.buttonNav:hover {
+	background-color: #868686;
+	border: 3px solid #464646;
+	color: white;
+}
+
+
+a:hover {
+	text-decoration: none;
+}
+
+button:hover{
+	background-color: #858585;
+}
+
+button:disabled{
+	background-color: #858585;
+	opacity: 0.5;
+}
+
+.espacioEntreSecciones{
+	height: 10px;
+	margin: 5px;
+}
+
+.encabezadoSeccion{
+	background-color: #8EFBF6;
+	border: 3px solid #464646;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 15px 15px 0px 0px;
+	font-weight: 700;
+}
+
+.pieSeccion{
+	background-color: #8EFBF6;
+	border: 3px solid #464646;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 0px 0px 15px 15px;
+	font-weight: 700;
+}
+
+.cuerpoSeccion{
+	transition:0.5s linear all;
+	background-color: #E2E2E2;
+	border: 1px solid black;
+	font-family: Tahoma, Geneva, sans-serif;
+	overflow-y: scroll;
+	height: 600px;
+	word-wrap: break-word;
+}
+
+.cuerpoSeccion.ng-show{
+	transition:0.5s linear all;
+	height: 500px;
+}
+
+.cuerpoSeccion.ng-hide{
+	transition:0.5s linear all;
+	height: 0px;
+}
+
+.cuerpoSeccion.ng-enter.ng-enter-active {
+  height: 500px;
+}
+
+.elementoRepetible{
+	border-bottom: 1px solid black;
+}
+
+.elementoRepetibleDos{
+	border: 1px solid black;
+	position: relative;
+}
+
+.subSeccion{
+	border-bottom: 1px solid black;
+	margin: 0px;
+}
+@media only screen and (min-width: 768px) {
+  .subSeccionIzquierda{
+	border-right: 1px solid black;
+	}
+}
+@media only screen and (min-width: 992px) {
+  .subSeccionIzquierdaDos{
+	border-right: 1px solid black;
+	}
+}
+
+
+
+.botonBorrarNotificacion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: red;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.botonSeccion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: blue;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.fotoPerfil {
+	border: 5px solid #1C6EA4;
+	border-radius: 80px;
+	height: 120px;
+	width: 120px;	
+}
+
+.textoContacto{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+}
+
+.botonFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 120px;
+	height: 32px;
+	color: black;
+}
+
+.textoDescripcionFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 11px;
+	text-align: justify;
+}
+
+.areaConocimiento{
+	border: 2px solid #464646;
+	border-radius: 5px;
+	height: 32px;
+	background-color: #ECECEC;
+}
+
+.botonInterfaz{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 15px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.popup{
+	position: fixed;
+	z-index: 200;
+	top: 45%;
+	left: 45%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	vertical-align: middle;
+	width: 300px;
+	min-height: 70px;
+	background-color: #DCDCDC;
+	border: 3px solid black;
+	pointer-events: all;
+}
+
+
+.popupFondo{
+	position: fixed;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(220,220,220,0.5);
+}
+
+.seccionDesabilitada{
+  	pointer-events: none;
+}
+
+.sinResultados{
+	vertical-align: middle;
+	text-align: center;
+}
+
+.sinResultadosSeccion{
+	height: 100px;
+}
+
+.mensajeError{
+	color: red;
+	font-weight: bold;
+}
+
+.redoBoton{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 30px;
+	height: 30px;
+	text-align: center;
+}
+
+.textoLargo{
+	word-wrap: break-word;
+}

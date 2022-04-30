@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,8 +59,8 @@ public class RegisterController {
 	}
 	
 	//Probar a pasar en el prototipo argumentos a un metodo como este
-	@GetMapping("/registration")
-	public ModelAndView showRegistrationForm(HttpServletRequest request) {
+	@GetMapping("/registration/{mentor}")
+	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor) {
 		//Usuario user = new Usuario();
 	    UserAux useraux = new UserAux();
 	    useraux.setHoraspormes(4);
@@ -67,6 +68,8 @@ public class RegisterController {
 	    //System.out.println(getSiteURL(request));
 	    //model.addObject("user", user);
 	    //System.out.println(useraux.toString());
+	    //if(mentor.equals("mentor")) useraux.setMentor(true);
+	    //else useraux.setMentor(false);
 	    model.addObject("useraux", useraux);
 	    uservice.addListasModeloSinAreas(model);
 	    return model;
@@ -76,6 +79,7 @@ public class RegisterController {
 	@PostMapping("/register")
 	public ModelAndView registerUserAccount(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result, HttpServletRequest request) {
 		if (result.hasErrors()) {
+			System.out.println(useraux.toString());
 			ModelAndView model = new ModelAndView("register");
 			model.addObject("useraux", useraux);
 			uservice.addListasModeloSinAreas(model);
