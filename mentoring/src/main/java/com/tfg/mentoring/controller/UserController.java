@@ -425,7 +425,7 @@ public class UserController {
 				if(mentorizado.isPresent()) {
 					//System.out.println(mentorizado.get().toString());
 					//System.out.println(format.format(mentorizado.get().getFnacimiento()));
-					ModelAndView modelo = new ModelAndView("principalMentorizado");
+					ModelAndView modelo = new ModelAndView("prMentorizado");
 					modelo.addObject("instituciones", listas.getInstituciones());
 				    modelo.addObject("areas", listas.getAreas());
 					return modelo;

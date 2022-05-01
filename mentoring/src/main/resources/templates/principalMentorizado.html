@@ -85,7 +85,6 @@
 				<input type="number" ng-model="mentorizacion.puntuacion" name="puntuacion" min="1" max="10"/> 
 				<span ng-show="form.puntuacion.$invalid">La puntuacion debe estar entre 1 y 10. </span>
 				
-				<div> 
 				<button ng-hide="mentorizacion.aceptarcerrar" ng-click="confirmarCerrar(mentorizacion)">Cerrar la relación</button>
 				<div ng-show="form.$invalid">Introduzca datos validos para cerrar una relacion. </div>
 				<div ng-show="mentorizacion.aceptarcerrar">

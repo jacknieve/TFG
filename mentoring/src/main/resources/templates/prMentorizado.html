@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Principal Mentor</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"></script>
+	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
+	<!-- Bootstrap -->
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
+	<link th:href="@{/css/general.css}" rel="stylesheet">
+
+</head>
+
+<body ng-app="appConsumer">
+	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
+		<nav class="navbar navbar-expand-lg navbar-light header">
+			<a class="navbar-brand" href="#"><img id="borderIcono"  th:src="@{/images/icono_prueba.png}" width="60"
+					height="60" alt="" /></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<span class="linkNavRight d-block d-lg-none">
+				<a th:href="@{/user/perfil}">
+					<div class="buttonNav">Mi perfil</div>
+				</a>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#mentorizaciones">Mis mentorizaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#busqueda">Buscar mentores</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#puntuar">Puntuar mentorizaciones</a>
+					</li>
+				</ul>
+			</div>
+			<span class="linkNavRight d-none d-lg-block">
+				<a th:href="@{/user/perfil}">
+					<div class="buttonNav">Mi perfil</div>
+				</a>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+		</nav>
+		<div class="espacioEntreSecciones"></div>
+		<section class="container" ng-controller="notificacionController">
+			<div class="row encabezadoSeccion">
+				<div class="col-lg-12">
+					Notificaciones
+				</div>
+			</div>
+			<div class="row text-left cuerpoSeccion" style="height: 250px">
+				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+				<div class="col-lg-12">
+					<div class="elementoRepetible" ng-repeat="notificacion in notificaciones">
+						<div class="float-right"><span ng-show="notificacion.nueva" style="color: gold;">Nueva! </span>
+							<button class="botonBorrarNotificacion" ng-click="borrarNotificacion(notificacion)"
+								ng-disabled="cargando">X</button>
+						</div>
+						<h3>{{notificacion.titulo}}</h3>
+						<p>{{notificacion.descripcion}}</p>
+						<p>Fecha de envío: {{notificacion.fechaenv}}</p>
+					</div>
+				</div>
+				<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
+			</div>
+			<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
+				
+				<div class="col-lg-12 mensajeError">{{mensajeError}} 
+					<span class="float-right">
+					<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
+						<img th:src="@{/images/redo.png}" class="redoImage" alt=""/></button>
+					</span>
+				</div>
+			</div>
+			<div class="row pieSeccion">
+				<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+				</div>
+			</div>
+		</section>
+		<div class="espacioEntreSecciones"></div>
+		<a name="mentorizaciones"></a>
+		<section class="container" ng-controller="mentorizadoMentorizacionController">
+			<div>
+				<div class="row encabezadoSeccion">
+					<div class="col-lg-12">
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
+						Tus mentorizaciones
+					</div>
+				</div>
+				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
+					ng-class="{ 'sinResultadosSeccion': sinresultados}">
+					<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles nuevas mentorizaciones debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
+					<div class="col-lg-10 offset-lg-1">
+						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
+							<!--Aqui la repeticion-->
+							<div class="row subSeccion">
+								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+									<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
+									<div class="textoContacto" ng-show="mentorizacion.expandido">
+										Correo eletronico:
+										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
+										<span ng-hide="mentorizacion.uperfil.telefono== ''">
+											<!--Solo mostrar si hay telefono-->Telefono:
+											<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-9 text-lg-left text-sm-center">
+									<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}}
+										{{mentorizacion.uperfil.sapellido}}</h3>
+									<div>Edad: {{mentorizacion.uperfil.edad}} Institucion:
+										{{mentorizacion.uperfil.institucionNombre}} <br>
+										Puesto: {{mentorizacion.uperfil.puestoPuesto}} Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
+										Fase actual: {{mentorizacion.fase}}
+									</div>
+									<div ng-show="mentorizacion.expandido">
+										<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
+											{{mentorizacion.uperfil.linkedin}}</span>
+										Nivel de estudios: {{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
+										Descripción:
+										<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
+									</div>
+								</div>
+
+							</div>
+							<div ng-show="mentorizacion.expandido" class="subSeccion">
+								<br>
+								<div class="row subSeccion" ng-show="mentorizacion.expandido">
+									<div class="col-lg-10 offset-lg-1">
+										<p>Areas de conocimiento en las que podría ayudar:</p>
+										<div class="row">
+											<div class="col-lg-4 col-md-6 areaConocimiento"
+												ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+											</div>
+										</div>
+										<br>
+									</div>
+								</div>
+							</div>
+							<div class="row subSeccion">
+								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+									ng-hide="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Mostrar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+									ng-show="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Ocultar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center">
+									<button class="botonInterfaz" ng-click="abrirPuntuar(mentorizacion)"
+										ng-disabled="cargando">Terminar relación</button>
+								</div>
+							</div>
+							<div ng-show="mentorizacion.cerrar" class="popupFondo" style="z-index: 50;">
+								<div class="popup" style="width: 400px">Antes de cerrar la mentorización,<br> ¿desea puntuarla y dejar un comentario? <br>
+									<form name="form" style="text-align: left">
+										<label>Comentario:</label><br>
+										<textarea ng-model="mentorizacion.comentario" maxlength="300" class="textAreaPopUp"></textarea><br>
+										Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
+										Puntuación:<br>
+										<div style="text-align: center;">
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="1">
+										<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="2">
+											<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="3">
+											<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="4">
+											<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="5">
+											<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="6">
+											<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="7">
+											<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="8">
+											<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="9">
+											<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="10">
+											<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
+										</label>
+										</div>
+										{{mentorizacion.puntuacion}}
+									</form>
+									<button class="botonInterfaz" 
+										ng-click="confirmarCerrar(mentorizacion)"
+										ng-disabled="cargando">Cerrar la relación</button>
+									<button class="botonInterfaz" 
+										ng-click="abrirPuntuar(mentorizacion)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
+							</div>
+							<div ng-show="mentorizacion.aceptarcerrar" class="popupFondo">
+								<div class="popup">¿Seguro que quieres cerrar esta relación? <br>
+									(Realizar esta acción puede llevar unos segundos en caso de que sea necesario
+									notificar por correo al usuario)<br>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="cerrarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Confirmar</button>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="confirmarCerrar(mentorizacion)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
+							</div>
+							
+						</div>
+						<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+							<div class="popup">
+								La mentorización se ha cerrado con éxito: <br>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarAcierto()">Cerrar</button>
+							</div>
+						</div>
+						<div ng-show="enError" class="popupFondo" style="z-index: 300;">
+							<div class="popup">
+								Se ha producido un error: <br>
+								<p>{{mensajeError}}</p>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarError()">Cerrar</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas</div>
+					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
+						las mentorizaciones debido a que se ha producido un
+						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
+						desplegar.</div>
+				</div>
+				<div class="row pieSeccion">
+					<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+					</div>
+				</div>
+			</div>
+		</section>
+		<div class="espacioEntreSecciones"></div>
+		<a name="busqueda"></a>
+		<section class="container" ng-controller="busquedaController">
+			<div class="row encabezadoSeccion">
+				<div class="col-lg-12">
+					<button class="float-right botonSeccion" ng-hide="mostrarBusqueda" ng-click="activarBusqueda()"
+						ng-disabled="cargando">▼</button>
+					<button class="float-right botonSeccion" ng-show="mostrarBusqueda" ng-click="activarBusqueda()"
+						ng-disabled="cargando">▲</button>
+					Buscar mentores
+				</div>
+			</div>
+			<div class="row text-left cuerpoSeccion" ng-show="mostrarBusqueda"
+				ng-class="{ 'sinResultadosSeccion': sinresultados}">
+					<div class="col-lg-3 col-md-6 text-center" style="vertical-align: middle">
+        			<select ng-model="areaseleccioanda">
+        				<option th:value="sin">Area de conocimiento</option>
+        					<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
+        					</option>
+        				</select>
+					</div>
+					<div class="col-lg-3 col-md-6 text-center">
+        				<select ng-model="institucionseleccionada">
+        					<option th:value="sin">Institución</option>
+        					<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+        					</option>
+        				</select>
+					</div>
+					<div class="col-lg-4 col-md-6 text-center">
+        				<label >Horas mínimas por mes</label><br>
+        				4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes"/>80 : {{horasmes}}
+					</div>
+					<div class="col-lg-2 col-md-6 text-center">
+        				<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando" style="width: 120px;">Buscar</button>
+					</div>
+				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+				<hr>
+				<div class="col-lg-10 offset-lg-1">
+					<div class="elementoRepetibleDos" ng-repeat="mentor in mentores">
+						<div class="row subSeccion">
+							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+								<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+								<div class="textoContacto" ng-show="mentor.expandido">
+									Correo eletronico:
+									<span style="font-size: 12px">{{mentor.correo}}</span><br>
+									<span ng-hide="mentor.info.linkedin == ''">Linkedin:
+									<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
+								</div>
+							</div>
+							<div class="col-lg-9 text-lg-left text-sm-center">
+								<h3>{{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}</h3>
+								Nivel de estudios: {{mentor.nivelEstudios}} Horas por mes: {{mentor.horaspormes}}
+								<div ng-show="mentor.expandido">
+								Edad: {{mentor.info.edad}}  Institución: {{mentor.info.institucionNombre}} <br>
+								Puesto: {{mentor.info.puestoPuesto}} <br>
+								Descripción:
+								<p style="font-size: 14px">{{mentor.info.descripcion}}</p>
+								</div>
+							</div>
+
+						</div>
+						<div class="row subSeccion" ng-show="mentor.expandido">
+							<div class="col-lg-10 offset-lg-1">
+								<p>Areas de conocimiento en las que podria ayudar:</p>
+								<div class="row">
+									<div class="col-lg-4 col-md-6 areaConocimiento"
+										ng-repeat="area in mentor.info.areas"> {{area.area}}
+									</div>
+								</div>
+								<br>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8 text-center offset-md-2">
+								<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos si es necesario
+									notificar por correo al mentor)</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-hide="mentor.expandido">
+								<button class="botonInterfaz" ng-click="obtenerMentor(mentor)" ng-disabled="mentor.cargando">Mostrar
+									perfil</button>
+							</div>
+							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-show="mentor.expandido">
+								<button class="botonInterfaz" ng-click="plegarMentor(mentor)" ng-disabled="mentor.cargando">Ocultar perfil</button>
+							</div>
+							<div class="col-md-3 col-sm-6 text-center">
+								<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
+									ng-disabled="mentor.cargando">Enviar Solicitud</button>
+							</div>
+						</div>
+						<div ng-show="mentor.solicitud" class="popupFondo">
+								<div class="popup" style="width: 400px;">Por favor, introduce el motivo por el que quieres establecer la 
+								relación de mentorización con este mentor, esta será tu carta de presentación.<br>
+									<form name="form" style="text-align: left">
+										<label>Motivo:</label><br>
+										<textarea ng-model="mentor.motivo" maxlength="300" class="textAreaPopUp"></textarea><br>
+										Caracteres restantes : {{300 - mentor.motivo.length}}<br>
+									</form>
+									
+									<button class="botonInterfaz" 
+										ng-click="enviarSolicitud(mentor)"
+										ng-disabled="cargando">Enviar</button>
+									<button class="botonInterfaz" 
+										ng-click="mostrarOcultarSolicitud(mentor)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
+							</div>
+					</div>
+					<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+						<div class="popup" style="z-index: 350;">
+							La solicitud se ha enviado con éxito <br>
+							<button class="botonInterfaz" style="width: 100px;"
+								ng-click="cerrarAcierto()">Cerrar</button>
+						</div>
+					</div>
+					<div ng-show="enError" class="popupFondo" style="z-index: 400;">
+						<div class="popup" style="z-index: 450;">
+							Se ha producido un error: <br>
+							<p>{{mensajeError}}</p>
+							<button class="botonInterfaz" style="width: 100px;"
+								ng-click="cerrarError()">Cerrar</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-12 sinResultados" ng-show="sinresultados">La busqueda no obtuvo ningún resultado</div>
+				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">
+				No se ha podido realizar la búsqueda requerida debido a un fallo al acceder al servidor. 
+				Para volver a intentarlo, vuelva a presionar el botón de buscar.
+				</div>
+			</div>
+			<div class="row pieSeccion">
+				<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+				</div>
+			</div>
+		</section>
+		<div class="espacioEntreSecciones"></div>
+		<a name="puntuar"></a>
+		<section class="container" ng-controller="puntuarController">
+			<div>
+				<div class="row encabezadoSeccion">
+					<div class="col-lg-12">
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
+						Mentorizaciones por puntuar
+					</div>
+				</div>
+				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
+					ng-class="{ 'sinResultadosSeccion': sinresultados}">
+					<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles nuevas mentorizaciones por puntuar debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
+					<div class="col-lg-10 offset-lg-1">
+						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
+						<div class="row subSeccion">
+							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+								<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+								<div class="textoContacto" ng-show="mentorizacion.expandido">
+									Correo eletronico:
+									<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
+									<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
+									<span style="font-size: 10px">{{mentorizacion.uperfil.linkedin}}</span></span>
+								</div>
+							</div>
+							<div class="col-lg-9 text-lg-left text-sm-center">
+								<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}}</h3>
+								Edad: {{mentorizacion.uperfil.edad}}  Institución: {{mentorizacion.uperfil.institucionNombre}} <br>
+								<div>
+								Puesto: {{mentorizacion.uperfil.puestoPuesto}} Nivel de estudios: {{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
+								Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
+								Descripción:
+								<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
+								</div>
+							</div>
+
+						</div>
+						<div class="row subSeccion" ng-show="mentorizacion.expandido">
+							<div class="col-lg-10 offset-lg-1">
+								<p>Areas de conocimiento en las que podria ayudar:</p>
+								<div class="row">
+									<div class="col-lg-4 col-md-6 areaConocimiento"
+										ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+									</div>
+								</div>
+								<br>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-8 text-center offset-md-2">
+								<div ng-show="cargando">Cargando... (esto puede llevar unos segundos si es necesario
+									notificar por correo al mentor)</div>
+							</div>
+						</div>
+							<div class="row subSeccion">
+								<div class="col-md-3 col-sm-6 text-center offset-md-3"
+									ng-hide="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Mostrar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center offset-md-3"
+									ng-show="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Ocultar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center">
+									<button class="botonInterfaz" ng-click="abrirPuntuar(mentorizacion)"
+										ng-disabled="cargando">Puntuar</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center">
+									<button class="botonInterfaz" ng-click="descartarPuntuar(mentorizacion)"
+										ng-disabled="cargando">Descartar</button>
+								</div>
+							</div>
+							<div ng-show="mentorizacion.cerrar" class="popupFondo">
+								<div class="popup" style="width: 400px">Por favor, introduzca una puntuación y, opcionalmente, un comentario.<br>
+									<form name="form" style="text-align: left">
+										<label>Comentario:</label><br>
+										<textarea ng-model="mentorizacion.comentario" maxlength="300" class="textAreaPopUp"></textarea><br>
+										Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
+										Puntuación:<br>
+										<div style="text-align: center;">
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="1">
+										<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="2">
+											<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="3">
+											<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="4">
+											<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="5">
+											<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="6">
+											<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="7">
+											<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="8">
+											<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="9">
+											<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
+										</label>
+										<label>
+										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="10">
+											<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
+										</label>
+										</div>
+										<span ng-show="mentorizacion.puntuacion == null" style="color: red;">Debe seleccionar una puntuación. </span> 
+									</form>
+									
+									<button class="botonInterfaz" 
+										ng-click="puntuarMentorizacion(mentorizacion)"
+										ng-disabled="cargando || mentorizacion.puntuacion == null">Puntuar</button>
+									<button class="botonInterfaz" 
+										ng-click="abrirPuntuar(mentorizacion)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
+							</div>
+							
+						</div>
+						<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+							<div class="popup" style="z-index: 350;">
+								La mentorización se ha puntuado con éxito <br>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarAcierto()">Cerrar</button>
+							</div>
+						</div>
+						<div ng-show="enError" class="popupFondo" style="z-index: 400;">
+							<div class="popup" style="z-index: 450;">
+								Se ha producido un error: <br>
+								<p>{{mensajeError}}</p>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarError()">Cerrar</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones por puntuar</div>
+					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
+						las mentorizaciones por puntuar debido a que se ha producido un
+						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
+						desplegar.</div>
+				</div>
+				<div class="row pieSeccion">
+					<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+					</div>
+				</div>
+			</div>
+		</section>
+		<hr>
+		<footer class="container">
+			<div class="row">
+				<div class="text-center col-lg-12">
+					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+					<h4>Normativa</h4>
+					<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+					<h4>Contacto</h4>
+					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+				</div>
+			</div>
+		</footer>
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		
+		<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+	</div>
+</body>
+
+</html>

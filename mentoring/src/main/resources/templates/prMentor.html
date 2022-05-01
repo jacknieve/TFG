@@ -75,9 +75,12 @@
 				<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
 			</div>
 			<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
-				<button ng-click="reiniciarActualizacion()" ng-disabled="cargando"><img th:src="@{/images/redo.png}"
-						class="redoBoton" /></button>
-				<div class="col-lg-12 mensajeError">{{mensajeError}}</div>
+				<div class="col-lg-12 mensajeError">{{mensajeError}} 
+					<span class="float-right">
+					<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
+						<img th:src="@{/images/redo.png}" class="redoImage" /></button>
+					</span>
+				</div>
 			</div>
 			<div class="row pieSeccion">
 				<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
@@ -191,12 +194,12 @@
 							<div class="row subSeccion">
 								<div class="col-md-3 col-sm-6 text-center offset-md-6"
 									ng-hide="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)">Mostrar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Mostrar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center offset-md-6"
 									ng-show="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)">Ocultar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Ocultar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center">
@@ -216,13 +219,14 @@
 										ng-disabled="cargando">Cancelar</button>
 								</div>
 							</div>
-							<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-									<div class="popup" style="z-index: 400;">
-										La mentorización se ha cerrado con éxito: <br>
-										<button class="botonInterfaz" style="width: 100px;"
-											ng-click="cerrarAcierto()">Cerrar</button>
-									</div>
-								</div>
+							
+						</div>
+						<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+							<div class="popup" style="z-index: 400;">
+								La mentorización se ha cerrado con éxito: <br>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarAcierto()">Cerrar</button>
+							</div>
 						</div>
 						<div ng-show="enError" class="popupFondo" style="z-index: 300;">
 							<div class="popup" style="z-index: 400;">
@@ -323,7 +327,7 @@
 									datos</button>
 							</div>
 							<div class="col-md-3 col-sm-4 text-center offset-md-3" ng-show="peticion.expandido">
-								<button class="botonInterfaz" ng-click="plegarPeticion(peticion)">Ocultar datos</button>
+								<button class="botonInterfaz" ng-click="plegarPeticion(peticion)" ng-disabled="cargando">Ocultar datos</button>
 							</div>
 							<div class="col-md-3 col-sm-4 text-center">
 								<button class="botonInterfaz" ng-click="aceptarPeticion(peticion)"

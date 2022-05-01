@@ -27,27 +27,20 @@ Interfaz grafica
 ----Frontend----
 ->El header y el footer de login y registro el mismo que el de home sin loggear
 ->El header de perfil igual que el de principal (y los enlaces de arriba salen en función del rol)
-->Popups
 ->Cambiar peticiones para traer ya todo?
 ->Añadir efectos a lo de abrir y cerrar
 ->Tal vez hacer un thread para enviar notificacion por correo?
-->Footer
-->Ver si se pueden comunicar los distintos controladores
-->Añadir secciones para los mensajes de error
-->Boton para recargar actualizacion de notificaciones (que solo aparezca en caso de error) (lo mismo en las otras secciones) y que oculte
-los mensajes de error
 ->Los mensajes de error deben ocultarse al realizar otra accion.
-->Cuando haga lo de puntuar, para evitar que salte el error durante la carga o al aceptar, si no se le pone una nota (y va a soltar error por ser -1, usar una variable local para pasar la nota)
 
 >>Interfaces que faltan<<
--Mentorizado
--Mentor (terminar)
 -Perfil
 -Incio
 -Inicio logeada
 -Login
 -Registro
 -Logout
+-Verify
+-Verify_fault
 
 >>Funcionalidades en las que faltan analizar errores<<
 -Mentorizaciones (mentor)

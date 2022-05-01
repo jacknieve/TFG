@@ -291,11 +291,10 @@ public class MentorController {
 						}
 					}
 					return new ResponseEntity<>(mUser, HttpStatus.OK);
-				 }catch (JDBCConnectionException | QueryTimeoutException e) {
+				 } catch (JDBCConnectionException | QueryTimeoutException e) {
 					 System.out.println(e.getMessage());
 					 return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-				 }
-				 catch (Exception e) {
+				 } catch (Exception e) {
 					 System.out.println(e.getMessage());
 					 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 				 }
@@ -305,7 +304,8 @@ public class MentorController {
 				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			}
 		}
-	//Aqui comprobar que el String este bien
+
+	
 	@PostMapping("/mentorizaciones/cerrar")
 	public ResponseEntity<MensajeError> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
 			@RequestBody String mentorizado) {
