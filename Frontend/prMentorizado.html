@@ -289,18 +289,20 @@
 			</div>
 			<div class="row text-left cuerpoSeccion" ng-show="mostrarPeticiones"
 				ng-class="{ 'sinResultadosSeccion': sinresultados}">
-				
-				
-					<div class="col-lg-3 col-md-6 text-center" style="vertical-align: middle">
-        			<select ng-model="areaseleccioanda">
-        				<option th:value="sin">Area de conocimiento</option>
+				<div class="col-lg-12 container">
+					<div class="row">
+					<div class="col-lg-3 col-md-6 text-center">
+						<label>Área de conocimiento: </label><br>
+        			<select ng-model="areaseleccioanda" style="margin-bottom: 3px;">
+        				<option th:value="sin">--Escoge un área--</option>
         					<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
         					</option>
         				</select>
 					</div>
 					<div class="col-lg-3 col-md-6 text-center">
-        				<select ng-model="institucionseleccionada">
-        					<option th:value="sin">Institución</option>
+						<label>Participa en el programa de: </label><br>
+        				<select ng-model="institucionseleccionada" style="margin-bottom: 3px;">
+        					<option th:value="sin">--Escoge una institucion--</option>
         					<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
         					</option>
         				</select>
@@ -309,12 +311,15 @@
         				<label >Horas minimas por mes</label><br>
         				4<input type="range" min="4" max="80" step="0.5" value="4" ng-model="horasmes"/>80 : {{horasmes}}
 					</div>
-					<div class="col-lg-2 col-md-6 text-center">
+					<div class="col-lg-2 col-md-6 text-center" style="padding-top: 10px">
         				<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando" style="width: 120px;">Buscar</button>
 					</div>
-				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
-				
+				</div>
+				<div class="row">
+				<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+				</div>
 				<hr>
+				<div class="row">
 				<div class="col-lg-10 offset-lg-1">
 					<div class="elementoRepetibleDos" ng-repeat="peticion in peticiones">
 						<div class="row subSeccion">
@@ -378,7 +383,8 @@
 						</div>
 					</div>-->
 				</div>
-
+				</div>
+				</div>
 				<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene solicitudes pendientes</div>
 				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido las
 					solicitudes debido a que se ha producido un

@@ -20,7 +20,7 @@ public class UsuarioPerfil {
 	private float horaspormes;//-
 	private Date fnacimiento;//
 	private List<AreaConocimiento> areas = new ArrayList<>();
-	private String puestoPuesto;//-
+	private String entidad;//-
 	private String institucionNombre;
 	private boolean mentor;//
 	private boolean notificar_correo;//
@@ -28,7 +28,7 @@ public class UsuarioPerfil {
 
 	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudiosNivelestudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			Date fnacimiento, String puestoPuesto, String institucionNombre, boolean mentor, boolean notificar_correo) {
+			Date fnacimiento, String entidad, String institucionNombre, boolean mentor, boolean notificar_correo) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -39,7 +39,7 @@ public class UsuarioPerfil {
 		this.linkedin = linkedin;
 		this.horaspormes = horaspormes;
 		this.fnacimiento = fnacimiento;
-		this.puestoPuesto = puestoPuesto;
+		this.entidad = entidad;
 		this.institucionNombre = institucionNombre;
 		this.mentor=mentor;
 		this.notificar_correo=notificar_correo;
@@ -131,14 +131,17 @@ public class UsuarioPerfil {
 		this.areas = areas;
 	}
 	
+	
 
-	public String getPuestoPuesto() {
-		return puestoPuesto;
+	public String getEntidad() {
+		return entidad;
 	}
 
-	public void setPuestoPuesto(String puestoPuesto) {
-		this.puestoPuesto = puestoPuesto;
+
+	public void setEntidad(String entidad) {
+		this.entidad = entidad;
 	}
+
 
 	public String getInstitucionNombre() {
 		return institucionNombre;
@@ -185,7 +188,7 @@ public class UsuarioPerfil {
 		return "UsuarioPerfil [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
 				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
 				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
-				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", puestoPuesto=" + puestoPuesto
+				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", entidad=" + entidad
 				+ ", institucionNombre=" + institucionNombre + ", mentor=" + mentor + ", notificar_correo="
 				+ notificar_correo + ", edad=" + edad + "]";
 	}

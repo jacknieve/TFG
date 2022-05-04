@@ -1,5 +1,12 @@
-.header{
+.headertwo{
 	background-color: #8DFFC7;
+	background-color: #E7717D;
+	background-color: #AFD275;
+	border: 3px solid #84CEEB;
+}
+
+.header{
+	background-color: #5AB9EA;
 }
 
 body {
@@ -7,12 +14,37 @@ body {
   padding: 0;
   margin: 0;
   width: 100%;
+  background-color: #F7F9FB;
+}
+
+.encabezadoSeccion{
+	background-color: #88BDBC;
+	border: 1px solid #254E58;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 15px 15px 0px 0px;
+	font-weight: 700;
+}
+
+.pieSeccion{
+	background-color: #88BDBC;
+	border: 1px solid #254E58;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 0px 0px 15px 15px;
+	font-weight: 700;
 }
 
 #borderIcono {
 border-right: 5px solid #1C6EA4;
 border-bottom: 5px solid #1C6EA4;
 border-radius: 40px;
+z-index: 5;
+}
+
+.borderIcono {
+margin: 0px;
+padding: 0px;
 }
 
 .headerLink {
@@ -33,7 +65,7 @@ align-self: flex-end center;
 }
 
 .buttonNav {
-	background-color: #B6B6B6;
+	background-color: #F6F6F6;
 	border: 3px solid #464646;
 	border-radius: 10px;
 	text-align: center;
@@ -67,27 +99,11 @@ button:disabled{
 	margin: 5px;
 }
 
-.encabezadoSeccion{
-	background-color: #8EFBF6;
-	border: 3px solid #464646;
-	font-family: Tahoma, Geneva, sans-serif;
-	font-size: 24px;
-	border-radius: 15px 15px 0px 0px;
-	font-weight: 700;
-}
 
-.pieSeccion{
-	background-color: #8EFBF6;
-	border: 3px solid #464646;
-	font-family: Tahoma, Geneva, sans-serif;
-	font-size: 24px;
-	border-radius: 0px 0px 15px 15px;
-	font-weight: 700;
-}
 
 .cuerpoSeccion{
 	transition:0.5s linear all;
-	background-color: #E2E2E2;
+	background-color: #F6F6F6;
 	border: 1px solid black;
 	font-family: Tahoma, Geneva, sans-serif;
 	overflow-y: scroll;
@@ -103,6 +119,23 @@ button:disabled{
 .cuerpoSeccion.ng-hide{
 	transition:0.5s linear all;
 	height: 0px;
+}
+.elementoExpansible{
+	opacity: 1;
+}
+
+.elementoExpansible.ng-show{
+	transition:0.5s linear all;
+	opacity: 1;
+}
+
+.elementoExpansible.ng-hide{
+	transition:0.5s linear all;
+	opacity: 0;
+}
+
+.elementoExpansible.ng-enter.ng-enter-active {
+  opacity: 1;
 }
 
 .cuerpoSeccion.ng-enter.ng-enter-active {
@@ -222,7 +255,7 @@ button:disabled{
 	vertical-align: middle;
 	width: 300px;
 	min-height: 70px;
-	background-color: #DCDCDC;
+	background-color: #F6F6F6;
 	border: 3px solid black;
 	pointer-events: all;
 }
@@ -251,6 +284,10 @@ button:disabled{
 	height: 100px;
 }
 
+.sinResultadosSeccionBusqueda{
+	height: 240px;
+}
+
 .mensajeError{
 	color: red;
 	font-weight: bold;
@@ -267,6 +304,15 @@ button:disabled{
 	background-color: #CDCDCD;
 	border: 2px solid black;
 	border-radius: 10px;
+	width: 35px;
+	height: 35px;
+	padding: 0px;
+}
+
+.infoBoton{
+	background-color: none;
+	border-radius: 10px;
+	border: 0px;
 	width: 35px;
 	height: 35px;
 	padding: 0px;
@@ -296,4 +342,9 @@ button:disabled{
 
 [type=radio]:checked + img {
   	opacity: 0.3;
+}
+
+.mensajeError{
+	color : red;
+	font-weight: bold;
 }

@@ -36,6 +36,7 @@ public interface MentorizacionRepo extends JpaRepository<Mentorizacion, Mentoriz
 	List<Mentorizacion> getNuevasMentorizado(String mentorizado, Timestamp date);
 	
 	
+	
 	@Transactional
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE mentorizaciones SET fecha_fin = current_timestamp, calificacion = ?1, comentario = ?2  WHERE mentor_usuario_mentor = ?3 AND mentorizado_usuario_username = ?4 AND fecha_fin is null")

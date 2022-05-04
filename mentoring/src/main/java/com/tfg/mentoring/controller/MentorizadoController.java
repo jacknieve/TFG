@@ -314,7 +314,7 @@ public class MentorizadoController {
 				Timestamp fecha = new Timestamp(date);
 				List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
 				List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
-				mentorizaciones = mentorizacionrepo.getNuevasMentorizado(us.getUsername(), fecha);
+				mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuarNuevas(us.getUsername(), fecha);
 				if (mentorizaciones.isEmpty()) {
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 				}

@@ -1,6 +1,6 @@
 package com.tfg.mentoring.model.auxiliar;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import com.tfg.mentoring.model.Notificacion;
 
@@ -10,10 +10,10 @@ public class NotificacionUser {
 	private long id;
 	private String titulo;
 	private String descripcion;
-	private Date fechaenv;
+	private String fechaenv;
 	private boolean nueva;
 	
-	public NotificacionUser(long id, String titulo, String descripcion, Date fechaenv, boolean nueva) {
+	public NotificacionUser(long id, String titulo, String descripcion, String fechaenv, boolean nueva) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
@@ -27,7 +27,8 @@ public class NotificacionUser {
 		this.id = n.getId();
 		this.titulo = n.getTitulo();
 		this.descripcion = n.getDescripcion();
-		this.fechaenv = n.getFechaenv();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.fechaenv = df.format(n.getFechaenv());
 		if(n.getEstado() == EstadosNotificacion.ENTREGADA) this.nueva = true;
 		else this.nueva=false;
 		
@@ -61,11 +62,11 @@ public class NotificacionUser {
 		this.descripcion = descripcion;
 	}
 
-	public Date getFechaenv() {
+	public String getFechaenv() {
 		return fechaenv;
 	}
 
-	public void setFechaenv(Date fechaenv) {
+	public void setFechaenv(String fechaenv) {
 		this.fechaenv = fechaenv;
 	}
 

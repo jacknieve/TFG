@@ -12,7 +12,6 @@ import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.repository.AreasRepo;
 import com.tfg.mentoring.repository.EstudiosRepo;
 import com.tfg.mentoring.repository.InstitucionRepo;
-import com.tfg.mentoring.repository.PuestosRepo;
 
 @Component
 public class AppReadyListener implements ApplicationListener<ApplicationReadyEvent>{
@@ -24,14 +23,11 @@ public class AppReadyListener implements ApplicationListener<ApplicationReadyEve
 	@Autowired
 	private EstudiosRepo erepo;
 	@Autowired
-	private PuestosRepo prepo;
-	@Autowired
 	private InstitucionRepo irepo;
 	
 	@Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 		listas.setAreas(arepo.findAll());
-		listas.setPuestos(prepo.findAll());
 		listas.setEstudios(erepo.findAll());
 		List<Institucion> instituciones = irepo.findAll();
 		ArrayList<String> _instituciones = new ArrayList<>();

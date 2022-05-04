@@ -56,94 +56,183 @@
 		 		</div>
 		 	</div>
 		 	<div class="col-lg-12" ng-show="mostrarsin">No tiene notificaciones</div>
-			 <button ng-click="cargando = true" ng-disabled="cargando"><img src="images/redo.png" class="redoBoton"></button>
+			 <button ng-click="cargando = true" ng-disabled="cargando"><img src="images/redo.png" class="redoBoton" alt=""></button>
 		</div>
 	 </section>
 	<div class="espacioEntreSecciones"></div>
 	  
-	<section class="container">
-		 <div class="row encabezadoSeccion">
-			 <div class="col-lg-12"> 
-			 <button class="float-right botonSeccion">▼</button> 
-			 <button class="float-right botonSeccion">▲</button>
-			 Tus mentorizaciones 
+	<section class="container" ng-controller="mentorMentorizacionController">
+			<div class="row encabezadoSeccion">
+				<div class="col-lg-12">
+					<button class="float-right botonSeccion" ng-click="activarMentorizaciones()" ng-disabled="cargando"
+						ng-hide="mostrarMentorizaciones">▼</button>
+					<button class="float-right botonSeccion" ng-click="activarMentorizaciones()" ng-disabled="cargando"
+						ng-show="mostrarMentorizaciones">▲</button>
+					Mis mentores
+				</div>
 			</div>
-		 </div>
-		 <div class="row text-left cuerpoSeccion">
-		 	<div class="col-lg-10 offset-lg-1"> 
-				<div><!--Aqui la repeticion-->
-					<div class="row">
-						<div class="col-lg-3 text-center">
-							<img class="fotoPerfil" src="images/icono_prueba.png" alt=""/>
-							<div class="textoContacto">
-								Correo eletronico: 
-								<span style="font-size: 12px">pablo.gonzalez.alonso@rai.usc.es</span><br>
-								<span><!--Solo mostrar si hay telefono-->Telefono: 
-								<span style="font-size: 14px">123456789</span>
-								</span>
-							</div>
-						</div>
-						<div class="col-lg-9 text-lg-left text-sm-center">
-						<h3>Nombre Apellido Apellido</h3>
-							<div>Edad: xx <!--Esto hacerlo por angular--> Institucion: USC <span>Fase actual: KK</span></div>
-							<div>
-							<span>Linkedin:  </span> Nivel de estudios: x<br>
-							Descripción:
-							<p style="font-size: 14px">kkkkkkk kkkk kkkk kkkk kkkk kkkk kkkk kkkk kkk</p>
-							</div>
-						</div>
-						
-					</div>
-					<div>Avanzar en la hoja de ruta:</div>
-					<div class="row">
-						<div class="col-lg-3 col-md-6 text-center">
-							<button class="botonFase">Nacimiento</button> 
-							<span class="float-right">→</span>
-							<p class="textoDescripcionFase">Representa el comienzo de la relación de mentoring. Se están estableciendo las reglas de la relación y se está construyendo la confianza.</p>
-						</div>
-						<div class="col-lg-3 col-md-6 text-center">
-							<button class="botonFase">Compromiso</button>
-							<span class="float-right">→</span>
-							<p class="textoDescripcionFase">Se está estableciendo un plan de actividades especifico con metas concretas. Se están fijando las tareas a realizar y se está fortaleciendo la relación.</p>
-						</div>
-						<div class="col-lg-3 col-md-6 text-center">
-							<button class="botonFase">Sostenimiento</button>
-							<span class="float-right">→</span>
-							<p class="textoDescripcionFase">La relación de mentoring se está manteniendo. Se ha conseguido una relación fuerte y un alto grado de confianza entre las dos partes.</p>
-						</div>
-						<div class="col-lg-3 col-md-6 text-center">
-							<button class="botonFase">Fin</button>
-							<span class="float-right" style="visibility: hidden">→</span>
-							<p class="textoDescripcionFase">Representa el fin de la relación de mentoring. Es el proceso de cierre de la relación.</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-10 offset-lg-1"> 
-							<p>Areas de conocimiento en las que está interesado:</p>
-							<div class="row">
-								<div class="col-lg-4 col-md-6 areaConocimiento"> Area de conocimiento
+			<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
+				ng-class="{ 'sinResultadosSeccion': sinresultados}">
+				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+				<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+					posibles nuevas mentorizaciones debido a que se ha producido un
+					fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+					vuelvalá a desplegar.</div>
+				<div class="col-lg-10 offset-lg-1">
+					<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
+						<div class="row subSeccion">
+							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+								<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
+								<div class="textoContacto" ng-show="mentorizacion.expandido">
+									<strong>Correo eletronico:</strong>
+									<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
+									<span ng-hide="mentorizacion.uperfil.telefono == ''">
+										<strong>Telefono: </strong>
+										<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
+									</span>
 								</div>
 							</div>
+							<div class="col-lg-9 text-lg-left text-sm-center">
+								<div class="container row">
+									<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
+										{{mentorizacion.uperfil.papellido}}
+										{{mentorizacion.uperfil.sapellido}}</h3>
+									<div class="col-md-6"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}</div>
+									<div class="col-md-6"> <strong>Institucion:</strong>
+										{{mentorizacion.uperfil.institucionNombre}} </div>
+									<div class="col-lg-12" ng-hide="mentorizacion.expandido"><strong>Fase
+											actual:</strong> {{mentorizacion.fase}}</div>
+										<div class="col-lg-5" ng-show="mentorizacion.expandido">
+											<strong>Nivel de estudios:</strong>
+											{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}
+										</div>
+										<div class="col-lg-7" ng-hide="mentorizacion.uperfil.linkedin == ''" ng-show="mentorizacion.expandido"> <strong>
+												Linkedin:</strong>
+											{{mentorizacion.uperfil.linkedin}}</div>
+
+										<div class="col-lg-12" ng-show="mentorizacion.expandido"><strong>Descripción:</strong></div>
+										<p class="col-lg-12" style="font-size: 14px; text-align: justify;" ng-show="mentorizacion.expandido">
+											{{mentorizacion.uperfil.descripcion}}</p>
+									</div>
+							</div>
 						</div>
+							<div ng-show="mentorizacion.expandido" class="row subSeccion">
+								<div class="col-lg-12">Avanzar en la hoja de ruta: <button
+										ng-click="aceptarCambioFase(mentorizacion)" ng-disabled="cargando"
+										class="botonInterfaz" style="width: 220px; float:right;">Aceptar el cambio de
+										fase</button></div>
+								<br>
+								<div class="col-lg-12 container">
+									<div class="row subSeccion">
+										<div class="col-lg-3 col-md-6 text-center">
+											<button class="botonFase" ng-disabled="mentorizacion.fase == 'NACIMIENTO'"
+												ng-click="mentorizacion.fase = 'NACIMIENTO'">Nacimiento</button>
+											<span class="float-right">→</span>
+											<p class="textoDescripcionFase">Representa el comienzo de la relación de
+												mentoring. Se están estableciendo las reglas de la relación y se está
+												construyendo la confianza.</p>
+										</div>
+										<div class="col-lg-3 col-md-6 text-center">
+											<button class="botonFase" ng-disabled="mentorizacion.fase == 'COMPROMISO'"
+												ng-click="mentorizacion.fase = 'COMPROMISO'">Compromiso</button>
+											<span class="float-right">→</span>
+											<p class="textoDescripcionFase">Se está estableciendo un plan de actividades
+												especifico con metas concretas. Se están fijando las tareas a realizar y
+												se
+												está fortaleciendo la relación.</p>
+										</div>
+										<div class="col-lg-3 col-md-6 text-center">
+											<button class="botonFase"
+												ng-disabled="mentorizacion.fase == 'SOSTENIMIENTO'"
+												ng-click="mentorizacion.fase = 'SOSTENIMIENTO'">Sostenimiento</button>
+											<span class="float-right">→</span>
+											<p class="textoDescripcionFase">La relación de mentoring se está
+												manteniendo. Se
+												ha conseguido una relación fuerte y un alto grado de confianza entre las
+												dos
+												partes.</p>
+										</div>
+										<div class="col-lg-3 col-md-6 text-center">
+											<button class="botonFase" ng-disabled="mentorizacion.fase == 'FIN'"
+												ng-click="mentorizacion.fase = 'FIN'">Fin</button>
+											<span class="float-right" style="visibility: hidden">→</span>
+											<p class="textoDescripcionFase">Representa el fin de la relación de
+												mentoring.
+												Es el proceso de cierre de la relación.</p>
+										</div>
+									</div>
+								</div>
+							</div>
+								<br>
+									<div class="row subSeccion" ng-show="mentorizacion.expandido">
+										<div class="col-lg-10 offset-lg-1">
+											<p>Areas de conocimiento en las que está interesado:</p>
+											<div class="row">
+												<div class="col-lg-4 col-md-6 areaConocimiento"
+													ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+												</div>
+											</div>
+											<br>
+										</div>
+									</div>
+								<div class="row subSeccion" style="min-height: 34px;">
+									<div class="col-md-3 col-sm-6 text-center offset-md-6"
+										ng-hide="mentorizacion.expandido">
+										<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+											ng-disabled="cargando">Mostrar
+											datos</button>
+									</div>
+									<!--<div class="col-md-3 col-sm-6 text-center offset-md-6"
+										ng-show="mentorizacion.expandido">
+										<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+											ng-disabled="cargando">Ocultar
+											datos</button>
+									</div>-->
+									<div class="col-md-3 col-sm-6 text-center">
+										<button class="botonInterfaz" ng-click="confirmarCerrar(mentorizacion)"
+											ng-disabled="cargando">Terminar relación</button>
+									</div>
+								</div>
+							<!--<div ng-show="mentorizacion.aceptarcerrar" class="popupFondo">
+								<div class="popup">¿Seguro que quieres cerrar esta relación? <br>
+									(Realizar esta acción puede llevar unos segundos en caso de que sea necesario
+									notificar por correo al usuario)<br>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="cerrarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Confirmar</button>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="confirmarCerrar(mentorizacion)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
+							</div>
+						</div>-->
 					</div>
-					<div class="row">
-						<div class="col-md-3 col-sm-6 text-center offset-md-3">
-							<button class="botonInterfaz">Mostrar datos</button>
+					<!--<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+						<div class="popup" style="z-index: 400;">
+							La mentorización se ha cerrado con éxito: <br>
+							<button class="botonInterfaz" style="width: 100px;"
+								ng-click="cerrarAcierto()">Cerrar</button>
 						</div>
-						<div class="col-md-3 col-sm-6 text-center">
-							<button class="botonInterfaz">Ocultar datos</button>
+					</div>-->
+					<!--<div ng-show="enError" class="popupFondo" style="z-index: 300;">
+						<div class="popup" style="z-index: 400;">
+							Se ha producido un error: <br>
+							<p>{{mensajeError}}</p>
+							<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
 						</div>
-						<div class="col-md-3 col-sm-6 text-center">
-							<button class="botonInterfaz">Terminar relación</button>
-						</div>
-					</div>
-				<div class="popup">¿Seguro que quieres cerrar esta relación? <br>
-					<button class="botonInterfaz" style="width: 100px">Confirmar</button> 
-					<button class="botonInterfaz" style="width: 100px">Cancelar</button></div>
+					</div>-->
 				</div>
-		 	</div>
-		 </div>
-	</section>
+				<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas</div>
+				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
+					las mentorizaciones debido a que se ha producido un
+					fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
+					desplegar.</div>
+			</div>
+			<div class="row pieSeccion">
+				<div class="col-lg-12" style="visibility: hidden"> kk
+				</div>
+			</div>
+		</section>
 	<div class="espacioEntreSecciones"></div>
 	<section class="container">
 		 <div class="row encabezadoSeccion">
@@ -212,6 +301,7 @@
 					</div>
 		 	</div>
 		 </div>
+		</div>
 	</section>
 	<div class="espacioEntreSecciones"></div>
        <hr>
@@ -221,7 +311,6 @@
              <p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#" >My Website</a></p>
           </div>
        </div>
-    </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
     <script src="js/jquery-3.4.1.min.js"></script>
 

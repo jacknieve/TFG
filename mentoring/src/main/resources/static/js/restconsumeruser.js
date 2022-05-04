@@ -49,6 +49,7 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 					}
 
 				} else if (response.status == 204){
+					$scope.mentores = [];
 					$scope.sinresultados = true;
 				}
 				$scope.cargando = false;
@@ -71,6 +72,9 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 				else if (response.status == 404) {
 					abrirError("Se ha producido un fallo con alguno de los parámetros de la búsqueda, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener los mentores"+
@@ -139,6 +143,9 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
 					}
+					else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+					}
 					else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener la información del mentor"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
@@ -184,9 +191,15 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 				/*if (response.status == 409) {
 					alert("Ya has establecido una relacion de mentorizacion con este mentor");
 				}*/
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else{
+					abrirError(response.data.mensaje);
+				}
 				console.log("Fallo al acceder")
 				console.log(response)
-				abrirError(response.data.mensaje);
+				
 				mentor.cargando = false;
 			}
 		)
@@ -234,6 +247,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.peticiones[i].expandido = false;
 						$scope.peticiones[i].obtenido = false;
+						$scope.peticiones[i].cargando = false;
 					}
 
 				} else {
@@ -255,6 +269,9 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes"+
@@ -299,6 +316,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 					for (var i = 0; i < response.data.length; i++) {
 						response.data[i].expandido = false;
 						response.data[i].obtenido = false;
+						response.data[i].cargando = false;
 						$scope.peticiones.push(response.data[i]);
 					}
 					if ($scope.peticiones.length == 0) {
@@ -318,13 +336,16 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes nuevas, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
 				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes nuevas"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
 				}
 				$scope.errorActualizar = true;
-				$scope.detenActualizacion;
+				$scope.detenActualizacion();
 			}
 		)
 	}
@@ -332,6 +353,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 	$scope.detenActualizacion = function() {
 		if ($scope.id) {
 			clearInterval(this.id);
+			console.log("Intervalo detenido")
 		}
 	}
 
@@ -342,11 +364,11 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 
 
 	$scope.obtenerPerfilPeticion = function(peticion) {
-		$scope.cargando = true;
 		if (peticion.obtenido) {
 			peticion.expandido = true;
 		}
 		else {
+			$scope.cargando = true;
 			console.log("Consulta lanzada")
 			$http.post("/mentor/peticiones/perfil", peticion.mentorizado).then(
 				function sucessCallback(response) {
@@ -373,6 +395,9 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
 					}
+					else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+					}
 					else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener la información del mentorizado que envió la solicitud"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
@@ -386,6 +411,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 
 	$scope.aceptarPeticion = function(peticion) {
 		$scope.cargando = true;
+		peticion.cargando = true;
 		console.log("Consulta lanzada")
 		$http.post("/mentor/peticiones/aceptar", peticion.mentorizado).then(
 			function sucessCallback(response) {
@@ -402,8 +428,12 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
-				abrirError(response.data.mensaje);
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else abrirError(response.data.mensaje);
 				$scope.cargando = false;
+				peticion.cargando = false;
 			}
 		)
 
@@ -411,6 +441,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 
 	$scope.rechazarPeticion = function(peticion) {
 		$scope.cargando = true;
+		peticion.cargando = true;
 		console.log("Consulta lanzada")
 		$http.post("/mentor/peticiones/rechazar", peticion.mentorizado).then(
 			function sucessCallback(response) {
@@ -429,8 +460,12 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 				console.log("Fallo al acceder")
 				console.log(response)
 				peticion.error = true;
-				abrirError(response.data.mensaje);
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else abrirError(response.data.mensaje);
 				$scope.cargando = false;
+				peticion.cargando = false;
 			}
 		)
 	}
@@ -474,7 +509,7 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 					$scope.mostrarsin = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
-						$scope.notificaciones.push(response.data[i]);
+						$scope.notificaciones.unshift(response.data[i]);
 					}
 					console.log("Nuevas");
 				}
@@ -493,6 +528,9 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				else if (response.status == 500) {
 					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				else if (response.status == 0) {
+					$scope.mensajeError = "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias";
 				}
 				else {
 					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
@@ -534,6 +572,9 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				else if (response.status == 500) {
 					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+				}
+				else if (response.status == 0) {
+					$scope.mensajeError = "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias";
 				}
 				else {
 					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
@@ -585,7 +626,10 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				console.log("Fallo al eliminar");
 				console.log(response);
 				$scope.enfallo = true;
-				$scope.mensajeError = response.data.mensaje;
+				if (response.status == 0) {
+					$scope.mensajeError = "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias";
+				}
+				else $scope.mensajeError = response.data.mensaje;
 				$scope.cargando = false;
 			}
 		)
@@ -609,6 +653,8 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 	$scope.errorBusqueda = false; //Esto nos sirve para que si falla la busqueda inicial, al plegar y volver a desplegar se pueda volver a intentar
 	$scope.errorActualizar = false; //Esto nos sirve para si falla la actualización, mostrar un mesajito
 	$scope.enAcierto = false;
+	$scope.infoFases = false;
+	
 
 
 	var inciarObtenerMentorizaciones = function() {
@@ -645,6 +691,9 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones"+
@@ -729,6 +778,9 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
 				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
@@ -791,7 +843,10 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
-				abrirError(response.data.mensaje);
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else abrirError(response.data.mensaje);
 				$scope.cargando = false;
 				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 			}
@@ -813,7 +868,10 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
-				abrirError(response.data.mensaje);
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else abrirError(response.data.mensaje);
 				$scope.cargando = false;
 			}
 		)
@@ -836,6 +894,11 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 		$scope.enAcierto = false;
 		$rootScope.popUpAbierto = false;
 	}
+	
+	$scope.verInfoFases = function() {
+		if($scope.infoFases) $scope.infoFases=false;
+		else $scope.infoFases = true;
+	}
 
 });
 
@@ -853,6 +916,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 	$scope.enAcierto = false;
 
 	var inciarObtenerMentorizaciones = function() {
+		$scope.errorBusqueda = false;
 		$scope.cargando = true;
 		console.log("Consulta lanzada")
 		$http.get("/mentorizado/mentorizaciones/").then(
@@ -889,6 +953,9 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones"+
@@ -928,6 +995,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 
 	
 	var actualizar = function() {
+		$scope.errorActualizar = false; 
 		$http.get("/mentorizado/mentorizaciones/actualizar/" + lastload).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
@@ -977,6 +1045,9 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 					abrirError("Se ha producido un fallo en la petición al servidor para traer mentorizaciones nuevas" +
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
+				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones"+
@@ -1053,7 +1124,10 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 				function errorCallback(response) {
 					console.log("Fallo al acceder")
 					console.log(response)
-					abrirError(response.data.mensaje);
+					if (response.status == 0) {
+						abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+					}
+					else abrirError(response.data.mensaje);
 					$scope.cargando = false;
 					//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 				}
@@ -1134,6 +1208,9 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones por puntuar, si recibe este error, por favor, pongase en contacto con "
 						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
 				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones por puntuar"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
@@ -1208,6 +1285,9 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
 						", e indique con la mayor precisión el momento en el que este ocurrió.");
 				}
+				else if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones por puntuar"+
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
@@ -1273,7 +1353,12 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 				function errorCallback(response) {
 					console.log("Fallo al acceder")
 					console.log(response)
-					abrirError(response.data.mensaje);
+					if (response.status == 0) {
+						abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+					}
+					else{
+						abrirError(response.data.mensaje);
+					}
 					$scope.cargando = false;
 					//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 				}
@@ -1301,7 +1386,10 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 			function errorCallback(response) {
 				console.log("Fallo al acceder")
 				console.log(response)
-				abrirError(response.data.mensaje);
+				if (response.status == 0) {
+					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
+				}
+				else abrirError(response.data.mensaje);
 				$scope.cargando = false;
 				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 			}

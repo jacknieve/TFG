@@ -8,11 +8,13 @@ public class MentorBusqueda {
 	private String papellido;
 	private String sapellido;
 	private String nivelEstudios;
+	private String entidad;
 	private float horaspormes;
+	private String institucionNombre;
 	
 
 	public MentorBusqueda(String correo, String nombre, String papellido, String sapellido, String nivelEstudios,
-			float horaspormes) {
+			float horaspormes, String entidad, String institucionNombre) {
 		super();
 		this.correo = correo;
 		this.nombre = nombre;
@@ -20,6 +22,7 @@ public class MentorBusqueda {
 		this.sapellido = sapellido;
 		this.nivelEstudios = nivelEstudios;
 		this.horaspormes = horaspormes;
+		this.entidad=entidad;
 	}
 
 	public MentorBusqueda() {
@@ -69,6 +72,14 @@ public class MentorBusqueda {
 	
 	
 
+	public String getEntidad() {
+		return entidad;
+	}
+
+	public void setEntidad(String entidad) {
+		this.entidad = entidad;
+	}
+
 	public String getCorreo() {
 		return correo;
 	}
@@ -76,13 +87,27 @@ public class MentorBusqueda {
 	public void setCorreo(String correo) {
 		this.correo = correo;
 	}
+	
+	
+
+	public String getInstitucionNombre() {
+		return institucionNombre;
+	}
+
+	public void setInstitucionNombre(String institucionNombre) {
+		this.institucionNombre = institucionNombre;
+	}
 
 	@Override
 	public String toString() {
 		return "MentorBusqueda [correo=" + correo + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
-				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", horaspormes=" + horaspormes + "]";
+				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", entidad=" + entidad + ", horaspormes="
+				+ horaspormes + ", institucionNombre=" + institucionNombre + "]";
 	}
 
+	
+
+	
 	
 	
 	

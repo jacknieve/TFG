@@ -1,6 +1,6 @@
 package com.tfg.mentoring.model.auxiliar;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import com.tfg.mentoring.model.Peticion;
 
@@ -10,9 +10,9 @@ public class PeticionUser {
 	private String nombre;
 	private String motivo;
 	private boolean nueva;
-	private Date fechaenv;
+	private String fechaenv;
 	
-	public PeticionUser(String mentorizado, String nombre, String motivo, boolean nueva, Date fechaenv) {
+	public PeticionUser(String mentorizado, String nombre, String motivo, boolean nueva, String fechaenv) {
 		super();
 		this.mentorizado = mentorizado;
 		this.nombre = nombre;
@@ -28,7 +28,8 @@ public class PeticionUser {
 		this.motivo = p.getMotivo();
 		if(p.getEstado() == EstadosPeticion.ENVIADA) this.nueva = true;
 		else this.nueva=false;
-		this.fechaenv = p.getId().getCreadaEn();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.fechaenv = df.format(p.getId().getCreadaEn());
 	}
 
 	public PeticionUser() {
@@ -67,11 +68,11 @@ public class PeticionUser {
 		this.nueva = nueva;
 	}
 
-	public Date getFechaenv() {
+	public String getFechaenv() {
 		return fechaenv;
 	}
 
-	public void setFechaenv(Date fechaenv) {
+	public void setFechaenv(String fechaenv) {
 		this.fechaenv = fechaenv;
 	}
 

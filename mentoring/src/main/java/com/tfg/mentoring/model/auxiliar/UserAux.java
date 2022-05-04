@@ -28,13 +28,14 @@ public class UserAux {
 	private String linkedin;//
 	private float horaspormes;//
 	private String fnacimiento;//
-	private String puesto;//
+	@Size(max=255)
+	private String entidad;//
 	private String institucion;//
 	private Boolean mentor;//
 	
 	public UserAux(String nombre, String papellido, String sapellido, String nivelEstudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			String fnacimiento, String puesto, String institucion, Boolean mentor, String correo, String password) {
+			String fnacimiento, String entidad, String institucion, Boolean mentor, String correo, String password) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -45,7 +46,7 @@ public class UserAux {
 		this.linkedin = linkedin;
 		this.horaspormes = horaspormes;
 		this.fnacimiento = fnacimiento;
-		this.puesto = puesto;
+		this.entidad = entidad;
 		this.institucion = institucion;
 		this.mentor = mentor;
 		this.correo=correo;
@@ -130,12 +131,14 @@ public class UserAux {
 	}
 
 
-	public String getPuesto() {
-		return puesto;
+	
+
+	public String getEntidad() {
+		return entidad;
 	}
 
-	public void setPuesto(String puesto) {
-		this.puesto = puesto;
+	public void setEntidad(String entidad) {
+		this.entidad = entidad;
 	}
 
 	public String getInstitucion() {
@@ -175,7 +178,7 @@ public class UserAux {
 		return "UserAux [correo=" + correo + ", password=" + password + ", nombre=" + nombre + ", papellido="
 				+ papellido + ", sapellido=" + sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono
 				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
-				+ ", fnacimiento=" + fnacimiento + ", puesto=" + puesto + ", institucion=" + institucion + ", mentor="
+				+ ", fnacimiento=" + fnacimiento + ", entidad=" + entidad + ", institucion=" + institucion + ", mentor="
 				+ mentor + "]";
 	}
 

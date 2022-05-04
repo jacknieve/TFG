@@ -10,20 +10,17 @@ Mas cosas que hacer:
 ---->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar, sobre todo si voy a meter algo fuera del alcance
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
-Añadir validacion a los campos:
--A la contraseña en eliminar usuario
 Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar.
 Interfaz grafica
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
 ->Mensaje error (clase) y ver en que casos se suelta la pagina de error <-
-->Enlaces a secciones desde otras paginas <--
-->Ocultar login y registro a los ya registrados <---
+->Enlaces a secciones desde otras paginas <-- (falta mejorar para que abran)
 ->Otra pagina incial para version logeado <----
 ->Ver que excepciones hay (añadir las que puse al cerrar en las demas) <-
 ->Cambiar casos de uso para ser menos restrictivos en las excepciones?
-->Ver si podemos pasarle atributo al registro para que si da fallo, reenviar el atributo de vuelta <-----
 ->Añadir en todos los post, comprobaciones de que los datos son correctos
 ->Poner minimos y maximos a las fechas de nacimiento (para evitar error al convertirlo a edad (basicamente, poner de limite 10000 años o asi))
+->Criterio de ordenación en la búsqueda???
 ----Frontend----
 ->El header y el footer de login y registro el mismo que el de home sin loggear
 ->El header de perfil igual que el de principal (y los enlaces de arriba salen en función del rol)
@@ -33,7 +30,7 @@ Interfaz grafica
 ->Los mensajes de error deben ocultarse al realizar otra accion.
 
 >>Interfaces que faltan<<
--Perfil
+-Perfil ->Ventana de acierto al actualizar, ventana de fallo al actualizar, proteger metodos y un boton para reintentar el get
 -Incio
 -Inicio logeada
 -Login
@@ -43,20 +40,15 @@ Interfaz grafica
 -Verify_fault
 
 >>Funcionalidades en las que faltan analizar errores<<
--Mentorizaciones (mentor)
--Mentorizaciones (mentorizado)
--Peticiones
--Enviar peticion
--Cambiar fase
--Busqueda
--Cerrar relacion (mentor)
--Cerrar relacion (mentorizado)
+-Busqueda ->Aqui cambiarla a post
 -Perfil
--Puntuar mentorizacion
 -Login?
 -Registro?
+->Obtener pagina principal
+->Obtener perfil th
+->Lo que tenga que ver con la pagina de error
+->Eliminar
 
-Añadir errores y boton de recargar en js (cuando la busqueda da error)
 Tambien devolver bien los responses, con codigos adecuados o con un mensaje ya desde el servidor en caso de no devolver nada de serie.
 
 
@@ -66,9 +58,11 @@ vez pasada en el modelo (metodo post para distinguirlo del otro), y que el boole
 
 ->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar
 ->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo)
-->Cambiar la comprobacion de si esta vacio en el backend a ver cual es el codigo de respuesta (204)
 
 contigopripo@gmail.com
+
+
+----->>>Preguntar si deberia poner notificaciones en el perfil
 
 (Cosas futuro)
 ->Lo de las consultas multiples en sql es transaction y comit, a ver si hay algo similar????
@@ -79,3 +73,9 @@ contigopripo@gmail.com
 ->Añadir algun atributo a la notificacion que sea del estilo el tipo, para que a un usuario no le lleguen muchas
 ->Añadir al nivel de estudios un entero para indicar una jerarquia y hacer busquedas por estudios minimos?
 ->Añadir log de los eventos para quitar todos los souts de las excepciones
+
+
+
+
+->En el programa de institucion: lista de mentores asociados y verificados con sus puntuaciones y de mentores por verificar
+->Los mentores no verificados (que han dicho las instituciones que no estan verificados, indicarlo tambien)

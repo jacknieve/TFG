@@ -1,11 +1,14 @@
 package com.tfg.mentoring.service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -20,9 +23,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
+import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.Notificacion;
@@ -256,20 +261,63 @@ public class UserService {
 	}
 	
 	public void addListasModelo(ModelAndView modelo) {
-		modelo.addObject("puestos", listas.getPuestos());
 	    modelo.addObject("estudios", listas.getEstudios());
 	    modelo.addObject("instituciones", listas.getInstituciones());
 	    modelo.addObject("areas", listas.getAreas());
 	}
 	
 	public void addListasModeloSinAreas(ModelAndView modelo) {
-		modelo.addObject("puestos", listas.getPuestos());
 	    modelo.addObject("estudios", listas.getEstudios());
 	    modelo.addObject("instituciones", listas.getInstituciones());
 	}
 	
 	public boolean comprobarPassword(String password, Usuario u) {
 		return passwordEncoder.matches(password, u.getPassword());
+	}
+	
+	public void addInstitucionUtils(ModelAndView modelo, Institucion i) {
+		if(!i.getNombre().equals("Otra")) {
+			if(i.getColor() != null && !i.getColor().equals("")) {
+				modelo.addObject("color", i.getColor());
+			}
+			else {
+				modelo.addObject("color", "#8DFFC7");
+			}
+			try {
+				File file = ResourceUtils.getFile("classpath:static/images/usuarios/instituciones/"+i.getNombre());
+				if(file.exists() && file.isDirectory() && file.list().length==1) {
+					File image = file.listFiles()[0];
+					Optional<String> extension = getExtensionByStringHandling(image.getName());
+					if(extension.isPresent()) {
+						if(extension.get().equals("png") || extension.get().equals("jpg") || extension.get().equals("PNG")) {
+							String path = "/images/usuarios/instituciones/"+i.getNombre()+"/"+image.getName();
+							System.out.println(path);
+							modelo.addObject("logo", path);
+						}
+						else {
+							System.out.println("Fallo al leer la extension");
+						}
+					}
+					else {
+						System.out.println("Fallo al leer la extension");
+					}
+				}
+				else {
+					System.out.println("El fichero no existe, no es un directorio o no tiene ficheros dentro (o tiene mas de 1)");
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				System.out.println("El directorio de la institucion no existe");
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+	//https://www.baeldung.com/java-file-extension#:~:text=java%E2%80%9C.,returns%20extension%20of%20the%20filename.
+	public Optional<String> getExtensionByStringHandling(String filename) {
+	    return Optional.ofNullable(filename)
+	      .filter(f -> f.contains("."))
+	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
 	}
 	
     

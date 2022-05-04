@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,9 +18,14 @@
 
 <body ng-app="appConsumer">
 	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
-		<nav class="navbar navbar-expand-lg navbar-light header">
-			<a class="navbar-brand" href="#"><img id="borderIcono"  th:src="@{/images/icono_prueba.png}" width="60"
+		<nav class="navbar navbar-expand-lg navbar-light header" th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" href="#"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
 					height="60" alt="" /></a>
+			<span th:if="${logo}">
+			<a class="navbar-brand" href="#"><!--Aqui iria a la pagina de la institucion-->
+			<img th:src="@{${logo}}" width="90" height="60" class="borderIcono" alt="" />
+			</a>
+			</span>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -35,7 +41,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#mentorizaciones">Mis mentorizaciones</a>
+						<a class="headerLink nav-link" href="#mentorizaciones">Mis mentores</a>
 					</li>
 					<li class="nav-item">
 						<a class="headerLink nav-link" href="#busqueda">Buscar mentores</a>
@@ -77,16 +83,16 @@
 				<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
 			</div>
 			<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
-				
-				<div class="col-lg-12 mensajeError">{{mensajeError}} 
+
+				<div class="col-lg-12 mensajeError">{{mensajeError}}
 					<span class="float-right">
-					<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
-						<img th:src="@{/images/redo.png}" class="redoImage" alt=""/></button>
+						<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
+							<img th:src="@{/images/redo.png}" class="redoImage" alt="" /></button>
 					</span>
 				</div>
 			</div>
 			<div class="row pieSeccion">
-				<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+				<div class="col-lg-12" style="visibility: hidden"> kk
 				</div>
 			</div>
 		</section>
@@ -100,7 +106,7 @@
 							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
 						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
 							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
-						Tus mentorizaciones
+						Mis mentores
 					</div>
 				</div>
 				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
@@ -128,9 +134,11 @@
 								<div class="col-lg-9 text-lg-left text-sm-center">
 									<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}}
 										{{mentorizacion.uperfil.sapellido}}</h3>
-									<div>Edad: {{mentorizacion.uperfil.edad}} Institucion:
-										{{mentorizacion.uperfil.institucionNombre}} <br>
-										Puesto: {{mentorizacion.uperfil.puestoPuesto}} Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
+									<div>Edad: {{mentorizacion.uperfil.edad}} 
+									<span ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">Participa en el programa de:
+										{{mentorizacion.uperfil.institucionNombre}} </span><br>
+										<span ng-show="mentor.entidad != ''">Entidad: {{mentorizacion.uperfil.entidad}} </span> Horas por mes:
+										{{mentorizacion.uperfil.horaspormes}} <br>
 										Fase actual: {{mentorizacion.fase}}
 									</div>
 									<div ng-show="mentorizacion.expandido">
@@ -160,12 +168,14 @@
 							<div class="row subSeccion">
 								<div class="col-md-3 col-sm-6 text-center offset-md-6"
 									ng-hide="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Mostrar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Mostrar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center offset-md-6"
 									ng-show="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Ocultar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Ocultar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center">
@@ -174,61 +184,70 @@
 								</div>
 							</div>
 							<div ng-show="mentorizacion.cerrar" class="popupFondo" style="z-index: 50;">
-								<div class="popup" style="width: 400px">Antes de cerrar la mentorización,<br> ¿desea puntuarla y dejar un comentario? <br>
+								<div class="popup" style="width: 400px">Antes de cerrar la mentorización,<br> ¿desea
+									puntuarla y dejar un comentario? <br>
 									<form name="form" style="text-align: left">
 										<label>Comentario:</label><br>
-										<textarea ng-model="mentorizacion.comentario" maxlength="300" class="textAreaPopUp"></textarea><br>
+										<textarea ng-model="mentorizacion.comentario" maxlength="300"
+											class="textAreaPopUp"></textarea><br>
 										Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
 										Puntuación:<br>
 										<div style="text-align: center;">
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="1">
-										<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="2">
-											<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="3">
-											<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="4">
-											<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="5">
-											<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="6">
-											<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="7">
-											<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="8">
-											<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="9">
-											<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="10">
-											<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
-										</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="1">
+												<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="2">
+												<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="3">
+												<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="4">
+												<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="5">
+												<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="6">
+												<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="7">
+												<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="8">
+												<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="9">
+												<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="10">
+												<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
+											</label>
 										</div>
-										{{mentorizacion.puntuacion}}
 									</form>
-									<button class="botonInterfaz" 
-										ng-click="confirmarCerrar(mentorizacion)"
+									<button class="botonInterfaz" ng-click="confirmarCerrar(mentorizacion)"
 										ng-disabled="cargando">Cerrar la relación</button>
-									<button class="botonInterfaz" 
-										ng-click="abrirPuntuar(mentorizacion)"
+									<button class="botonInterfaz" ng-click="abrirPuntuar(mentorizacion)"
 										ng-disabled="cargando">Cancelar</button>
 								</div>
 							</div>
@@ -244,7 +263,7 @@
 										ng-disabled="cargando">Cancelar</button>
 								</div>
 							</div>
-							
+
 						</div>
 						<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
 							<div class="popup">
@@ -269,7 +288,7 @@
 						desplegar.</div>
 				</div>
 				<div class="row pieSeccion">
-					<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+					<div class="col-lg-12" style="visibility: hidden"> kk
 					</div>
 				</div>
 			</div>
@@ -287,30 +306,39 @@
 				</div>
 			</div>
 			<div class="row text-left cuerpoSeccion" ng-show="mostrarBusqueda"
-				ng-class="{ 'sinResultadosSeccion': sinresultados}">
-					<div class="col-lg-3 col-md-6 text-center" style="vertical-align: middle">
-        			<select ng-model="areaseleccioanda">
-        				<option th:value="sin">Area de conocimiento</option>
-        					<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
-        					</option>
-        				</select>
-					</div>
-					<div class="col-lg-3 col-md-6 text-center">
-        				<select ng-model="institucionseleccionada">
-        					<option th:value="sin">Institución</option>
-        					<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
-        					</option>
-        				</select>
-					</div>
-					<div class="col-lg-4 col-md-6 text-center">
-        				<label >Horas mínimas por mes</label><br>
-        				4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes"/>80 : {{horasmes}}
-					</div>
-					<div class="col-lg-2 col-md-6 text-center">
-        				<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando" style="width: 120px;">Buscar</button>
-					</div>
-				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+				ng-class="{ 'sinResultadosSeccionBusqueda': sinresultados}">
+				<div class="col-lg-12 container">
+				<div class="row">
+				<div class="col-lg-3 col-md-6 text-center">
+					<label>Área de conocimiento: </label><br>
+					<select ng-model="areaseleccioanda" style="margin-bottom: 3px;">
+						<option th:value="sin">--Escoge un área--</option>
+						<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
+						</option>
+					</select>
+				</div>
+				<div class="col-lg-3 col-md-6 text-center">
+				<label>Participa en el programa de: </label><br>
+					<select ng-model="institucionseleccionada" style="margin-bottom: 3px;">
+						<option th:value="sin">--Escoge una institucion--</option>
+						<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+						</option>
+					</select>
+				</div>
+				<div class="col-lg-4 col-md-6 text-center">
+					<label>Horas mínimas por mes: </label><br>
+					4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes" />80 : {{horasmes}}
+				</div>
+				<div class="col-lg-2 col-md-6 text-center" style="padding-top: 10px;">
+					<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando"
+						style="width: 120px;">Buscar</button>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+				</div>
 				<hr>
+				<div class="row">
 				<div class="col-lg-10 offset-lg-1">
 					<div class="elementoRepetibleDos" ng-repeat="mentor in mentores">
 						<div class="row subSeccion">
@@ -320,17 +348,19 @@
 									Correo eletronico:
 									<span style="font-size: 12px">{{mentor.correo}}</span><br>
 									<span ng-hide="mentor.info.linkedin == ''">Linkedin:
-									<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
+										<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
 								</div>
 							</div>
 							<div class="col-lg-9 text-lg-left text-sm-center">
 								<h3>{{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}</h3>
-								Nivel de estudios: {{mentor.nivelEstudios}} Horas por mes: {{mentor.horaspormes}}
+								Nivel de estudios: {{mentor.nivelEstudios}} Horas por mes: {{mentor.horaspormes}}<br>
+								<span ng-show="mentor.institucionNombre != 'Otra'">
+								Participa en el programa de: {{mentor.institucionNombre}}<br></span>
+								<span ng-show="mentor.entidad != ''">Entidad: {{mentor.entidad}} </span>
 								<div ng-show="mentor.expandido">
-								Edad: {{mentor.info.edad}}  Institución: {{mentor.info.institucionNombre}} <br>
-								Puesto: {{mentor.info.puestoPuesto}} <br>
-								Descripción:
-								<p style="font-size: 14px">{{mentor.info.descripcion}}</p>
+									Edad: {{mentor.info.edad}} <br>
+									Descripción:
+									<p style="font-size: 14px">{{mentor.info.descripcion}}</p>
 								</div>
 							</div>
 
@@ -348,17 +378,20 @@
 						</div>
 						<div class="row">
 							<div class="col-md-8 text-center offset-md-2">
-								<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos si es necesario
+								<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos si es
+									necesario
 									notificar por correo al mentor)</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-hide="mentor.expandido">
-								<button class="botonInterfaz" ng-click="obtenerMentor(mentor)" ng-disabled="mentor.cargando">Mostrar
+								<button class="botonInterfaz" ng-click="obtenerMentor(mentor)"
+									ng-disabled="mentor.cargando">Mostrar
 									perfil</button>
 							</div>
 							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-show="mentor.expandido">
-								<button class="botonInterfaz" ng-click="plegarMentor(mentor)" ng-disabled="mentor.cargando">Ocultar perfil</button>
+								<button class="botonInterfaz" ng-click="plegarMentor(mentor)"
+									ng-disabled="mentor.cargando">Ocultar perfil</button>
 							</div>
 							<div class="col-md-3 col-sm-6 text-center">
 								<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
@@ -366,22 +399,22 @@
 							</div>
 						</div>
 						<div ng-show="mentor.solicitud" class="popupFondo">
-								<div class="popup" style="width: 400px;">Por favor, introduce el motivo por el que quieres establecer la 
+							<div class="popup" style="width: 400px;">Por favor, introduce el motivo por el que quieres
+								establecer la
 								relación de mentorización con este mentor, esta será tu carta de presentación.<br>
-									<form name="form" style="text-align: left">
-										<label>Motivo:</label><br>
-										<textarea ng-model="mentor.motivo" maxlength="300" class="textAreaPopUp"></textarea><br>
-										Caracteres restantes : {{300 - mentor.motivo.length}}<br>
-									</form>
-									
-									<button class="botonInterfaz" 
-										ng-click="enviarSolicitud(mentor)"
-										ng-disabled="cargando">Enviar</button>
-									<button class="botonInterfaz" 
-										ng-click="mostrarOcultarSolicitud(mentor)"
-										ng-disabled="cargando">Cancelar</button>
-								</div>
+								<form name="form" style="text-align: left">
+									<label>Motivo:</label><br>
+									<textarea ng-model="mentor.motivo" maxlength="300"
+										class="textAreaPopUp"></textarea><br>
+									Caracteres restantes : {{300 - mentor.motivo.length}}<br>
+								</form>
+
+								<button class="botonInterfaz" ng-click="enviarSolicitud(mentor)"
+									ng-disabled="cargando">Enviar</button>
+								<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
+									ng-disabled="cargando">Cancelar</button>
 							</div>
+						</div>
 					</div>
 					<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
 						<div class="popup" style="z-index: 350;">
@@ -394,20 +427,21 @@
 						<div class="popup" style="z-index: 450;">
 							Se ha producido un error: <br>
 							<p>{{mensajeError}}</p>
-							<button class="botonInterfaz" style="width: 100px;"
-								ng-click="cerrarError()">Cerrar</button>
+							<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
 						</div>
 					</div>
 				</div>
-
-				<div class="col-lg-12 sinResultados" ng-show="sinresultados">La busqueda no obtuvo ningún resultado</div>
+				</div>
+			</div>
+				<div class="col-lg-12 sinResultados" ng-show="sinresultados">La busqueda no obtuvo ningún resultado
+				</div>
 				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">
-				No se ha podido realizar la búsqueda requerida debido a un fallo al acceder al servidor. 
-				Para volver a intentarlo, vuelva a presionar el botón de buscar.
+					No se ha podido realizar la búsqueda requerida debido a un fallo al acceder al servidor.
+					Para volver a intentarlo, vuelva a presionar el botón de buscar.
 				</div>
 			</div>
 			<div class="row pieSeccion">
-				<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+				<div class="col-lg-12" style="visibility: hidden"> kk
 				</div>
 			</div>
 		</section>
@@ -433,54 +467,61 @@
 						vuelvalá a desplegar.</div>
 					<div class="col-lg-10 offset-lg-1">
 						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
-						<div class="row subSeccion">
-							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-								<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
-								<div class="textoContacto" ng-show="mentorizacion.expandido">
-									Correo eletronico:
-									<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
-									<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
-									<span style="font-size: 10px">{{mentorizacion.uperfil.linkedin}}</span></span>
-								</div>
-							</div>
-							<div class="col-lg-9 text-lg-left text-sm-center">
-								<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}} {{mentorizacion.uperfil.sapellido}}</h3>
-								Edad: {{mentorizacion.uperfil.edad}}  Institución: {{mentorizacion.uperfil.institucionNombre}} <br>
-								<div>
-								Puesto: {{mentorizacion.uperfil.puestoPuesto}} Nivel de estudios: {{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
-								Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
-								Descripción:
-								<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
-								</div>
-							</div>
-
-						</div>
-						<div class="row subSeccion" ng-show="mentorizacion.expandido">
-							<div class="col-lg-10 offset-lg-1">
-								<p>Areas de conocimiento en las que podria ayudar:</p>
-								<div class="row">
-									<div class="col-lg-4 col-md-6 areaConocimiento"
-										ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+							<div class="row subSeccion">
+								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+									<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+									<div class="textoContacto" ng-show="mentorizacion.expandido">
+										Correo eletronico:
+										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
+										<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
+											<span
+												style="font-size: 10px">{{mentorizacion.uperfil.linkedin}}</span></span>
 									</div>
 								</div>
-								<br>
+								<div class="col-lg-9 text-lg-left text-sm-center">
+									<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}}
+										{{mentorizacion.uperfil.sapellido}}</h3>
+									Edad: {{mentorizacion.uperfil.edad}} 
+									<span ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">Participa en el programa de: 
+									{{mentorizacion.uperfil.institucionNombre}} </span><br>
+									<div>
+										<span ng-show="mentorizacion.uperfil.entidad != ''">Entidad: {{mentorizacion.uperfil.entidad}} </span> Nivel de estudios:
+										{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
+										Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
+										Descripción:
+										<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
+									</div>
+								</div>
+
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8 text-center offset-md-2">
-								<div ng-show="cargando">Cargando... (esto puede llevar unos segundos si es necesario
-									notificar por correo al mentor)</div>
+							<div class="row subSeccion" ng-show="mentorizacion.expandido">
+								<div class="col-lg-10 offset-lg-1">
+									<p>Areas de conocimiento en las que podria ayudar:</p>
+									<div class="row">
+										<div class="col-lg-4 col-md-6 areaConocimiento"
+											ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+										</div>
+									</div>
+									<br>
+								</div>
 							</div>
-						</div>
+							<div class="row">
+								<div class="col-md-8 text-center offset-md-2">
+									<div ng-show="cargando">Cargando... (esto puede llevar unos segundos si es necesario
+										notificar por correo al mentor)</div>
+								</div>
+							</div>
 							<div class="row subSeccion">
 								<div class="col-md-3 col-sm-6 text-center offset-md-3"
 									ng-hide="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Mostrar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Mostrar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center offset-md-3"
 									ng-show="mentorizacion.expandido">
-									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)" ng-disabled="cargando">Ocultar
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Ocultar
 										datos</button>
 								</div>
 								<div class="col-md-3 col-sm-6 text-center">
@@ -493,66 +534,77 @@
 								</div>
 							</div>
 							<div ng-show="mentorizacion.cerrar" class="popupFondo">
-								<div class="popup" style="width: 400px">Por favor, introduzca una puntuación y, opcionalmente, un comentario.<br>
+								<div class="popup" style="width: 400px">Por favor, introduzca una puntuación y,
+									opcionalmente, un comentario.<br>
 									<form name="form" style="text-align: left">
 										<label>Comentario:</label><br>
-										<textarea ng-model="mentorizacion.comentario" maxlength="300" class="textAreaPopUp"></textarea><br>
+										<textarea ng-model="mentorizacion.comentario" maxlength="300"
+											class="textAreaPopUp"></textarea><br>
 										Caracteres restantes : {{300 - mentorizacion.comentario.length}}<br>
 										Puntuación:<br>
 										<div style="text-align: center;">
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="1">
-										<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="2">
-											<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="3">
-											<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="4">
-											<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="5">
-											<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="6">
-											<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="7">
-											<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="8">
-											<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="9">
-											<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
-										</label>
-										<label>
-										<input type="radio" name="puntuacion" ng-model="mentorizacion.puntuacion" value="10">
-											<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
-										</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="1">
+												<img th:src="@{/images/puntuar/1estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="2">
+												<img th:src="@{/images/puntuar/2estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="3">
+												<img th:src="@{/images/puntuar/3estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="4">
+												<img th:src="@{/images/puntuar/4estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="5">
+												<img th:src="@{/images/puntuar/5estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="6">
+												<img th:src="@{/images/puntuar/6estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="7">
+												<img th:src="@{/images/puntuar/7estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="8">
+												<img th:src="@{/images/puntuar/8estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="9">
+												<img th:src="@{/images/puntuar/9estrella.png}" class="imagenPuntuar">
+											</label>
+											<label>
+												<input type="radio" name="puntuacion"
+													ng-model="mentorizacion.puntuacion" value="10">
+												<img th:src="@{/images/puntuar/10estrella.png}" class="imagenPuntuar">
+											</label>
 										</div>
-										<span ng-show="mentorizacion.puntuacion == null" style="color: red;">Debe seleccionar una puntuación. </span> 
+										<span ng-show="mentorizacion.puntuacion == null" style="color: red;">Debe
+											seleccionar una puntuación. </span>
 									</form>
-									
-									<button class="botonInterfaz" 
-										ng-click="puntuarMentorizacion(mentorizacion)"
+
+									<button class="botonInterfaz" ng-click="puntuarMentorizacion(mentorizacion)"
 										ng-disabled="cargando || mentorizacion.puntuacion == null">Puntuar</button>
-									<button class="botonInterfaz" 
-										ng-click="abrirPuntuar(mentorizacion)"
+									<button class="botonInterfaz" ng-click="abrirPuntuar(mentorizacion)"
 										ng-disabled="cargando">Cancelar</button>
 								</div>
 							</div>
-							
+
 						</div>
 						<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
 							<div class="popup" style="z-index: 350;">
@@ -570,14 +622,15 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones por puntuar</div>
+					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones por puntuar
+					</div>
 					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
 						las mentorizaciones por puntuar debido a que se ha producido un
 						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
 						desplegar.</div>
 				</div>
 				<div class="row pieSeccion">
-					<div class="col-lg-12" style="visibility: hidden"> Solo es para que tengan el mismo alto
+					<div class="col-lg-12" style="visibility: hidden"> kk
 					</div>
 				</div>
 			</div>
@@ -599,7 +652,7 @@
 			</div>
 		</footer>
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		
+
 		<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
 		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>

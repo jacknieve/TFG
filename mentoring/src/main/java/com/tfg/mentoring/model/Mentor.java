@@ -59,9 +59,8 @@ public class Mentor {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="area_mentor", joinColumns = { @JoinColumn(name = "correo") }, inverseJoinColumns = { @JoinColumn(name = "area") })
 	private List<AreaConocimiento> areas = new ArrayList<>();
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name="puesto", nullable=false)
-	private Puesto puesto;
+	@Column(name="entidad")
+	private String entidad;
 	/*@Column(name="institucion")
 	private String institucion;*/
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -70,7 +69,7 @@ public class Mentor {
 
 	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
 			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Float horaspormes,
-			Date fnacimiento, Puesto puesto, Institucion institucion) {
+			Date fnacimiento, Institucion institucion, String entidad) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -84,8 +83,8 @@ public class Mentor {
 		this.fregistro = fregistro;
 		this.horaspormes = horaspormes;
 		this.fnacimiento = fnacimiento;
-		this.puesto = puesto;
 		this.institucion = institucion;
+		this.entidad=entidad;
 	}
 	
 	public Mentor(Usuario usuario, UserAux useraux, Institucion institucion){
@@ -113,7 +112,7 @@ public class Mentor {
 		}
 		this.linkedin=useraux.getLinkedin();
 		this.horaspormes=useraux.getHoraspormes();
-		this.puesto=new Puesto(useraux.getPuesto());
+		this.entidad=useraux.getEntidad();
 		this.institucion=institucion;		
 				
 	}
@@ -227,12 +226,14 @@ public class Mentor {
 	}
 	
 
-	public Puesto getPuesto() {
-		return puesto;
+	
+
+	public String getEntidad() {
+		return entidad;
 	}
 
-	public void setPuesto(Puesto puesto) {
-		this.puesto = puesto;
+	public void setEntidad(String entidad) {
+		this.entidad = entidad;
 	}
 
 	public Institucion getInstitucion() {
@@ -253,8 +254,8 @@ public class Mentor {
 		return "Mentor [usuario=" + usuario + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
 				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion="
 				+ descripcion + ", linkedin=" + linkedin + ", feliminacion=" + feliminacion + ", fregistro=" + fregistro
-				+ ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", puesto="
-				+ puesto + ", institucion=" + institucion + "]";
+				+ ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", entidad="
+				+ entidad + ", institucion=" + institucion + "]";
 	}
 
 	

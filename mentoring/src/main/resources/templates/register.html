@@ -82,23 +82,19 @@
         <input type="date" th:field="${useraux.fnacimiento}"/>
     </div>-->
     <div>
-    	<label th:text="'Institución'">Institución</label>
+    	<label th:text="'Institución'">Institución al que pertenece programa de mentoring en el que desea participar</label>
         <select th:field="*{institucion}">
         	<option th:value="Otra" th:text="'--Escoge una--'"></option>
         	<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
         	</option>
         </select>
-        <p>En caso de escoger la opción Otra (una institución que no está registrada en la aplicación), puede indicar de cúal se trata en
-        el apartado descripción de su perfil.</p>
     </div>
     <!--<p>{{mentor}}</p>-->
     <div ng-show="mentor">
-        <label th:text="Puesto">Puesto</label>
-        <select th:field="*{puesto}">
-        	<option th:value="Otro" th:text="'--Escoge uno--'"></option>
-        	<option th:each="i : ${puestos}" th:value="${i.puesto}" th:text="${i.puesto}">
-        	</option>
-        </select>
+        <label th:text="Entidad">Entidad</label>
+        <input th:field="*{entidad}"/>
+        <p th:each="error: ${#fields.errors('entidad')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <button type="submit" th:text="Aceptar">submit</button>
 </form>
