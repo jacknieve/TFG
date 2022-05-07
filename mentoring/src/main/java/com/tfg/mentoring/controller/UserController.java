@@ -3,6 +3,7 @@ package com.tfg.mentoring.controller;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,9 +87,9 @@ public class UserController {
 	// Proveer la pagina del perfil
 	@GetMapping("/perfil")
 	public ModelAndView getPerfilPrivado(@AuthenticationPrincipal Usuario us) {
-		try {
-			// System.out.println(us.toString());
-			if (us.getRol() == Roles.MENTOR) {
+		// System.out.println(us.toString());
+		if (us.getRol() == Roles.MENTOR) {
+			try {
 				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
 				if (mentor.isPresent()) {
 					// System.out.println(mentor.get().toString());
@@ -103,9 +104,33 @@ public class UserController {
 					return modelo;
 				} else {
 					System.out.println("No existe");
-					return new ModelAndView("error_page");
+					ModelAndView model = new ModelAndView("error_page");
+					model.addObject("mensaje",
+							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
+									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+					model.addObject("hora", new Date());
+					return model;
 				}
-			} else if (us.getRol() == Roles.MENTORIZADO) {
+			} catch (JDBCConnectionException | QueryTimeoutException e) {
+				System.out.println(e.getMessage());
+				ModelAndView model = new ModelAndView("error_page_loged");
+				model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
+				model.addObject("rol", "Mentor");
+				model.addObject("hora", new Date());
+				return model;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println(e.getLocalizedMessage());
+				System.out.println(e.toString());
+				ModelAndView model = new ModelAndView("error_page");
+				model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+						+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+						+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+				model.addObject("hora", new Date());
+				return model;
+			}
+		} else if (us.getRol() == Roles.MENTORIZADO) {
+			try {
 				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
 				if (mentorizado.isPresent()) {
 					// System.out.println(mentorizado.get().toString());
@@ -120,18 +145,39 @@ public class UserController {
 					return modelo;
 				} else {
 					System.out.println("No existe");
-					return new ModelAndView("error_page");
+					ModelAndView model = new ModelAndView("error_page");
+					model.addObject("mensaje",
+							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
+									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+					model.addObject("hora", new Date());
+					return model;
 				}
-			} else {
-				System.out.println("Otro rol");
-				return new ModelAndView("error_page");
+			} catch (JDBCConnectionException | QueryTimeoutException e) {
+				System.out.println(e.getMessage());
+				ModelAndView model = new ModelAndView("error_page_loged");
+				model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
+				model.addObject("rol", "Mentorizado");
+				model.addObject("hora", new Date());
+				return model;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				System.out.println(e.getLocalizedMessage());
+				System.out.println(e.toString());
+				ModelAndView model = new ModelAndView("error_page");
+				model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+						+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+						+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+				model.addObject("hora", new Date());
+				return model;
 			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			System.out.println(e.getLocalizedMessage());
-			System.out.println(e.toString());
-			return new ModelAndView("error_page");
+		} else {
+			System.out.println("Otro rol");
+			ModelAndView model = new ModelAndView("error_page");
+			model.addObject("mensaje", "No estas autorizado a acceder a esta página con tu rol actual.");
+			model.addObject("hora", new Date());
+			return model;
 		}
+
 	}
 
 	// Obtener la informacion del perfil del usuario
@@ -175,6 +221,9 @@ public class UserController {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (EntityNotFoundException e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -289,8 +338,7 @@ public class UserController {
 			return new ResponseEntity<>(
 					new MensajeError("Se ha producido un problema al intentar realizar la peticion "
 							+ "al servidor o al acceder a su información si recibe este mensaje,"
-							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-							+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 					HttpStatus.BAD_REQUEST);
 		}
 		System.out.println("Borrando");
@@ -310,16 +358,14 @@ public class UserController {
 					System.out.println(e.getMessage());
 					return new ResponseEntity<>(new MensajeError(
 							"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
-									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-									+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 							HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(new MensajeError(
 						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
-								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-								+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 						HttpStatus.BAD_REQUEST);
 			}
 		} else if (us.getRol() == Roles.MENTORIZADO) {
@@ -338,16 +384,14 @@ public class UserController {
 					System.out.println(e.getMessage());
 					return new ResponseEntity<>(new MensajeError(
 							"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
-									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-									+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 							HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(new MensajeError(
 						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
-								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-								+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 						HttpStatus.BAD_REQUEST);
 			}
 		} else {
@@ -445,8 +489,7 @@ public class UserController {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError(
 					"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
-							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "
-							+ "intente ser lo más preciso posible al indicar la hora en la que ocurrió."),
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(null, HttpStatus.OK);
@@ -469,7 +512,12 @@ public class UserController {
 					return modelo;
 				} else {
 					System.out.println("No existe");
-					return new ModelAndView("error_page");
+					ModelAndView model = new ModelAndView("error_page");
+					model.addObject("mensaje",
+							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
+									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+					model.addObject("hora", new Date());
+					return model;
 				}
 			} else if (us.getRol() == Roles.MENTORIZADO) {
 				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
@@ -483,17 +531,30 @@ public class UserController {
 					return modelo;
 				} else {
 					System.out.println("No existe");
-					return new ModelAndView("error_page");
+					ModelAndView model = new ModelAndView("error_page");
+					model.addObject("mensaje",
+							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
+									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+					model.addObject("hora", new Date());
+					return model;
 				}
 			} else {
 				System.out.println("Otro rol");
-				return new ModelAndView("error_page");
+				ModelAndView model = new ModelAndView("error_page");
+				model.addObject("mensaje", "No estas autorizado a acceder a esta página con tu rol actual.");
+				model.addObject("hora", new Date());
+				return model;
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println(e.getLocalizedMessage());
 			System.out.println(e.toString());
-			return new ModelAndView("error_page");
+			ModelAndView model = new ModelAndView("error_page");
+			model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+					+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+					+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+			model.addObject("hora", new Date());
+			return model;
 		}
 	}
 
@@ -522,11 +583,24 @@ public class UserController {
 																					// datos
 						// TODO: handle exception
 						System.out.println(e.getMessage());
-						return new ModelAndView("error_page");// Esto ponerle un mensaje
-					} catch (MessagingException | UnsupportedEncodingException e) {// Si falla el envio del correo
+						ModelAndView model = new ModelAndView("error_page_loged");
+						model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
+						model.addObject("rol", "Mentor");
+						model.addObject("hora", new Date());
+						return model;
+					} catch (MessagingException | UnsupportedEncodingException e) {// Si falla el envio del correo no es
+																					// muy importante
 						// TODO: handle exception
 						System.out.println(e.getMessage());
 						// return new ModelAndView("error_page");
+					} catch (Exception e) {// Si ocurre otra excepción no esperada
+						System.out.println(e.getMessage());
+						ModelAndView model = new ModelAndView("error_page");
+						model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+								+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+								+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+						model.addObject("hora", new Date());
+						return model;
 					}
 				} else if (us.getRol() == Roles.MENTORIZADO) {
 					try {
@@ -545,11 +619,23 @@ public class UserController {
 																					// datos
 						// TODO: handle exception
 						System.out.println(e.getMessage());
-						return new ModelAndView("error_page");// Esto ponerle un mensaje
+						ModelAndView model = new ModelAndView("error_page_loged");
+						model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
+						model.addObject("rol", "Mentorizado");
+						model.addObject("hora", new Date());
+						return model;
 					} catch (MessagingException | UnsupportedEncodingException e) {// Si falla el envio del correo
 						// TODO: handle exception
 						System.out.println(e.getMessage());
 						// return new ModelAndView("error_page");
+					} catch (Exception e) {// Si ocurre otra excepción no esperada
+						System.out.println(e.getMessage());
+						ModelAndView model = new ModelAndView("error_page");
+						model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+								+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+								+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+						model.addObject("hora", new Date());
+						return model;
 					}
 
 				}
@@ -583,7 +669,12 @@ public class UserController {
 			System.out.println(e.getMessage());
 			System.out.println(e.getLocalizedMessage());
 			System.out.println(e.toString());
-			return new ModelAndView("error_page");
+			ModelAndView model = new ModelAndView("error_page");
+			model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
+					+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "
+					+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+			model.addObject("hora", new Date());
+			return model;
 		}
 	}
 

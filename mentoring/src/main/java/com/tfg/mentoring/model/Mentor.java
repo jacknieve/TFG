@@ -66,10 +66,12 @@ public class Mentor {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="institucion", referencedColumnName = "nombre")
 	private Institucion institucion;
+	@Column(name="verificado")
+	private boolean verificado;
 
 	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
 			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Float horaspormes,
-			Date fnacimiento, Institucion institucion, String entidad) {
+			Date fnacimiento, Institucion institucion, String entidad, Boolean verificado) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -85,6 +87,7 @@ public class Mentor {
 		this.fnacimiento = fnacimiento;
 		this.institucion = institucion;
 		this.entidad=entidad;
+		this.verificado=verificado;
 	}
 	
 	public Mentor(Usuario usuario, UserAux useraux, Institucion institucion){
@@ -114,6 +117,7 @@ public class Mentor {
 		this.horaspormes=useraux.getHoraspormes();
 		this.entidad=useraux.getEntidad();
 		this.institucion=institucion;		
+		this.verificado=false;
 				
 	}
 
@@ -248,15 +252,28 @@ public class Mentor {
 	public String getCorreo() {
 		return correo;
 	}
+	
+	
+
+	public boolean getVerificado() {
+		return verificado;
+	}
+
+	public void setVerificado(boolean verificado) {
+		this.verificado = verificado;
+	}
 
 	@Override
 	public String toString() {
-		return "Mentor [usuario=" + usuario + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
-				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono + ", descripcion="
-				+ descripcion + ", linkedin=" + linkedin + ", feliminacion=" + feliminacion + ", fregistro=" + fregistro
-				+ ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", entidad="
-				+ entidad + ", institucion=" + institucion + "]";
+		return "Mentor [correo=" + correo + ", usuario=" + usuario + ", nombre=" + nombre + ", papellido=" + papellido
+				+ ", sapellido=" + sapellido + ", nivelEstudios=" + nivelEstudios + ", telefono=" + telefono
+				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", feliminacion=" + feliminacion
+				+ ", fregistro=" + fregistro + ", horaspormes=" + horaspormes + ", fnacimiento=" + fnacimiento
+				+ ", areas=" + areas + ", entidad=" + entidad + ", institucion=" + institucion + ", verificado="
+				+ verificado + "]";
 	}
+
+	
 
 	
 	

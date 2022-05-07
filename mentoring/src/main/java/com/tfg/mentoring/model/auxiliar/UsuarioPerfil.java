@@ -25,10 +25,11 @@ public class UsuarioPerfil {
 	private boolean mentor;//
 	private boolean notificar_correo;//
 	private int edad;
+	private boolean verificado;
 
 	public UsuarioPerfil(String nombre, String papellido, String sapellido, String nivelEstudiosNivelestudios,
 			String telefono, String descripcion, String linkedin, float horaspormes,
-			Date fnacimiento, String entidad, String institucionNombre, boolean mentor, boolean notificar_correo) {
+			Date fnacimiento, String entidad, String institucionNombre, boolean mentor, boolean notificar_correo, boolean verificado) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -43,6 +44,7 @@ public class UsuarioPerfil {
 		this.institucionNombre = institucionNombre;
 		this.mentor=mentor;
 		this.notificar_correo=notificar_correo;
+		this.verificado=verificado;
 	}
 	
 
@@ -181,6 +183,18 @@ public class UsuarioPerfil {
 	public void setNotificar_correo(boolean notificar_correo) {
 		this.notificar_correo = notificar_correo;
 	}
+	
+	
+
+
+	public boolean isVerificado() {
+		return verificado;
+	}
+
+
+	public void setVerificado(boolean verificado) {
+		this.verificado = verificado;
+	}
 
 
 	@Override
@@ -188,10 +202,20 @@ public class UsuarioPerfil {
 		return "UsuarioPerfil [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
 				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
 				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
-				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", entidad=" + entidad
-				+ ", institucionNombre=" + institucionNombre + ", mentor=" + mentor + ", notificar_correo="
-				+ notificar_correo + ", edad=" + edad + "]";
+				+ ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", entidad=" + entidad + ", institucionNombre="
+				+ institucionNombre + ", mentor=" + mentor + ", notificar_correo=" + notificar_correo + ", edad=" + edad
+				+ ", verificado=" + verificado + "]";
 	}
+
+
+
+
+
+	
+
+
+
+	
 
 
 	

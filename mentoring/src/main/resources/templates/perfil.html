@@ -13,8 +13,8 @@
 
 <body ng-app="appConsumer" ng-cloak>
 	<div ng-controller="userController" ng-class="{ 'seccionDesabilitada': popupAbierto}">
-		<nav class="navbar navbar-expand-lg navbar-light header" th:style="'background-color: '+@{${color}}+';'">
-			<a class="navbar-brand" href="#">
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header" th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" th:href="@{/home}">
 				<img th:src="@{/images/icono_prueba.png}" id="borderIcono" width="60" height="60" alt="" />
 			</a>
 			<span th:if="${logo}">
@@ -38,28 +38,28 @@
 			<div th:switch="${rol}" class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul th:case="'Mentorizado'" class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal}">Notificaciones</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Notificaciones</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}">Mis
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis
 							mentores</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal#busqueda}">Buscar mentores</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal#busqueda}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Buscar mentores</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal#puntuar}">Puntuar mentorizaciones</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal#puntuar}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Puntuar mentorizaciones</a>
 					</li>
 				</ul>
 				<ul th:case="'Mentor'" class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal}">Notificaciones</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Notificaciones</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}">Mis mentorizados</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentorizados</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" th:href="@{/user/principal#peticiones}">Solicitudes recibidas</a>
+						<a class="headerLink nav-link" th:href="@{/user/principal#peticiones}" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Solicitudes recibidas</a>
 					</li>
 				</ul>
 				<div th:case="*">
@@ -76,6 +76,7 @@
 				</a>
 			</span>
 		</nav>
+		<div class="main">
 		<div class="espacioEntreSecciones"></div>
 		<section class="container cuerpoSeccion" style="height: auto; overflow-y: auto;">
 			<br>
@@ -175,7 +176,8 @@
 							</div>
 							<div class="col-md-6">
 								Fecha de nacimiento:
-								<input type="date" ng-model="mydate" />
+								<input type="date" id="fnacimiento" name="fnacimiento" ng-model="mydate" min="1900-01-01" max="4000-12-31"/>
+								<span ng-show="form.fnacimiento.$invalid" class="mensajeError"><br>La fecha está fuera de rango</span>
 							</div>
 							<div class="col-md-6" ng-show="usuario.mentor">
 								<label>Entidad</label>
@@ -188,10 +190,13 @@
 							<div class="col-md-12">
 								<label>Institución al que pertenece el programa de mentoring en el que
 									participas:</label>
-								<select ng-model="usuario.institucionNombre">
+								<select ng-model="usuario.institucionNombre" ng-change="avisoRefrescar = true">
 									<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
 									</option>
 								</select>
+								<div ng-show="avisoRefrescar" style="color: orange;">Para ver la versión de la interfaz para esa institución, una vez
+								que guardes los cambios, refresca la página o dirígete a otra.</div>
+								
 							</div>
 
 							<div class="col-md-12">
@@ -229,6 +234,7 @@
 									ng-disabled="cargando">Añadir</button>
 							</div>
 						</div>
+						<br>
 						<div class="row">
 							<div class="col-md-12 text-center" ng-show="cargando">Cargando...</div>
 							<div class="col-md-3"><button class="botonInterfaz" th:text="'Guardar cambios'"
@@ -279,7 +285,7 @@
 					</div>
 				</div>
 				<div ng-show="enError" class="popupFondo" style="z-index: 300;">
-					<div class="popup">
+					<div class="popup popupError">
 						Se ha producido un error: <br>
 						<p>{{mensajeError}}</p>
 						<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
@@ -290,6 +296,7 @@
 			<br>
 		</section>
 		<div class="espacioEntreSecciones"></div>
+		</div>
 		<hr>
 		<footer class="container">
 			<div class="row">
@@ -313,6 +320,24 @@
 		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
 		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
 		<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+		<script>
+		//https://stackoverflow.com/questions/32378590/set-date-input-fields-max-date-to-today
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+		var yyyy = today.getFullYear();
+
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+
+		today = yyyy + '-' + mm + '-' + dd;
+		document.getElementById("fnacimiento").setAttribute("max", today);
+	</script>
 	</div>
 </body>
 

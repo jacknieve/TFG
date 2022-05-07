@@ -14,7 +14,6 @@
 	<!--<link th:href="@{/css/general.css}" rel="stylesheet">-->
 	<link href="css/bootstrap-4.4.1.css" rel="stylesheet">
 	<link href="css/general.css" rel="stylesheet">
-
 </head>
 
 <body ng-app="appConsumer">
@@ -61,155 +60,119 @@
 		</nav>
 		<div class="espacioEntreSecciones"></div>
 		<section class="container cuerpoSeccion" ng-controller="userController" style="height: auto; overflow-y: auto;">
+			<br>
 			<div class="row">
-			<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+				
+				
+			<div class="col-lg-12 text-center" th:if="${errorGlobal}"><span th:text="${errorGlobal}"/></div>
 			</div>
 			<div class="row">
 			<div class="col-lg-10 offset-lg-1">
 			<form name="form" class="container">
+				<div class="col-lg-12 text-right" ng-show="cargando">
+					<form action="#" th:action="@{/auth/register/cambio}" method="POST" enctype="utf8" class="float-right">
+						<button type="submit" class="botonInterfaz" style="width: 300px;" th:text="${mensajeCambio}">
+							Prefiero registrarme con otro rol
+						</button>
+					</form>
+				</div>
 				<div class="row">
-				<div class="col-md-6">
-					Correo: <span th:text="${correo}" />
-				</div>
-				<div class="col-md-6" th:if="${fregistro}">
-					Fecha de registro: <span th:text="${fregistro}" />
-				</div>
-				<div class="col-md-12" th:if="${error}">
-					Se ha producido un error: <span th:text="${error}" />
-				</div>
-				<div class="col-md-12">
-					<label>Nombre</label>
-					<input ng-model="usuario.nombre" name="nombre" ng-pattern="/^[a-zA-ZÀ-ÿ\u00f1\u00d1]{1,255}$/"
-						required />
-					<span ng-show="form.nombre.$error.required">Es necesario introducir un nombre. </span>
-					<span ng-show="form.nombre.$error.pattern"><br>No tiene el formato correcto </span>
-				</div>
-				<div class="col-md-6">
-					<label>Primer apellido</label>
-					<input ng-model="usuario.papellido" name="papellido"
-						ng-pattern="/^[a-zA-ZÀ-ÿ\u00f1\u00d1]{0,255}$/" />
-					<span ng-show="form.papellido.$error.pattern"><br>No tiene el formato correcto </span>
-				</div>
-				<div class="col-md-6">
-					<label>Segundo apellido</label>
-					<input ng-model="usuario.sapellido" name="sapellido"
-						ng-pattern="/^[a-zA-ZÀ-ÿ\u00f1\u00d1]{0,255}$/" />
-					<span ng-show="form.sapellido.$error.pattern"><br>No tiene el formato correcto </span>
-				</div>
-				<div class="col-md-6">
-					<label>Telefono</label>
-					<input type="tel" ng-model="usuario.telefono" name="telefono"
-						ng-pattern="/^([+][0-9]{2})?[0-9]{9}$/" />
-					<span ng-show="form.sapellido.$error.pattern"><br>No tiene el formato correcto </span>
-				</div>
-				<div class="col-md-6">
-					<label>Nivel de estudios:</label>
-					<select ng-model="usuario.nivelEstudiosNivelestudios">
-						<div>
-							<!--<option th:value="Otros" th:text="'--Escoge uno--'"></option>-->
-							<option th:each="i : ${estudios}" th:value="${i.nivelestudios}"
-								th:text="${i.nivelestudios}">
-							</option>
-						</div>
-					</select>
-				</div>
-				<div class="col-md-10 offset-md-1">
-					<label>Descripción:</label><br>
-					<div style="text-align: center">
-					<textarea ng-model="usuario.descripcion" maxlength="500" name="descripcion" style="width: 80%; height: 120px;"></textarea><br>
+					<div class="col-lg-12">
+						<h4>Te vas a registrar como <span th:text="${mentor} ? 'mentor' : 'mentorizado'">mentorizado</span></h4>
 					</div>
-					Caracteres restantes : {{500 - usuario.descripcion.length}}
+				<div class="col-lg-6">
+					<span class="campoObligatorio">*</span><label th:text="Correo">Correo</label>
+					<input type="email" th:field="*{correo}"/>
+        			<p th:each="error: ${#fields.errors('correo')}"
+          				th:text="${error}">Validation error</p>
+				</div>
+				<div class="col-lg-6">
+					<span class="campoObligatorio">*</span><label th:text="'Contraseña'">Contraseña</label>
+        			<input type="password" th:field="*{password}"/>
+        			<p th:each="error : ${#fields.errors('password')}" 
+          				th:text="${error}">Validation error</p>
 				</div>
 				<div class="col-md-12">
-					<label>Tu linkedin</label>
-					<input type="url" ng-model="usuario.linkedin" name="linkedin" />
-					<span ng-hide="form.linkedin.$valid"><br>No tiene el formato correcto </span>
+					<span class="campoObligatorio">*</span><label th:text="Nombre">Nombre</label>
+        			<input th:field="*{nombre}"/>
+        			<p th:each="error: ${#fields.errors('nombre')}" 
+          				th:text="${error}">Validation error</p>
+				</div>
+				<div class="col-md-6">
+					<label th:text="'Primer apellido'">Primer apellido</label>
+        			<input th:field="*{papellido}"/>
+        			<p th:each="error: ${#fields.errors('papellido')}" 
+          				th:text="${error}">Validation error</p>
+				</div>
+				<div class="col-md-6">
+					<label th:text="'Segundo apellido'">Segundo apellido</label>
+        			<input th:field="*{sapellido}"/>
+        			<p th:each="error: ${#fields.errors('sapellido')}" 
+          				th:text="${error}">Validation error</p>
+				</div>
+				<div class="col-md-6">
+					<label th:text="Telefono">Telefono</label>
+        			<input type="tel" th:field="*{telefono}"/>
+        			<p th:each="error: ${#fields.errors('telefono')}" 
+          				th:text="${error}">Validation error</p>
+				</div>
+				<div class="col-md-6">
+					<label th:text="'Nivel de estudios'">Nivel de estudios</label>
+        			<select th:field="*{nivelEstudios}">
+        				<option th:value="Otros" th:text="'--Escoge uno--'"></option>
+        				<option th:each="i : ${estudios}" th:value="${i.nivelestudios}" th:text="${i.nivelestudios}">
+        				</option>
+        			</select>
+				</div>
+				<div class="col-md-12">
+					<label th:text="'Tu linkedin'">Tu linkedin</label>
+        			<input type="url" th:field="*{linkedin}"/>
+        			<p th:each="error: ${#fields.errors('linkedin')}" 
+          				th:text="${error}">Validation error</p>
 				</div>
 				<div class="col-md-12" ng-show="usuario.mentor">
-					<label>Horas por mes que desea mentorizar: </label>
-					4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes" />80 : {{horasmes}}
-				</div>
-				<div class="col-md-12">
-					Fecha de nacimiento:
-					<input type="date" ng-model="mydate" />
+					<label><span class="campoObligatorio">*</span>Horas por mes que desea mentorizar: </label>
+					4<input type="range" min="4" max="80" step="1" value="4" onchange="actualizarSalidaRange(this.value);"/>80 : <input type="number" id="valorRange" value="4" th:field="*{horaspormes}" class="viewRangeHoras" disabled/>
 				</div>
 				<div class="col-md-6">
-					<label>Institución:</label>
-					<select ng-model="usuario.institucionNombre">
-						<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
-						</option>
-					</select>
+					<label th:text="'Fecha de nacimiento'">Fecha de nacimiento: </label>
+        			<input type="date" id="fnacimiento" th:field="*{fnacimiento}" min="1900-01-01" max="4000-12-31" value=""/>
 				</div>
-				<div class="col-md-6" ng-show="usuario.mentor">
-					<label>Puesto</label>
-					<select ng-model="usuario.puestoPuesto">
-						<!--<option th:value="Otro" th:text="'--Escoge uno--'"></option>-->
-						<option th:each="i : ${puestos}" th:value="${i.puesto}" th:text="${i.puesto}">
-						</option>
-					</select>
+				<div class="col-md-6" th:if="${mentor}">
+					<label th:text="Entidad">Entidad: </label>
+       	 			<input th:field="*{entidad}"/>
+        			<p th:each="error: ${#fields.errors('entidad')}" 
+          				th:text="${error}">Validation error</p>
 				</div>
 				<div class="col-md-12">
-					<label>¿Desea recibir notificaciones por correo cuando esta desconectado?</label>
-					<input type="checkbox" ng-model="usuario.notificar_correo"/>
+					<label th:text="'Institución'">Institución al que pertenece programa de mentoring en el que desea participar</label>
+        				<select th:field="*{institucion}">
+        				<option th:value="Otra" th:text="'--Escoge una--'"></option>
+        				<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+        				</option>
+        		</select>
 				</div>
-
+				<div class="col-md-12">
+					<span class="campoObligatorio">*</span>
+					<input type="checkbox" required/>
+					<label>Acepto los <a href="#" th:text="'Términos y condiciones'">Términos y condiciones</a></label>
+					
+				</div>
+				<div class="col-md-12 campoObligatorio"> *Campos obligatorios
+				</div>
+					<div class="col-md-12"> Es posible que el registro tarde unos segundos.
+				</div>
+				<div class="col-md-12">
+				<button type="submit" th:text="Aceptar" class="botonInterfaz float-right">Aceptar</button>
+				</div>
+					<div class="col-md-12">
+						Haz clic <a th:href="@{/login.html}" th:text="'aquí'">aquí</a> si prefieres iniciar sesión con una cuenta registrada.
+					</div>
 				</div>
 			</form>
 			
-			<h4>Areas de conocimiento:</h4>
-			<div class="container">
-			<div class="row">
-				<div class="col-lg-6 areaConocimiento" ng-repeat="area in usuario.areas" style="min-height: 37px; vertical-align: middle;">{{area.area}} <button ng-click="borrarArea(area)"
-						ng-disabled="cargando" class="float-right botonInterfaz" style="width: 100px;">Borrar</button>
-				</div>
-			<div class="col-md-12" ng-show="sinareas">No tienes ninguna área de conocimiento escogida</div>
-			</div>
 			
-			<div class="row">
-				<label class="col-md-3">Añadir nueva area: </label>
-				<select class="col-md-4" ng-model="areaseleccioanda">
-					<option th:value="'--Escoge una--'" th:text="'--Escoge una--'"></option>
-					<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
-					</option>
-				</select>
-				<div class="col-md-5">
-				<button class="float-right botonInterfaz" ng-click="addArea(areaseleccioanda)" ng-disabled="cargando">Añadir</button>
-				</div>
 			</div>
-			<div class="row">
-			<div  class="col-md-12 text-center" ng-show="cargando">Cargando...</div>
-			<div class="col-md-3"><button class="botonInterfaz" th:text="'Guardar cambios'" ng-click="setInfo(usuario)" ng-disabled="cargando">Guardar
-					cambios</button>
-				</div>
-				<div class="col-md-9">
-				<button class="botonInterfaz" th:text="Deshacer" ng-click="deshacer()" ng-disabled="cargando">Deshacer</button> (No se
-				recuperaran las
-				areas borradas)
-				</div>
-			</div>
-			</div>
-			</div>
-			<!--<div ng-show="mentor.solicitud" class="popupFondo">
-				<div class="popup" style="width: 400px;">Para borrar su cuenta, por favor, introduzca su contraseña.<br>
-					<form action="#" th:action="@{/user/eliminar}" method="POST" enctype="utf8">
-				<div>
-					<input type="password" id="password" name="password" maxlength="255" required/>
-				</div>
-				</form>
-					<button class="botonInterfaz" ng-click="confirmarBorrar = true"
-									ng-disabled="cargando">Aceptar</button>
-					<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
-									ng-disabled="cargando">Cancelar</button>
-				</div>
-			</div>-->
-				<!--<div ng-show="confirmarBorrar" class="popupFondo" style="z-index: 250;">
-					<div class="popup" style="width: 400px;z-index: 300;">
-							¿Seguro que desea realizar esta acción?<br>Esta acción no es reversible
-							(de momento) y su cuenta de correo no podrá ser usada en otra cuenta.
-							<button class="botonInterfaz" type="submit" th:text="Confirmar" ng-disabled="cargando">Confirmar</button>
-							<button class="botonInterfaz" th:text="Cancelar" ng-click="confirmarBorrar = false">Cancelar</button>
-					</div>
-				</div>-->
 			</div>
 		</section>
 		<hr>
@@ -238,6 +201,28 @@
 		<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 		<script type="text/javascript" src="js/popper.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap-4.4.1.js"></script>
+		<script>
+			function actualizarSalidaRange(valor){
+				document.getElementById('valorRange').value=valor;
+			}
+			//https://stackoverflow.com/questions/32378590/set-date-input-fields-max-date-to-today
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth() + 1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if (dd < 10) {
+   				dd = '0' + dd;
+			}
+
+			if (mm < 10) {
+   				mm = '0' + mm;
+			} 
+    
+			today = yyyy + '-' + mm + '-' + dd;
+			document.getElementById("datefield").setAttribute("max", today);
+			//document.getElementById("datefield").setAttribute("value", today);
+		</script>
 	</div>
 </body>
 

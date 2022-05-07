@@ -11,17 +11,17 @@ values ('mentor1', true, 'falsa', 1, true, null, false),
 ('mentorkk2', true, 'falsa', 1, false, null, false),
 ('mentorkk3', false, 'falsa', 1, false, null, false);
 
-insert into mentores (usuario_mentor, fnacimiento, feliminacion, fregistro, horaspormes, linkedin, nivelestudios, descripcion, nombre, papellido, sapellido, puesto, telefono, institucion)
-values ('mentor1', current_timestamp, null, current_timestamp, 5.0, null, 'Graduado', null, 'Juan', null, null, 'Otro', null, 'Otra'),
-('mentor2', current_timestamp, null, current_timestamp, 2.0, null, 'Graduado', null, 'Luis', null, null, 'Otro', null, 'Otra'),
-('mentor3', current_timestamp, null, current_timestamp, 1.5, null, 'Graduado', null, 'Alex', null, null, 'Otro', null, 'Otra'),
-('mentor4', current_timestamp, null, current_timestamp, 30.0, null, 'Graduado', null, 'Pablo', null, null, 'Otro', null, 'Otra'),
-('mentor5', current_timestamp, null, current_timestamp, 40.0, null, 'Graduado', null, 'Joel', null, null, 'Otro', null, 'Otra'),
-('mentor6', current_timestamp, null, current_timestamp, 5.0, null, 'Graduado', null, 'Miguel', null, null, 'Otro', null, 'Otra'),
-('mentor7', current_timestamp, null, current_timestamp, 6.0, null, 'Graduado', null, 'Iago', null, null, 'Otro', null, 'Otra'),
-('mentorkk1', null, null, null, 1.0, null, null, null, 'Juan1', null, null, 'Otro', null, 'Otra'),
-('mentorkk2', null, null, null, 1.0, null, null, null, 'Juan2', null, null, 'Otro', null, 'Otra'),
-('mentorkk3', null, null, null, 1.0, null, null, null, 'Juan3', null, null, 'Otro', null, 'Otra');
+insert into mentores (usuario_mentor, fnacimiento, feliminacion, fregistro, horaspormes, linkedin, nivelestudios, descripcion, nombre, papellido, sapellido, puesto, telefono, institucion, verificado)
+values ('mentor1', current_timestamp, null, current_timestamp, 5, null, 'Graduado', null, 'Juan', null, null, 'Otro', null, 'Otra', false),
+('mentor2', current_timestamp, null, current_timestamp, 4, null, 'Graduado', null, 'Luis', null, null, 'Otro', null, 'Otra', false),
+('mentor3', current_timestamp, null, current_timestamp, 4, null, 'Graduado', null, 'Alex', null, null, 'Otro', null, 'Otra', false),
+('mentor4', current_timestamp, null, current_timestamp, 30, null, 'Graduado', null, 'Pablo', null, null, 'Otro', null, 'Otra', false),
+('mentor5', current_timestamp, null, current_timestamp, 40, null, 'Graduado', null, 'Joel', null, null, 'Otro', null, 'Otra', false),
+('mentor6', current_timestamp, null, current_timestamp, 5, null, 'Graduado', null, 'Miguel', null, null, 'Otro', null, 'Otra', false),
+('mentor7', current_timestamp, null, current_timestamp, 6, null, 'Graduado', null, 'Iago', null, null, 'Otro', null, 'Otra', false),
+('mentorkk1', null, null, null, 1, null, null, null, 'Juan1', null, null, 'Otro', null, 'Otra', false),
+('mentorkk2', null, null, null, 1, null, null, null, 'Juan2', null, null, 'Otro', null, 'Otra', false),
+('mentorkk3', null, null, null, 1, null, null, null, 'Juan3', null, null, 'Otro', null, 'Otra', false);
 
 
 insert into area_mentor (correo, area)
@@ -43,13 +43,10 @@ values ('usc@usc.es', true, 'falsa', 3, true, null, false),
 ('uvigo@uvigo.es', true, 'falsa', 3, true, null, false),
 ('empresafantasma@fraude.kk', true, 'falsa', 3, true, null, false);
 
-insert into instituciones (usuario_username, color, nombre, visibilidad, webpage, direccion)
-values ('usc@usc.es', '#3733FF', 'USC', true, null, null),
-('uvigo@uvigo.es', '#FF2513', 'UVigo', true, null, null),
-('empresafantasma@fraude.kk', '#FFFB13','Falsa', false, null, null);
+insert into instituciones (usuario_username, color, nombre, visibilidad, webpage, direccion, colorbandas, letrasblancas, letrasblancasbandas)
+values ('usc@usc.es', '#3733FF', 'USC', true, null, null, '#C5C5C5', true, false),
+('uvigo@uvigo.es', '#FF2513', 'UVigo', true, null, null, null, false, false),
+('empresafantasma@fraude.kk', '#FFFB13','Falsa', false, null, null, null, false, false);
 
 INSERT INTO nivelestudios (nivelestudios) VALUES ('Basica'), ('Secundaria'), ('Tecnico'), ('Bachillerato'),
 ('Graduado'), ('Master'), ('Doctorado'), ('Otros');
-
-INSERT INTO puestos (puesto) VALUES ('Becario'), ('Profesor'), ('Estudiante'), ('Empleado'),
-('Jefe'), ('Otro');

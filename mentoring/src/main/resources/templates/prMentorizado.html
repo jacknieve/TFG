@@ -18,13 +18,14 @@
 
 <body ng-app="appConsumer">
 	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
-		<nav class="navbar navbar-expand-lg navbar-light header" th:style="'background-color: '+@{${color}}+';'">
-			<a class="navbar-brand" href="#"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header" th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
 					height="60" alt="" /></a>
 			<span th:if="${logo}">
-			<a class="navbar-brand" href="#"><!--Aqui iria a la pagina de la institucion-->
-			<img th:src="@{${logo}}" width="90" height="60" class="borderIcono" alt="" />
-			</a>
+				<a class="navbar-brand" href="#">
+					<!--Aqui iria a la pagina de la institucion-->
+					<img th:src="@{${logo}}" width="90" height="60" class="borderIcono" alt="" />
+				</a>
 			</span>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,13 +42,13 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#mentorizaciones">Mis mentores</a>
+						<a class="headerLink nav-link" href="#mentorizaciones" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentores</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#busqueda">Buscar mentores</a>
+						<a class="headerLink nav-link" href="#busqueda" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Buscar mentores</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#puntuar">Puntuar mentorizaciones</a>
+						<a class="headerLink nav-link" href="#puntuar" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Puntuar mentorizaciones</a>
 					</li>
 				</ul>
 			</div>
@@ -60,11 +61,12 @@
 				</a>
 			</span>
 		</nav>
+		<div class="main">
 		<div class="espacioEntreSecciones"></div>
 		<section class="container" ng-controller="notificacionController">
-			<div class="row encabezadoSeccion">
+			<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 				<div class="col-lg-12">
-					Notificaciones
+					<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Notificaciones</span>
 				</div>
 			</div>
 			<div class="row text-left cuerpoSeccion" style="height: 250px">
@@ -91,7 +93,7 @@
 					</span>
 				</div>
 			</div>
-			<div class="row pieSeccion">
+			<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 				<div class="col-lg-12" style="visibility: hidden"> kk
 				</div>
 			</div>
@@ -100,13 +102,13 @@
 		<a name="mentorizaciones"></a>
 		<section class="container" ng-controller="mentorizadoMentorizacionController">
 			<div>
-				<div class="row encabezadoSeccion">
+				<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 					<div class="col-lg-12">
 						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
 							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
 						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
 							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
-						Mis mentores
+						<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Mis mentores</span>
 					</div>
 				</div>
 				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
@@ -118,51 +120,68 @@
 						vuelvalá a desplegar.</div>
 					<div class="col-lg-10 offset-lg-1">
 						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
-							<!--Aqui la repeticion-->
 							<div class="row subSeccion">
 								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
 									<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
 									<div class="textoContacto" ng-show="mentorizacion.expandido">
-										Correo eletronico:
+										<strong>Correo eletronico:</strong>
 										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
 										<span ng-hide="mentorizacion.uperfil.telefono== ''">
-											<!--Solo mostrar si hay telefono-->Telefono:
+											<strong>Telefono:</strong>
 											<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
 										</span>
 									</div>
 								</div>
 								<div class="col-lg-9 text-lg-left text-sm-center">
-									<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}}
-										{{mentorizacion.uperfil.sapellido}}</h3>
-									<div>Edad: {{mentorizacion.uperfil.edad}} 
-									<span ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">Participa en el programa de:
-										{{mentorizacion.uperfil.institucionNombre}} </span><br>
-										<span ng-show="mentor.entidad != ''">Entidad: {{mentorizacion.uperfil.entidad}} </span> Horas por mes:
-										{{mentorizacion.uperfil.horaspormes}} <br>
-										Fase actual: {{mentorizacion.fase}}
-									</div>
-									<div ng-show="mentorizacion.expandido">
-										<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
-											{{mentorizacion.uperfil.linkedin}}</span>
-										Nivel de estudios: {{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
-										Descripción:
-										<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
+									<div class="container">
+										<div class="row">
+											<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
+												{{mentorizacion.uperfil.papellido}}
+												{{mentorizacion.uperfil.sapellido}}</h3>
+											<div class="col-md-5"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}
+											</div>
+											<div class="col-md-7" ng-show="mentor.entidad != ''">
+												<strong>Entidad:</strong> {{mentorizacion.uperfil.entidad}} </div>
+											<div class="col-md-12"
+												ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">
+												<strong>Participa en el programa de:</strong>
+												{{mentorizacion.uperfil.institucionNombre}} </div>
+											<div class="col-md-5"><strong>Horas por mes:</strong>
+												{{mentorizacion.uperfil.horaspormes}} </div>
+											<div class="col-md-7">
+												<strong>Fase actual:</strong> {{mentorizacion.fase}}
+											</div>
+										</div>
+										<div class="row" ng-show="mentorizacion.expandido">
+											<div class="col-md-5"><strong>Nivel de estudios:</strong>
+												{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}</div>
+											<div class="col-md-7" ng-hide="mentorizacion.uperfil.linkedin == ''">
+												<strong>Linkedin:</strong>
+												{{mentorizacion.uperfil.linkedin}}</div>
+											<div class="col-md-12">
+												<strong>Descripción:</strong>
+												<p style="font-size: 14px">
+													<span ng-show="mentorizacion.uperfil.descripcion == null">
+														Sin descripción.
+													</span>
+													{{mentorizacion.uperfil.descripcion}}
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
 
 							</div>
-							<div ng-show="mentorizacion.expandido" class="subSeccion">
+							<div ng-show="mentorizacion.expandido" class="row subSeccion">
 								<br>
-								<div class="row subSeccion" ng-show="mentorizacion.expandido">
-									<div class="col-lg-10 offset-lg-1">
-										<p>Areas de conocimiento en las que podría ayudar:</p>
-										<div class="row">
-											<div class="col-lg-4 col-md-6 areaConocimiento"
-												ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
-											</div>
+								<div class="col-lg-10 offset-lg-1">
+									<p>Areas de conocimiento en las que podría ayudar:</p>
+									<div class="row">
+										<div class="col-lg-4 col-md-6 areaConocimiento"
+											ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
 										</div>
-										<br>
 									</div>
+									<br>
 								</div>
 							</div>
 							<div class="row subSeccion">
@@ -273,7 +292,7 @@
 							</div>
 						</div>
 						<div ng-show="enError" class="popupFondo" style="z-index: 300;">
-							<div class="popup">
+							<div class="popup popupError">
 								Se ha producido un error: <br>
 								<p>{{mensajeError}}</p>
 								<button class="botonInterfaz" style="width: 100px;"
@@ -287,7 +306,7 @@
 						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
 						desplegar.</div>
 				</div>
-				<div class="row pieSeccion">
+				<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 					<div class="col-lg-12" style="visibility: hidden"> kk
 					</div>
 				</div>
@@ -296,143 +315,163 @@
 		<div class="espacioEntreSecciones"></div>
 		<a name="busqueda"></a>
 		<section class="container" ng-controller="busquedaController">
-			<div class="row encabezadoSeccion">
+			<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 				<div class="col-lg-12">
 					<button class="float-right botonSeccion" ng-hide="mostrarBusqueda" ng-click="activarBusqueda()"
 						ng-disabled="cargando">▼</button>
 					<button class="float-right botonSeccion" ng-show="mostrarBusqueda" ng-click="activarBusqueda()"
 						ng-disabled="cargando">▲</button>
-					Buscar mentores
+					<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Buscar mentores</span>
 				</div>
 			</div>
 			<div class="row text-left cuerpoSeccion" ng-show="mostrarBusqueda"
 				ng-class="{ 'sinResultadosSeccionBusqueda': sinresultados}">
 				<div class="col-lg-12 container">
-				<div class="row">
-				<div class="col-lg-3 col-md-6 text-center">
-					<label>Área de conocimiento: </label><br>
-					<select ng-model="areaseleccioanda" style="margin-bottom: 3px;">
-						<option th:value="sin">--Escoge un área--</option>
-						<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
-						</option>
-					</select>
-				</div>
-				<div class="col-lg-3 col-md-6 text-center">
-				<label>Participa en el programa de: </label><br>
-					<select ng-model="institucionseleccionada" style="margin-bottom: 3px;">
-						<option th:value="sin">--Escoge una institucion--</option>
-						<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
-						</option>
-					</select>
-				</div>
-				<div class="col-lg-4 col-md-6 text-center">
-					<label>Horas mínimas por mes: </label><br>
-					4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes" />80 : {{horasmes}}
-				</div>
-				<div class="col-lg-2 col-md-6 text-center" style="padding-top: 10px;">
-					<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando"
-						style="width: 120px;">Buscar</button>
-				</div>
-				</div>
-				<div class="row">
-				<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
-				</div>
-				<hr>
-				<div class="row">
-				<div class="col-lg-10 offset-lg-1">
-					<div class="elementoRepetibleDos" ng-repeat="mentor in mentores">
-						<div class="row subSeccion">
-							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-								<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
-								<div class="textoContacto" ng-show="mentor.expandido">
-									Correo eletronico:
-									<span style="font-size: 12px">{{mentor.correo}}</span><br>
-									<span ng-hide="mentor.info.linkedin == ''">Linkedin:
-										<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
-								</div>
-							</div>
-							<div class="col-lg-9 text-lg-left text-sm-center">
-								<h3>{{mentor.nombre}} {{mentor.papellido}} {{mentor.sapellido}}</h3>
-								Nivel de estudios: {{mentor.nivelEstudios}} Horas por mes: {{mentor.horaspormes}}<br>
-								<span ng-show="mentor.institucionNombre != 'Otra'">
-								Participa en el programa de: {{mentor.institucionNombre}}<br></span>
-								<span ng-show="mentor.entidad != ''">Entidad: {{mentor.entidad}} </span>
-								<div ng-show="mentor.expandido">
-									Edad: {{mentor.info.edad}} <br>
-									Descripción:
-									<p style="font-size: 14px">{{mentor.info.descripcion}}</p>
-								</div>
-							</div>
-
+					<div class="row">
+						<div class="col-lg-3 col-md-6 text-center">
+							<label>Área de conocimiento: </label><br>
+							<select ng-model="areaseleccioanda" style="margin-bottom: 3px;">
+								<option th:value="sin">--Escoge un área--</option>
+								<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
+								</option>
+							</select>
 						</div>
-						<div class="row subSeccion" ng-show="mentor.expandido">
-							<div class="col-lg-10 offset-lg-1">
-								<p>Areas de conocimiento en las que podria ayudar:</p>
-								<div class="row">
-									<div class="col-lg-4 col-md-6 areaConocimiento"
-										ng-repeat="area in mentor.info.areas"> {{area.area}}
+						<div class="col-lg-3 col-md-6 text-center">
+							<label>Participa en el programa de: </label><br>
+							<select ng-model="institucionseleccionada" style="margin-bottom: 3px;">
+								<option th:value="sin">--Escoge una institucion--</option>
+								<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+								</option>
+							</select>
+						</div>
+						<div class="col-lg-4 col-md-6 text-center">
+							<label>Horas mínimas por mes: </label><br>
+							4<input type="range" min="4" max="80" step="1" value="4" ng-model="horasmes" />80 :
+							{{horasmes}}
+						</div>
+						<div class="col-lg-2 col-md-6 text-center" style="padding-top: 10px;">
+							<button ng-click="buscar()" class="botonInterfaz" ng-disabled="cargando"
+								style="width: 120px;">Buscar</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+					</div>
+					<hr>
+					<div class="row">
+						<div class="col-lg-10 offset-lg-1">
+							<div class="elementoRepetibleDos" ng-repeat="mentor in mentores">
+								<div class="row subSeccion">
+									<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+										<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+										<div class="textoContacto" ng-show="mentor.expandido">
+											<strong>Correo eletronico:</strong>
+											<span style="font-size: 12px">{{mentor.correo}}</span><br>
+											<span ng-hide="mentor.info.linkedin == ''"><strong>Linkedin:</strong>
+												<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
+										</div>
+									</div>
+									<div class="col-lg-9 text-lg-left text-sm-center">
+										<div class="container row">
+											<h3 class="col-lg-12">{{mentor.nombre}} {{mentor.papellido}}
+												{{mentor.sapellido}}</h3>
+											<div class="col-md-5"><strong>Horas por mes:</strong> {{mentor.horaspormes}}
+											</div>
+											<div class="col-md-7"><strong>Nivel de estudios:</strong>
+												{{mentor.nivelEstudios}}</div>
+											<div class="col-lg-12" ng-show="mentor.institucionNombre != 'Otra'">
+												<strong>Participa en el programa de:</strong>
+												{{mentor.institucionNombre}}
+											</div>
+											<div class="col-md-5" ng-show="mentor.expandido"> <strong>Edad:</strong>
+												{{mentor.info.edad}}</div>
+											<div class="col-md-7" ng-show="mentor.entidad != ''">
+												<strong>Entidad:</strong> {{mentor.entidad}} </div>
+											<div class="col-lg-12" ng-show="mentor.expandido">
+												<strong>Descripción:</strong>
+												<p style="font-size: 14px">
+													<span ng-show="mentor.info.descripcion == null">
+														Sin descripción.
+													</span>
+													{{mentor.info.descripcion}}
+												</p>
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<div class="row subSeccion" ng-show="mentor.expandido">
+									<div class="col-lg-10 offset-lg-1">
+										<p>Areas de conocimiento en las que podria ayudar:</p>
+										<div class="row">
+											<div class="col-lg-4 col-md-6 areaConocimiento"
+												ng-repeat="area in mentor.info.areas"> {{area.area}}
+											</div>
+										</div>
+										<br>
 									</div>
 								</div>
-								<br>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8 text-center offset-md-2">
-								<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos si es
-									necesario
-									notificar por correo al mentor)</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-hide="mentor.expandido">
-								<button class="botonInterfaz" ng-click="obtenerMentor(mentor)"
-									ng-disabled="mentor.cargando">Mostrar
-									perfil</button>
-							</div>
-							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-show="mentor.expandido">
-								<button class="botonInterfaz" ng-click="plegarMentor(mentor)"
-									ng-disabled="mentor.cargando">Ocultar perfil</button>
-							</div>
-							<div class="col-md-3 col-sm-6 text-center">
-								<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
-									ng-disabled="mentor.cargando">Enviar Solicitud</button>
-							</div>
-						</div>
-						<div ng-show="mentor.solicitud" class="popupFondo">
-							<div class="popup" style="width: 400px;">Por favor, introduce el motivo por el que quieres
-								establecer la
-								relación de mentorización con este mentor, esta será tu carta de presentación.<br>
-								<form name="form" style="text-align: left">
-									<label>Motivo:</label><br>
-									<textarea ng-model="mentor.motivo" maxlength="300"
-										class="textAreaPopUp"></textarea><br>
-									Caracteres restantes : {{300 - mentor.motivo.length}}<br>
-								</form>
+								<div class="row">
+									<div class="col-md-8 text-center offset-md-2">
+										<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos si
+											es
+											necesario
+											notificar por correo al mentor)</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-hide="mentor.expandido">
+										<button class="botonInterfaz" ng-click="obtenerMentor(mentor)"
+											ng-disabled="mentor.cargando">Mostrar
+											perfil</button>
+									</div>
+									<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-show="mentor.expandido">
+										<button class="botonInterfaz" ng-click="plegarMentor(mentor)"
+											ng-disabled="mentor.cargando">Ocultar perfil</button>
+									</div>
+									<div class="col-md-3 col-sm-6 text-center">
+										<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
+											ng-disabled="mentor.cargando">Enviar Solicitud</button>
+									</div>
+								</div>
+								<div ng-show="mentor.solicitud" class="popupFondo">
+									<div class="popup" style="width: 400px;">Por favor, introduce el motivo por el que
+										quieres
+										establecer la
+										relación de mentorización con este mentor, esta será tu carta de
+										presentación.<br>
+										<form name="form" style="text-align: left">
+											<label>Motivo:</label><br>
+											<textarea ng-model="mentor.motivo" maxlength="300"
+												class="textAreaPopUp"></textarea><br>
+											Caracteres restantes : {{300 - mentor.motivo.length}}<br>
+										</form>
 
-								<button class="botonInterfaz" ng-click="enviarSolicitud(mentor)"
-									ng-disabled="cargando">Enviar</button>
-								<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
-									ng-disabled="cargando">Cancelar</button>
+										<button class="botonInterfaz" ng-click="enviarSolicitud(mentor)"
+											ng-disabled="cargando">Enviar</button>
+										<button class="botonInterfaz" ng-click="mostrarOcultarSolicitud(mentor)"
+											ng-disabled="cargando">Cancelar</button>
+									</div>
+								</div>
+							</div>
+							<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+								<div class="popup" style="z-index: 350;">
+									La solicitud se ha enviado con éxito <br>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="cerrarAcierto()">Cerrar</button>
+								</div>
+							</div>
+							<div ng-show="enError" class="popupFondo" style="z-index: 400;">
+								<div class="popup popupError" style="z-index: 450;">
+									Se ha producido un error: <br>
+									<p>{{mensajeError}}</p>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="cerrarError()">Cerrar</button>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-						<div class="popup" style="z-index: 350;">
-							La solicitud se ha enviado con éxito <br>
-							<button class="botonInterfaz" style="width: 100px;"
-								ng-click="cerrarAcierto()">Cerrar</button>
-						</div>
-					</div>
-					<div ng-show="enError" class="popupFondo" style="z-index: 400;">
-						<div class="popup" style="z-index: 450;">
-							Se ha producido un error: <br>
-							<p>{{mensajeError}}</p>
-							<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
-						</div>
-					</div>
 				</div>
-				</div>
-			</div>
 				<div class="col-lg-12 sinResultados" ng-show="sinresultados">La busqueda no obtuvo ningún resultado
 				</div>
 				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">
@@ -440,7 +479,7 @@
 					Para volver a intentarlo, vuelva a presionar el botón de buscar.
 				</div>
 			</div>
-			<div class="row pieSeccion">
+			<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 				<div class="col-lg-12" style="visibility: hidden"> kk
 				</div>
 			</div>
@@ -449,13 +488,13 @@
 		<a name="puntuar"></a>
 		<section class="container" ng-controller="puntuarController">
 			<div>
-				<div class="row encabezadoSeccion">
+				<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 					<div class="col-lg-12">
 						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
 							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
 						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
 							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
-						Mentorizaciones por puntuar
+						<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Mentorizaciones por puntuar</span>
 					</div>
 				</div>
 				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
@@ -471,25 +510,47 @@
 								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
 									<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
 									<div class="textoContacto" ng-show="mentorizacion.expandido">
-										Correo eletronico:
+										<strong>Correo eletronico:</strong>
 										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
-										<span ng-hide="mentorizacion.uperfil.linkedin == ''">Linkedin:
+										<span ng-hide="mentorizacion.uperfil.linkedin == ''"><strong>Linkedin:</strong>
 											<span
 												style="font-size: 10px">{{mentorizacion.uperfil.linkedin}}</span></span>
 									</div>
 								</div>
 								<div class="col-lg-9 text-lg-left text-sm-center">
-									<h3>{{mentorizacion.uperfil.nombre}} {{mentorizacion.uperfil.papellido}}
-										{{mentorizacion.uperfil.sapellido}}</h3>
-									Edad: {{mentorizacion.uperfil.edad}} 
-									<span ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">Participa en el programa de: 
-									{{mentorizacion.uperfil.institucionNombre}} </span><br>
-									<div>
-										<span ng-show="mentorizacion.uperfil.entidad != ''">Entidad: {{mentorizacion.uperfil.entidad}} </span> Nivel de estudios:
-										{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}<br>
-										Horas por mes: {{mentorizacion.uperfil.horaspormes}} <br>
-										Descripción:
-										<p style="font-size: 14px">{{mentorizacion.uperfil.descripcion}}</p>
+									<div class="container">
+										<div class="row">
+											<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
+												{{mentorizacion.uperfil.papellido}}
+												{{mentorizacion.uperfil.sapellido}}</h3>
+											<div class="col-md-5"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}
+											</div>
+											<div class="col-md-7"
+												ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">
+												<strong>Participa en el programa de:</strong>
+												{{mentorizacion.uperfil.institucionNombre}} </div>
+										</div>
+										<div class="row" ng-show="mentorizacion.expandido">
+											<div class="col-lg-12"
+												ng-show="mentorizacion.uperfil.entidad != ''"><strong>Entidad:</strong>
+												{{mentorizacion.uperfil.entidad}} </div>
+											<div class="col-md-5"><strong>Horas por mes:</strong> 
+											{{mentorizacion.uperfil.horaspormes}}</div>
+											<div class="col-md-7"><strong>Nivel de estudios:</strong>
+											{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}</div>
+											<div class="col-md-12">
+												<strong>Fase actual:</strong> {{mentorizacion.fase}}
+											</div>
+											<div class="col-lg-12">
+											<strong>Descripción:</strong>
+											<p style="font-size: 14px">
+												<span ng-show="mentorizacion.uperfil.descripcion == null">
+													Sin descripción.
+												</span>
+												{{mentorizacion.uperfil.descripcion}}
+											</p>
+											</div>
+										</div>
 									</div>
 								</div>
 
@@ -614,7 +675,7 @@
 							</div>
 						</div>
 						<div ng-show="enError" class="popupFondo" style="z-index: 400;">
-							<div class="popup" style="z-index: 450;">
+							<div class="popup popupError" style="z-index: 450;">
 								Se ha producido un error: <br>
 								<p>{{mensajeError}}</p>
 								<button class="botonInterfaz" style="width: 100px;"
@@ -629,12 +690,13 @@
 						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
 						desplegar.</div>
 				</div>
-				<div class="row pieSeccion">
+				<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
 					<div class="col-lg-12" style="visibility: hidden"> kk
 					</div>
 				</div>
 			</div>
 		</section>
+		</div>
 		<hr>
 		<footer class="container">
 			<div class="row">

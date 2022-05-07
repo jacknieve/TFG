@@ -33,9 +33,10 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 		console.log("Consulta lanzada")
 		console.log(typeof($scope.horasmes));
 		if ($scope.horasmes == null) $scope.horasmes = 4;
-		$http.get("/mentorizado/busqueda/" + $scope.areaseleccioanda + "/" + $scope.institucionseleccionada + "/" + $scope.horasmes).then(
+		$http.post("/mentorizado/busqueda", {area : $scope.areaseleccioanda, institucion : $scope.institucionseleccionada, horas : $scope.horasmes}).then(
 			function sucessCallback(response) {
 				//Si la peticion tiene los Path variables mal, o no es correcto, suelta un 400, y si el ultimo es vacio, suelta un 404
+				$scope.errorBusqueda = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					$scope.sinresultados = false;
@@ -63,23 +64,18 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener los mentores, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 400) {
 					abrirError("Se ha producido un fallo con alguno de los parámetros de la búsqueda, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
-				}
-				else if (response.status == 404) {
-					abrirError("Se ha producido un fallo con alguno de los parámetros de la búsqueda, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener los mentores"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.cargando = false;
 				$scope.errorBusqueda = true;
@@ -136,20 +132,18 @@ appConsumer.controller("busquedaController", function($scope, $http, $rootScope)
 					else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener obtener la información del mentor "+
 					", si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 400) {
 					abrirError("Se ha producido un fallo en la petición al servidor para obtener la información del mentor" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 					}
 					else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener la información del mentor"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					mentor.cargando = false;
 				}
@@ -241,6 +235,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 		console.log("Consulta lanzada")
 		$http.get("/mentor/peticiones/").then(
 			function sucessCallback(response) {
+				$scope.errorBusqueda = false;
 				console.log(response.data);
 				$scope.peticiones = response.data;
 				if (response.data.length > 0) {
@@ -268,15 +263,14 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.errorBusqueda = true;
 				$scope.cargando = false;
@@ -310,6 +304,7 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 		console.log("actualizando peticiones");
 		$http.get("/mentor/peticiones/actualizar").then(
 			function sucessCallback(response) {
+				$scope.errorActualizar = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					$scope.sinresultados = false;
@@ -334,15 +329,14 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes nuevas, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las solicitudes nuevas"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
@@ -388,20 +382,18 @@ appConsumer.controller("peticionController", function($scope, $http, $rootScope)
 					else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener obtener la información del mentorizado que "+
 					"envió la solicitud, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 400) {
 					abrirError("Se ha producido un fallo en la petición al servidor para obtener la información del mentorizado que envió la solicitud" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 					}
 					else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener la información del mentorizado que envió la solicitud"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					$scope.cargando = false;
 					}
@@ -505,6 +497,7 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 		$scope.cargando = true;
 		$http.get("/user/notificaciones/nuevas").then(
 			function sucessCallback(response) {
+				$scope.enfallo = false;
 				if (response.status == 200) {
 					$scope.mostrarsin = false;
 					console.log(response.data);
@@ -527,15 +520,14 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				}
 				else if (response.status == 500) {
 					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date();
 				}
 				else if (response.status == 0) {
 					$scope.mensajeError = "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias";
 				}
 				else {
 					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.";
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date();
 				}
 				$scope.cargando = false;
 			}
@@ -547,6 +539,7 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 		console.log("Consulta lanzada")
 		$http.get("/user/notificaciones").then(
 			function sucessCallback(response) {
+				$scope.enfallo = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					$scope.notificaciones = response.data;
@@ -571,15 +564,14 @@ appConsumer.controller("notificacionController", function($scope, $http) {
 				}
 				else if (response.status == 500) {
 					$scope.mensajeError = "Se ha producido un fallo interno en el servidor, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.";
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date();
 				}
 				else if (response.status == 0) {
 					$scope.mensajeError = "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias";
 				}
 				else {
 					$scope.mensajeError = "Se ha producido un fallo no previsto con codigo de error " + response.status +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.";
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date();
 				}
 				$scope.cargando = false;
 			}
@@ -663,6 +655,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 		$http.get("/mentor/mentorizaciones/").then(
 			function sucessCallback(response) {
 				lastload = Date.now();
+				$scope.errorBusqueda = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					console.log(response);
@@ -690,15 +683,14 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.cargando = false;
 				$scope.errorBusqueda = true;
@@ -735,6 +727,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
+					$scope.errorActualizar = false;
 					$scope.sinresultados = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
@@ -770,21 +763,18 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 400) {
 					abrirError("Se ha producido un fallo en la petición al servidor para traer mentorizaciones nuevas" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
@@ -922,6 +912,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 		$http.get("/mentorizado/mentorizaciones/").then(
 			function sucessCallback(response) {
 				lastload = Date.now();
+				$scope.errorBusqueda = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					console.log(response);
@@ -952,15 +943,14 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.cargando = false;
 				$scope.errorBusqueda = true;
@@ -998,6 +988,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 		$scope.errorActualizar = false; 
 		$http.get("/mentorizado/mentorizaciones/actualizar/" + lastload).then(
 			function sucessCallback(response) {
+				$scope.errorActualizar = false;
 				if (response.status == 200) {
 					lastload = Date.now();
 					$scope.sinresultados = false;
@@ -1038,21 +1029,18 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 400) {
 					abrirError("Se ha producido un fallo en la petición al servidor para traer mentorizaciones nuevas" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
@@ -1177,6 +1165,7 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 		$http.get("/mentorizado/mentorizaciones/porpuntuar").then(
 			function sucessCallback(response) {
 				lastload = Date.now();
+				$scope.errorBusqueda = false;
 				if (response.status == 200) {
 					console.log(response.data);
 					$scope.mentorizaciones = response.data;
@@ -1206,15 +1195,14 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones por puntuar, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error, e indique con la mayor precisión el momento en el que este ocurrió.");
+						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las mentorizaciones por puntuar"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.cargando = false;
 				$scope.errorBusqueda = true;
@@ -1253,6 +1241,7 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 			function sucessCallback(response) {
 				if (response.status == 200) {
 					lastload = Date.now();
+					$scope.errorActualizar = false;
 					$scope.sinresultados = false;
 					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
@@ -1277,21 +1266,18 @@ appConsumer.controller("puntuarController", function($scope, $http, $rootScope) 
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones por puntuar" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 400) {
 					abrirError("Se ha producido un fallo en la petición al servidor para traer mentorizaciones por puntuar nuevas" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 0) {
 					abrirError("En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias");
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status +" al intentar obtener las nuevas mentorizaciones por puntuar"+
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();

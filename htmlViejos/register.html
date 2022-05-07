@@ -64,8 +64,8 @@
     <div>
         <label th:text="'Tu linkedin'">Tu linkedin</label>
         <input type="url" th:field="*{linkedin}"/>
-        <!--<p th:each="error: ${#fields.errors('linkedin')}" 
-          th:text="${error}">Validation error</p>-->
+        <p th:each="error: ${#fields.errors('linkedin')}" 
+          th:text="${error}">Validation error</p>
     </div>
     <div ng-show="mentor">
         <label th:text="'Horas por mes'">Horas por mes</label>

@@ -3,10 +3,17 @@
 	background-color: #E7717D;
 	background-color: #AFD275;
 	border: 3px solid #84CEEB;
+	background-color: #88BDBC;
 }
 
 .header{
-	background-color: #5AB9EA;
+	background-color: #5AB9EA; /*Cambiar tambien en UserService  addInstitucionUtils*/
+	
+	z-index: 20;
+}
+
+.main{
+	margin-top: 100px;
 }
 
 body {
@@ -18,7 +25,7 @@ body {
 }
 
 .encabezadoSeccion{
-	background-color: #88BDBC;
+	background-color: #5AB9EA; /*Cambiar tambien en UserService  addInstitucionUtils*/
 	border: 1px solid #254E58;
 	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 24px;
@@ -27,7 +34,7 @@ body {
 }
 
 .pieSeccion{
-	background-color: #88BDBC;
+	background-color: #5AB9EA;
 	border: 1px solid #254E58;
 	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 24px;
@@ -39,7 +46,7 @@ body {
 border-right: 5px solid #1C6EA4;
 border-bottom: 5px solid #1C6EA4;
 border-radius: 40px;
-z-index: 5;
+z-index: 50;
 }
 
 .borderIcono {
@@ -58,6 +65,9 @@ text-decoration: none;
 font-style: normal;
 font-variant: normal;
 text-transform: none;
+}
+.headerLink:hover{
+	opacity: 0.6;
 }
 
 .linkNavRight {
@@ -260,6 +270,10 @@ button:disabled{
 	pointer-events: all;
 }
 
+.popupError{
+	width: 600px;
+}
+
 
 .popupFondo{
 	position: fixed;
@@ -348,3 +362,28 @@ button:disabled{
 	color : red;
 	font-weight: bold;
 }
+
+.viewRangeHoras{
+	border: none;
+  	display: inline;
+  	font-family: inherit;
+  	font-size: inherit;
+  	padding: none;
+  	width: 50px;
+	background-color: inherit;
+	-moz-appearance: textfield;
+}
+
+.cuerpoPageSmall{
+	min-height: 60vh;
+	width: 100%;
+}
+
+.cuerpoSeccionEstrecho{
+	min-width: 50%;
+}
+
+.campoObligatorio{
+	color: red;
+}
+

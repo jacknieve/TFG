@@ -153,8 +153,7 @@ public class MentorController {
 			//Esto no deberia pasar nunca si se llama desde la aplicacion
 			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 					"la del mentorizado, por favor,  si recibe este mensaje,"+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 		}
 		try {
 			// Aqui, como en las demas, deberia hacerse una comprobacion de que el usuario
@@ -185,8 +184,7 @@ public class MentorController {
 				//Esto no deberia pasar nunca si se llama desde la aplicacion
 				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 						"la del mentorizado, por favor,  si recibe este mensaje,"+
-						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -198,8 +196,7 @@ public class MentorController {
 			//Fallo al enviar notificacion? (correo)
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -211,8 +208,7 @@ public class MentorController {
 			//Esto no deberia pasar nunca si se llama desde la aplicacion
 			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 					"la del mentorizado, por favor,  si recibe este mensaje,"+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 		}
 		try {
 			Optional<Mentorizado> men = menrepo.findById(mentorizado);
@@ -229,8 +225,7 @@ public class MentorController {
 				System.out.println("No hay usuarios");
 				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 						"la del mentorizado, por favor,  si recibe este mensaje,"+
-						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -240,8 +235,7 @@ public class MentorController {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -314,8 +308,7 @@ public class MentorController {
 			//Esto no deberia pasar nunca si se llama desde la aplicacion
 			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 					"la del mentorizado, por favor,  si recibe este mensaje,"+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 		}
 		try {
 			Optional<Mentor> m = mrepo.findById(us.getUsername());
@@ -329,8 +322,7 @@ public class MentorController {
 				System.out.println("Fallo al acceder a los usuarios");
 				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 						"la del mentorizado, por favor,  si recibe este mensaje,"+
-						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -340,8 +332,7 @@ public class MentorController {
 		} catch (Exception e) { //Otro fallo
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -352,8 +343,7 @@ public class MentorController {
 			System.out.println("Algo estaba a null");
 			//Esto no deberia pasar nunca si se llama desde la aplicacion
 			return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar realizar la petición o al acceder a su cuenta, "+
-					"por favor,  si recibe este mensaje, pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+					"por favor,  si recibe este mensaje, pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 		}
 		try {
 			System.out.println(fase.toString());
@@ -366,8 +356,7 @@ public class MentorController {
 				System.out.println("Fallo al acceder a los usuarios");
 				return new ResponseEntity<>(new MensajeError("Se ha producido un problema al intentar acceder al la información de su cuenta o de "+
 						"la del mentorizado, por favor,  si recibe este mensaje,"+
-						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-						"intente ser lo más preciso posible al indicar la hora en la que ocurrió."),HttpStatus.BAD_REQUEST);
+						"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),HttpStatus.BAD_REQUEST);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -377,8 +366,7 @@ public class MentorController {
 		} catch (Exception e) { //Otro fallo
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "+
-					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error, e "+
-					"intente ser lo más preciso posible al indicar la hora en la que ocurrió."), HttpStatus.INTERNAL_SERVER_ERROR);
+					"pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

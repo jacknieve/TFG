@@ -18,8 +18,8 @@
 
 <body ng-app="appConsumer" ng-cloak>
 	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
-		<nav class="navbar navbar-expand-lg navbar-light header" th:style="'background-color: '+@{${color}}+';'">
-			<a class="navbar-brand" href="#"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header" th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
 					height="60" alt="" /></a>
 			<span th:if="${logo}">
 				<a class="navbar-brand" href="#">
@@ -42,10 +42,10 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#mentorizaciones">Mis mentorizados</a>
+						<a class="headerLink nav-link" href="#mentorizaciones" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentorizados</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#peticiones">Solicitudes recibidas</a>
+						<a class="headerLink nav-link" href="#peticiones" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Solicitudes recibidas</a>
 					</li>
 				</ul>
 			</div>
@@ -58,338 +58,377 @@
 				</a>
 			</span>
 		</nav>
-		<div class="espacioEntreSecciones"></div>
-		<section class="container" ng-controller="notificacionController">
-			<div class="row encabezadoSeccion">
-				<div class="col-lg-12">
-					Notificaciones
-				</div>
-			</div>
-			<div class="row text-left cuerpoSeccion" style="height: 250px">
-				<div class="col-lg-12" ng-show="cargando">Cargando...</div>
-				<div class="col-lg-12">
-					<div class="elementoRepetible" ng-repeat="notificacion in notificaciones">
-						<div class="float-right"><span ng-show="notificacion.nueva" style="color: gold;">Nueva! </span>
-							<button class="botonBorrarNotificacion" ng-click="borrarNotificacion(notificacion)"
-								ng-disabled="cargando">X</button>
-						</div>
-						<h3>{{notificacion.titulo}}</h3>
-						<p>{{notificacion.descripcion}}</p>
-						<p>Fecha de envío: {{notificacion.fechaenv}}</p>
+		<div class="main">
+			<div class="espacioEntreSecciones"></div>
+			<section class="container" ng-controller="notificacionController">
+				<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12">
+						<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Notificaciones</span>
 					</div>
 				</div>
-				<br>
-				<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
-			</div>
-			<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
-				<div class="col-lg-12 mensajeError">{{mensajeError}}
-					<span class="float-right">
-						<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
-							<img th:src="@{/images/redo.png}" class="redoImage" alt="" /></button>
-					</span>
-				</div>
-			</div>
-			<div class="row pieSeccion">
-				<div class="col-lg-12" style="visibility: hidden"> kk
-				</div>
-			</div>
-		</section>
-		<div class="espacioEntreSecciones"></div>
-		<a name="mentorizaciones"></a>
-		<section class="container" ng-controller="mentorMentorizacionController">
-			<div class="row encabezadoSeccion">
-				<div class="col-lg-12">
-					<button class="float-right botonSeccion" ng-click="activarMentorizaciones()" ng-disabled="cargando"
-						ng-hide="mostrarMentorizaciones">▼</button>
-					<button class="float-right botonSeccion" ng-click="activarMentorizaciones()" ng-disabled="cargando"
-						ng-show="mostrarMentorizaciones">▲</button>
-					Mis mentores
-				</div>
-			</div>
-			<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
-				ng-class="{ 'sinResultadosSeccion': sinresultados}">
-				<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
-				<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
-					posibles nuevas mentorizaciones debido a que se ha producido un
-					fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
-					vuelvalá a desplegar.</div>
-				<div class="col-lg-10 offset-lg-1">
-					<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
-						<div class="row subSeccion">
-							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-								<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
-								<div class="textoContacto" ng-show="mentorizacion.expandido">
-									<strong>Correo eletronico:</strong>
-									<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
-									<span ng-hide="mentorizacion.uperfil.telefono == ''">
-										<strong>Telefono: </strong>
-										<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
-									</span>
-								</div>
-							</div>
-							<div class="col-lg-9 text-lg-left text-sm-center">
-								<div class="container row">
-									<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
-										{{mentorizacion.uperfil.papellido}}
-										{{mentorizacion.uperfil.sapellido}}</h3>
-									<div class="col-md-5"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}</div>
-									<div class="col-md-7"> <strong>Institucion:</strong>
-										{{mentorizacion.uperfil.institucionNombre}} </div>
-									<div class="col-lg-12" ng-hide="mentorizacion.expandido"><strong>Fase
-											actual:</strong> {{mentorizacion.fase}}</div>
-									<div class="col-lg-5" ng-show="mentorizacion.expandido">
-										<strong>Nivel de estudios:</strong>
-										{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}
-									</div>
-									<div class="col-lg-7" ng-hide="mentorizacion.uperfil.linkedin == ''"
-										ng-show="mentorizacion.expandido"> <strong>
-											Linkedin:</strong>
-										{{mentorizacion.uperfil.linkedin}}</div>
-
-									<div class="col-lg-12" ng-show="mentorizacion.expandido">
-										<strong>Descripción:</strong></div>
-									<p class="col-lg-12" style="font-size: 14px; text-align: justify;"
-										ng-show="mentorizacion.expandido">
-										{{mentorizacion.uperfil.descripcion}}</p>
-								</div>
-							</div>
-						</div>
-						<div ng-show="mentorizacion.expandido" class="row subSeccion">
-							<div class="col-lg-12">Avanzar en la hoja de ruta: <button
-									ng-click="aceptarCambioFase(mentorizacion)" ng-disabled="cargando"
-									class="botonInterfaz" style="width: 220px; float:right;">Aceptar el cambio de
-									fase</button>
-							</div>
-							<div class="col-lg-12">
-								<span class="float-right">
-									<button ng-click="verInfoFases()" ng-disabled="cargando"
-										class="infoBoton">
-										<img th:src="@{/images/informacion.png}" class="redoImage" alt="" /></button>
+				<div class="row text-left cuerpoSeccion" style="height: 250px">
+					<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12">
+						<div class="elementoRepetible" ng-repeat="notificacion in notificaciones">
+							<div class="float-right"><span ng-show="notificacion.nueva" style="color: gold;">Nueva!
 								</span>
+								<button class="botonBorrarNotificacion" ng-click="borrarNotificacion(notificacion)"
+									ng-disabled="cargando">X</button>
 							</div>
-							<div class="col-lg-12">
-								<div class="container">
-									<div class="row">
-										<div class="col-lg-3 col-md-6 text-center">
-											<button class="botonFase" ng-disabled="mentorizacion.fase == 'NACIMIENTO'"
-												ng-click="mentorizacion.fase = 'NACIMIENTO'">Nacimiento</button>
-											<span class="float-right">→</span>
-											<p class="textoDescripcionFase" ng-show="infoFases">Representa el comienzo de la relación de
-												mentoring. Se están estableciendo las reglas de la relación y se está
-												construyendo la confianza.</p>
-										</div>
-										<div class="col-lg-3 col-md-6 text-center">
-											<button class="botonFase" ng-disabled="mentorizacion.fase == 'COMPROMISO'"
-												ng-click="mentorizacion.fase = 'COMPROMISO'">Compromiso</button>
-											<span class="float-right">→</span>
-											<p class="textoDescripcionFase" ng-show="infoFases">Se está estableciendo un plan de actividades
-												especifico con metas concretas. Se están fijando las tareas a realizar y
-												se
-												está fortaleciendo la relación.</p>
-										</div>
-										<div class="col-lg-3 col-md-6 text-center">
-											<button class="botonFase"
-												ng-disabled="mentorizacion.fase == 'SOSTENIMIENTO'"
-												ng-click="mentorizacion.fase = 'SOSTENIMIENTO'">Sostenimiento</button>
-											<span class="float-right">→</span>
-											<p class="textoDescripcionFase" ng-show="infoFases">La relación de mentoring se está
-												manteniendo. Se
-												ha conseguido una relación fuerte y un alto grado de confianza entre las
-												dos
-												partes.</p>
-										</div>
-										<div class="col-lg-3 col-md-6 text-center">
-											<button class="botonFase" ng-disabled="mentorizacion.fase == 'FIN'"
-												ng-click="mentorizacion.fase = 'FIN'">Fin</button>
-											<span class="float-right" style="visibility: hidden">→</span>
-											<p class="textoDescripcionFase" ng-show="infoFases">Representa el fin de la relación de
-												mentoring.
-												Es el proceso de cierre de la relación.</p>
-										</div>
+							<h3>{{notificacion.titulo}}</h3>
+							<p>{{notificacion.descripcion}}</p>
+							<p>Fecha de envío: {{notificacion.fechaenv}}</p>
+						</div>
+					</div>
+					<br>
+					<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
+				</div>
+				<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
+					<div class="col-lg-12 mensajeError">{{mensajeError}}
+						<span class="float-right">
+							<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
+								<img th:src="@{/images/redo.png}" class="redoImage" alt="" /></button>
+						</span>
+					</div>
+				</div>
+				<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12" style="visibility: hidden"> kk
+					</div>
+				</div>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="mentorizaciones"></a>
+			<section class="container" ng-controller="mentorMentorizacionController">
+				<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12">
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-hide="mostrarMentorizaciones">▼</button>
+						<button class="float-right botonSeccion" ng-click="activarMentorizaciones()"
+							ng-disabled="cargando" ng-show="mostrarMentorizaciones">▲</button>
+						<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Mis mentorizados</span>
+					</div>
+				</div>
+				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
+					ng-class="{ 'sinResultadosSeccion': sinresultados}">
+					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles nuevas mentorizaciones debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
+					<div class="col-lg-10 offset-lg-1">
+						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
+							<div class="row subSeccion">
+								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+									<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
+									<div class="textoContacto" ng-show="mentorizacion.expandido">
+										<strong>Correo eletronico:</strong>
+										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
+										<span ng-hide="mentorizacion.uperfil.telefono == ''">
+											<strong>Telefono: </strong>
+											<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
+										</span>
 									</div>
 								</div>
-								<br>
-							</div>
-						</div>
-						<br>
-						<div class="row subSeccion" ng-show="mentorizacion.expandido">
-							<div class="col-lg-10 offset-lg-1">
-								<p>Areas de conocimiento en las que está interesado:</p>
-								<div class="row">
-									<div class="col-lg-4 col-md-6 areaConocimiento"
-										ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
-									</div>
-								</div>
-								<br>
-							</div>
-						</div>
-						<div class="row subSeccion" style="min-height: 35px; padding-top: 1px;">
-							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-hide="mentorizacion.expandido">
-								<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
-									ng-disabled="cargando">Mostrar
-									datos</button>
-							</div>
-							<div class="col-md-3 col-sm-6 text-center offset-md-6" ng-show="mentorizacion.expandido">
-								<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
-									ng-disabled="cargando">Ocultar
-									datos</button>
-							</div>
-							<div class="col-md-3 col-sm-6 text-center">
-								<button class="botonInterfaz" ng-click="confirmarCerrar(mentorizacion)"
-									ng-disabled="cargando">Terminar relación</button>
-							</div>
-						</div>
-						<div ng-show="mentorizacion.aceptarcerrar" class="popupFondo">
-							<div class="popup">¿Seguro que quieres cerrar esta relación? <br>
-								(Realizar esta acción puede llevar unos segundos en caso de que sea necesario
-								notificar por correo al usuario)<br>
-								<button class="botonInterfaz" style="width: 100px;"
-									ng-click="cerrarMentorizacion(mentorizacion)"
-									ng-disabled="cargando">Confirmar</button>
-								<button class="botonInterfaz" style="width: 100px;"
-									ng-click="confirmarCerrar(mentorizacion)" ng-disabled="cargando">Cancelar</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-					<div class="popup" style="z-index: 400;">
-						La mentorización se ha cerrado con éxito: <br>
-						<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarAcierto()">Cerrar</button>
-					</div>
-				</div>
-				<div ng-show="enError" class="popupFondo" style="z-index: 300;">
-					<div class="popup" style="z-index: 400;">
-						Se ha producido un error: <br>
-						<p>{{mensajeError}}</p>
-						<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
-					</div>
-				</div>
-			</div>
-			<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas</div>
-			<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
-				las mentorizaciones debido a que se ha producido un
-				fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
-				desplegar.</div>
-			<div class="row pieSeccion">
-				<div class="col-lg-12" style="visibility: hidden"> kk
-				</div>
-			</div>
-		</section>
-		<div class="espacioEntreSecciones"></div>
-		<a name="peticiones"></a>
-		<section class="container" ng-controller="peticionController">
-			<div class="row encabezadoSeccion">
-				<div class="col-lg-12">
-					<button class="float-right botonSeccion" ng-hide="mostrarPeticiones" ng-click="activarPeticiones()"
-						ng-disabled="cargando">▼</button>
-					<button class="float-right botonSeccion" ng-show="mostrarPeticiones" ng-click="activarPeticiones()"
-						ng-disabled="cargando">▲</button>
-					Solicitudes recibidas
+								<div class="col-lg-9 text-lg-left text-sm-center">
+									<div class="container row">
+										<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
+											{{mentorizacion.uperfil.papellido}}
+											{{mentorizacion.uperfil.sapellido}}</h3>
+										<div class="col-md-5"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}
+										</div>
+										<div class="col-md-7"
+											ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">
+											<strong>Institucion:</strong>
+											{{mentorizacion.uperfil.institucionNombre}}
+										</div>
+										<div class="col-lg-12" ng-hide="mentorizacion.expandido"><strong>Fase
+												actual:</strong> {{mentorizacion.fase}}</div>
+										<div class="col-lg-5" ng-show="mentorizacion.expandido">
+											<strong>Nivel de estudios:</strong>
+											{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}
+										</div>
+										<div class="col-lg-7" ng-hide="mentorizacion.uperfil.linkedin == ''"
+											ng-show="mentorizacion.expandido"> <strong>
+												Linkedin:</strong>
+											{{mentorizacion.uperfil.linkedin}}</div>
 
-				</div>
-			</div>
-			<div class="row text-left cuerpoSeccion" ng-show="mostrarPeticiones"
-				ng-class="{ 'sinResultadosSeccion': sinresultados}">
-				<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
-				<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las posibles
-					nuevas solicitudes debido a que se ha producido un
-					fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
-					vuelvalá a desplegar.</div>
-				<div class="col-lg-10 offset-lg-1">
-					<div class="elementoRepetibleDos" ng-repeat="peticion in peticiones">
-						<div class="row subSeccion">
-							<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-								<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
-								<div class="textoContacto" ng-show="peticion.expandido">
-									<strong>Correo eletronico:</strong>
-									<span style="font-size: 12px">{{peticion.mentorizado}}</span><br>
-									<span ng-hide="peticion.info.telefono == ''">
-										<strong>Telefono:</strong>
-										<span style="font-size: 14px">{{peticion.info.telefono}}</span>
+										<div class="col-lg-12" ng-show="mentorizacion.expandido">
+											<strong>Descripción:</strong>
+										</div>
+										<p class="col-lg-12" style="font-size: 14px; text-align: justify;"
+											ng-show="mentorizacion.expandido">
+											<span ng-show="mentorizacion.uperfil.descripcion == null">
+												Sin descripción.
+											</span>
+											{{mentorizacion.uperfil.descripcion}}
+										</p>
+									</div>
+								</div>
+							</div>
+							<div ng-show="mentorizacion.expandido" class="row subSeccion">
+								<div class="col-lg-12">Avanzar en la hoja de ruta: <button
+										ng-click="aceptarCambioFase(mentorizacion)" ng-disabled="cargando"
+										class="botonInterfaz" style="width: 220px; float:right;">Aceptar el cambio de
+										fase</button>
+								</div>
+								<div class="col-lg-12">
+									<span class="float-right">
+										<button ng-click="verInfoFases()" ng-disabled="cargando" class="infoBoton">
+											<img th:src="@{/images/informacion.png}" class="redoImage"
+												alt="" /></button>
 									</span>
 								</div>
-							</div>
-							<div class="col-lg-9 text-lg-left text-sm-center">
-								<div class="float-right"><span ng-show="peticion.nueva" style="color: gold;">Nueva!
-									</span></div>
-								<h3>{{peticion.nombre}}</h3>
-								<strong>Fecha de envío: </strong>{{peticion.fechaenv}}<br>
-								<strong>Cuerpo de la solicitud:</strong>
-								<p style="font-size: 14px; text-align: justify;">{{peticion.motivo}}</p>
-							</div>
-
-						</div>
-						<div class="row subSeccion" ng-show="peticion.expandido">
-							<div class="col-md-6 subSeccionIzquierda">
-								<strong>Edad:</strong> {{peticion.info.edad}} <br>
-								<strong>Institución:</strong> {{peticion.info.institucionNombre}}<br>
-								<span ng-hide="peticion.info.linkedin == ''"><strong>Linkedin:</strong>
-									{{peticion.info.linkedin}}<br></span>
-								<strong>Nivel de estudios:</strong> {{peticion.info.nivelEstudiosNivelestudios}}
-							</div>
-							<div class="col-md-6">
-								<strong>Descripción:</strong>
-								<p style="font-size: 14px">{{peticion.info.descripcion}}</p>
-							</div>
-						</div>
-						<div class="row subSeccion" ng-show="peticion.expandido">
-							<div class="col-lg-10 offset-lg-1">
-								<p>Areas de conocimiento en las que está interesado:</p>
-								<div class="row">
-									<div class="col-lg-4 col-md-6 areaConocimiento"
-										ng-repeat="area in peticion.info.areas"> {{area.area}}
+								<div class="col-lg-12">
+									<div class="container">
+										<div class="row">
+											<div class="col-lg-3 col-md-6 text-center">
+												<button class="botonFase"
+													ng-disabled="mentorizacion.fase == 'NACIMIENTO'"
+													ng-click="mentorizacion.fase = 'NACIMIENTO'">Nacimiento</button>
+												<span class="float-right">→</span>
+												<p class="textoDescripcionFase" ng-show="infoFases">Representa el
+													comienzo
+													de la relación de
+													mentoring. Se están estableciendo las reglas de la relación y se
+													está
+													construyendo la confianza.</p>
+											</div>
+											<div class="col-lg-3 col-md-6 text-center">
+												<button class="botonFase"
+													ng-disabled="mentorizacion.fase == 'COMPROMISO'"
+													ng-click="mentorizacion.fase = 'COMPROMISO'">Compromiso</button>
+												<span class="float-right">→</span>
+												<p class="textoDescripcionFase" ng-show="infoFases">Se está
+													estableciendo un
+													plan de actividades
+													especifico con metas concretas. Se están fijando las tareas a
+													realizar y
+													se
+													está fortaleciendo la relación.</p>
+											</div>
+											<div class="col-lg-3 col-md-6 text-center">
+												<button class="botonFase"
+													ng-disabled="mentorizacion.fase == 'SOSTENIMIENTO'"
+													ng-click="mentorizacion.fase = 'SOSTENIMIENTO'">Sostenimiento</button>
+												<span class="float-right">→</span>
+												<p class="textoDescripcionFase" ng-show="infoFases">La relación de
+													mentoring
+													se está
+													manteniendo. Se
+													ha conseguido una relación fuerte y un alto grado de confianza entre
+													las
+													dos
+													partes.</p>
+											</div>
+											<div class="col-lg-3 col-md-6 text-center">
+												<button class="botonFase" ng-disabled="mentorizacion.fase == 'FIN'"
+													ng-click="mentorizacion.fase = 'FIN'">Fin</button>
+												<span class="float-right" style="visibility: hidden">→</span>
+												<p class="textoDescripcionFase" ng-show="infoFases">Representa el fin de
+													la
+													relación de
+													mentoring.
+													Es el proceso de cierre de la relación.</p>
+											</div>
+										</div>
 									</div>
+									<br>
 								</div>
-								<br>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-8 text-center offset-md-2">
-								<div ng-show="peticion.cargando">Cargando... (esto puede llevar unos segundos si es necesario
-									notificar por correo al mentorizado)</div>
+							<br>
+							<div class="row subSeccion" ng-show="mentorizacion.expandido">
+								<div class="col-lg-10 offset-lg-1">
+									<p>Areas de conocimiento en las que está interesado:</p>
+									<div class="row">
+										<div class="col-lg-4 col-md-6 areaConocimiento"
+											ng-repeat="area in mentorizacion.uperfil.areas"> {{area.area}}
+										</div>
+									</div>
+									<br>
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-3 col-sm-4 text-center offset-md-3" ng-hide="peticion.expandido">
-								<button class="botonInterfaz" ng-click="obtenerPerfilPeticion(peticion)"
-									ng-disabled="cargando">Mostrar
-									datos</button>
+							<div class="row subSeccion" style="min-height: 35px; padding-top: 1px;">
+								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+									ng-hide="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Mostrar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+									ng-show="mentorizacion.expandido">
+									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Ocultar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-6 text-center">
+									<button class="botonInterfaz" ng-click="confirmarCerrar(mentorizacion)"
+										ng-disabled="cargando">Terminar relación</button>
+								</div>
 							</div>
-							<div class="col-md-3 col-sm-4 text-center offset-md-3" ng-show="peticion.expandido">
-								<button class="botonInterfaz" ng-click="plegarPeticion(peticion)"
-									ng-disabled="cargando">Ocultar datos</button>
-							</div>
-							<div class="col-md-3 col-sm-4 text-center">
-								<button class="botonInterfaz" ng-click="aceptarPeticion(peticion)"
-									ng-disabled="cargando">Aceptar solicitud</button>
-							</div>
-							<div class="col-md-3 col-sm-4 text-center">
-								<button class="botonInterfaz" ng-click="rechazarPeticion(peticion)"
-									ng-disabled="cargando">Rechazar solicitud</button>
+							<div ng-show="mentorizacion.aceptarcerrar" class="popupFondo">
+								<div class="popup">¿Seguro que quieres cerrar esta relación? <br>
+									(Realizar esta acción puede llevar unos segundos en caso de que sea necesario
+									notificar por correo al usuario)<br>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="cerrarMentorizacion(mentorizacion)"
+										ng-disabled="cargando">Confirmar</button>
+									<button class="botonInterfaz" style="width: 100px;"
+										ng-click="confirmarCerrar(mentorizacion)"
+										ng-disabled="cargando">Cancelar</button>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div ng-show="enError" class="popupFondo">
-						<div class="popup">
+					<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
+						<div class="popup" style="z-index: 400;">
+							La mentorización se ha cerrado con éxito: <br>
+							<button class="botonInterfaz" style="width: 100px;"
+								ng-click="cerrarAcierto()">Cerrar</button>
+						</div>
+					</div>
+					<div ng-show="enError" class="popupFondo" style="z-index: 300;">
+						<div class="popup popupError" style="z-index: 400;">
 							Se ha producido un error: <br>
 							<p>{{mensajeError}}</p>
 							<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
 						</div>
 					</div>
+					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas</div>
+					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
+						las mentorizaciones debido a que se ha producido un
+						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
+						desplegar.</div>
 				</div>
-				<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene solicitudes pendientes</div>
-				<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido las
-					solicitudes debido a que se ha producido un
-					fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a desplegar.
+				<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12" style="visibility: hidden"> kk
+					</div>
 				</div>
-			</div>
-			<div class="row pieSeccion">
-				<div class="col-lg-12" style="visibility: hidden"> kk
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="peticiones"></a>
+			<section class="container" ng-controller="peticionController">
+				<div class="row encabezadoSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12">
+						<button class="float-right botonSeccion" ng-hide="mostrarPeticiones"
+							ng-click="activarPeticiones()" ng-disabled="cargando">▼</button>
+						<button class="float-right botonSeccion" ng-show="mostrarPeticiones"
+							ng-click="activarPeticiones()" ng-disabled="cargando">▲</button>
+						<span th:style="${letrasBB ? 'color: white' : 'color: black'}">Solicitudes recibidas</span>
+
+					</div>
 				</div>
-			</div>
-		</section>
-		<div class="espacioEntreSecciones"></div>
+				<div class="row text-left cuerpoSeccion" ng-show="mostrarPeticiones"
+					ng-class="{ 'sinResultadosSeccion': sinresultados}">
+					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles
+						nuevas solicitudes debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
+					<div class="col-lg-10 offset-lg-1">
+						<div class="elementoRepetibleDos" ng-repeat="peticion in peticiones">
+							<div class="row subSeccion">
+								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
+									<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+									<div class="textoContacto" ng-show="peticion.expandido">
+										<strong>Correo eletronico:</strong>
+										<span style="font-size: 12px">{{peticion.mentorizado}}</span><br>
+										<span ng-hide="peticion.info.telefono == ''">
+											<strong>Telefono:</strong>
+											<span style="font-size: 14px">{{peticion.info.telefono}}</span>
+										</span>
+									</div>
+								</div>
+								<div class="col-lg-9 text-lg-left text-sm-center">
+									<div class="float-right"><span ng-show="peticion.nueva" style="color: gold;">Nueva!
+										</span></div>
+									<h3>{{peticion.nombre}}</h3>
+									<strong>Fecha de envío: </strong>{{peticion.fechaenv}}<br>
+									<strong>Cuerpo de la solicitud:</strong>
+									<p style="font-size: 14px; text-align: justify;">{{peticion.motivo}}</p>
+								</div>
+
+							</div>
+							<div class="row subSeccion" ng-show="peticion.expandido">
+								<div class="col-md-6 subSeccionIzquierda">
+									<strong>Edad:</strong> {{peticion.info.edad}} <br>
+									<strong>Institución:</strong> {{peticion.info.institucionNombre}}<br>
+									<span ng-hide="peticion.info.linkedin == ''"><strong>Linkedin:</strong>
+										{{peticion.info.linkedin}}<br></span>
+									<strong>Nivel de estudios:</strong> {{peticion.info.nivelEstudiosNivelestudios}}
+								</div>
+								<div class="col-md-6">
+									<strong>Descripción:</strong>
+									<p style="font-size: 14px">
+										<span ng-show="peticion.info.descripcion == null">
+											Sin descripción.
+										</span>
+										{{peticion.info.descripcion}}
+									</p>
+								</div>
+							</div>
+							<div class="row subSeccion" ng-show="peticion.expandido">
+								<div class="col-lg-10 offset-lg-1">
+									<p>Areas de conocimiento en las que está interesado:</p>
+									<div class="row">
+										<div class="col-lg-4 col-md-6 areaConocimiento"
+											ng-repeat="area in peticion.info.areas"> {{area.area}}
+										</div>
+									</div>
+									<br>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-8 text-center offset-md-2">
+									<div ng-show="peticion.cargando">Cargando... (esto puede llevar unos segundos si es
+										necesario
+										notificar por correo al mentorizado)</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3 col-sm-4 text-center offset-md-3" ng-hide="peticion.expandido">
+									<button class="botonInterfaz" ng-click="obtenerPerfilPeticion(peticion)"
+										ng-disabled="cargando">Mostrar
+										datos</button>
+								</div>
+								<div class="col-md-3 col-sm-4 text-center offset-md-3" ng-show="peticion.expandido">
+									<button class="botonInterfaz" ng-click="plegarPeticion(peticion)"
+										ng-disabled="cargando">Ocultar datos</button>
+								</div>
+								<div class="col-md-3 col-sm-4 text-center">
+									<button class="botonInterfaz" ng-click="aceptarPeticion(peticion)"
+										ng-disabled="cargando">Aceptar solicitud</button>
+								</div>
+								<div class="col-md-3 col-sm-4 text-center">
+									<button class="botonInterfaz" ng-click="rechazarPeticion(peticion)"
+										ng-disabled="cargando">Rechazar solicitud</button>
+								</div>
+							</div>
+						</div>
+						<div ng-show="enError" class="popupFondo">
+							<div class="popup popupError">
+								Se ha producido un error: <br>
+								<p>{{mensajeError}}</p>
+								<button class="botonInterfaz" style="width: 100px;"
+									ng-click="cerrarError()">Cerrar</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene solicitudes pendientes</div>
+					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
+						las
+						solicitudes debido a que se ha producido un
+						fallo al acceder al servidor. Para volver a intentarlo, pliegue esta sección y vuelvalá a
+						desplegar.
+					</div>
+				</div>
+				<div class="row pieSeccion" th:style="'background-color: '+@{${colorB}}+';'">
+					<div class="col-lg-12" style="visibility: hidden"> kk
+					</div>
+				</div>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+		</div>
 		<hr>
 		<footer class="container">
 			<div class="row">

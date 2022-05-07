@@ -22,6 +22,7 @@ appConsumer.controller("userController", function($scope, $http) {
 	$scope.mensajeError = "";
 	$scope.popupAbierto = false;
 	$scope.errorObtener = false;
+	$scope.avisoRefrescar = false;
 
 	$scope.getInfo = function() {
 		$scope.cargando = true;
@@ -56,13 +57,14 @@ appConsumer.controller("userController", function($scope, $http) {
 				}
 				else if (response.status == 500) {
 					abrirError("Se ha producido un fallo interno en el servidor al intentar obtener su información" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 403) {
 					abrirError("Se ha producido un fallo al intentar acceder a la información de tu cuenta" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
+				} else if (response.status == 404) {
+					abrirError("No se ha encontrado su usuario" +
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				else if (response.status == 401) {
 					abrirError("No tienes permiso para realizar esta acción.");
@@ -72,8 +74,7 @@ appConsumer.controller("userController", function($scope, $http) {
 				}
 				else {
 					abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las nuevas mentorizaciones" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-						", e indique con la mayor precisión el momento en el que este ocurrió.");
+						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 				}
 				$scope.cargando = false;
 			}
@@ -106,18 +107,15 @@ appConsumer.controller("userController", function($scope, $http) {
 					}
 					else if (response.status == 500) {
 						abrirError("Se ha producido un fallo interno en el servidor al intentar actualizar su información" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-							", e indique con la mayor precisión el momento en el que este ocurrió.");
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 400) {
 						abrirError("Se ha producido un fallo en la petición al servidor para actualizar tu información" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-							", e indique con la mayor precisión el momento en el que este ocurrió.");
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 403) {
 						abrirError("Se ha producido un fallo al intentar acceder a la información de tu cuenta" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-							", e indique con la mayor precisión el momento en el que este ocurrió.");
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					else if (response.status == 401) {
 						abrirError("No tienes permiso para realizar esta acción.");
@@ -127,8 +125,7 @@ appConsumer.controller("userController", function($scope, $http) {
 					}
 					else {
 						abrirError("Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las nuevas mentorizaciones" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error" +
-							", e indique con la mayor precisión el momento en el que este ocurrió.");
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "+ new Date());
 					}
 					$scope.cargando = false;
 				}

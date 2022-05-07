@@ -19,5 +19,10 @@ public interface MentorizadoRepo extends JpaRepository<Mentorizado, String>{
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE mentorizados SET feliminacion = current_timestamp WHERE usuario_username = ?1 ")
 	void borrarMentorizado(String username);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery = true, value="DELETE FROM mentorizados WHERE usuario_username = ?1")
+	void limpiarUsuario(String username);
 
 }

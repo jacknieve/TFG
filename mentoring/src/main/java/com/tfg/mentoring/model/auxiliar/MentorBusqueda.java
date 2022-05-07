@@ -11,10 +11,11 @@ public class MentorBusqueda {
 	private String entidad;
 	private float horaspormes;
 	private String institucionNombre;
+	private boolean verificado;
 	
 
 	public MentorBusqueda(String correo, String nombre, String papellido, String sapellido, String nivelEstudios,
-			float horaspormes, String entidad, String institucionNombre) {
+			float horaspormes, String entidad, String institucionNombre, boolean verificado) {
 		super();
 		this.correo = correo;
 		this.nombre = nombre;
@@ -23,6 +24,7 @@ public class MentorBusqueda {
 		this.nivelEstudios = nivelEstudios;
 		this.horaspormes = horaspormes;
 		this.entidad=entidad;
+		this.verificado=verificado;
 	}
 
 	public MentorBusqueda() {
@@ -97,13 +99,25 @@ public class MentorBusqueda {
 	public void setInstitucionNombre(String institucionNombre) {
 		this.institucionNombre = institucionNombre;
 	}
+	
+	
+
+	public boolean isVerificado() {
+		return verificado;
+	}
+
+	public void setVerificado(boolean verificado) {
+		this.verificado = verificado;
+	}
 
 	@Override
 	public String toString() {
 		return "MentorBusqueda [correo=" + correo + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
 				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", entidad=" + entidad + ", horaspormes="
-				+ horaspormes + ", institucionNombre=" + institucionNombre + "]";
+				+ horaspormes + ", institucionNombre=" + institucionNombre + ", verificado=" + verificado + "]";
 	}
+
+	
 
 	
 

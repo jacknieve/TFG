@@ -1,68 +1,30 @@
-Cosas que faltan por probar:
-
 Mas cosas que hacer:
 -Empezar informe
 -Seguir diseño
--En algun momento quizas añadir una clase de excepciones para salidas personalizadas?
 -Probar con ngResource, a ver si así funciona bien cors
 
 -Acordarse de añadir lo de JavaMail en la introduccion de la memoria
 ---->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar, sobre todo si voy a meter algo fuera del alcance
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
-Añadir mensajes de error personalizados y opciones por defecto en los selects que haya que seleccionar.
-Interfaz grafica
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
-->Mensaje error (clase) y ver en que casos se suelta la pagina de error <-
-->Enlaces a secciones desde otras paginas <-- (falta mejorar para que abran)
-->Otra pagina incial para version logeado <----
 ->Ver que excepciones hay (añadir las que puse al cerrar en las demas) <-
-->Cambiar casos de uso para ser menos restrictivos en las excepciones?
-->Añadir en todos los post, comprobaciones de que los datos son correctos
-->Poner minimos y maximos a las fechas de nacimiento (para evitar error al convertirlo a edad (basicamente, poner de limite 10000 años o asi))
-->Criterio de ordenación en la búsqueda???
+->Cambiar casos de uso para ser menos restrictivos en las excepciones? <----
+
 ----Frontend----
 ->El header y el footer de login y registro el mismo que el de home sin loggear
-->El header de perfil igual que el de principal (y los enlaces de arriba salen en función del rol)
 ->Cambiar peticiones para traer ya todo?
-->Añadir efectos a lo de abrir y cerrar
-->Tal vez hacer un thread para enviar notificacion por correo?
-->Los mensajes de error deben ocultarse al realizar otra accion.
 
 >>Interfaces que faltan<<
--Perfil ->Ventana de acierto al actualizar, ventana de fallo al actualizar, proteger metodos y un boton para reintentar el get
--Incio
--Inicio logeada
--Login
--Registro
--Logout
--Verify
--Verify_fault
-
->>Funcionalidades en las que faltan analizar errores<<
--Busqueda ->Aqui cambiarla a post
--Perfil
--Login?
--Registro?
-->Obtener pagina principal
-->Obtener perfil th
-->Lo que tenga que ver con la pagina de error
-->Eliminar
-
-Tambien devolver bien los responses, con codigos adecuados o con un mensaje ya desde el servidor en caso de no devolver nada de serie.
+-Incio <-
+-Inicio logeada <--
 
 
-->Cambiar lo del registro para no usar angular para nada? (con un boton que vuelve a llamar al backend indicando que lo que se quiere es registrarse con el otro rol, por path variable por ejemplo (/{mentor}), haria falta otro pequeño form que mandase a una direccion, tal
-vez pasada en el modelo (metodo post para distinguirlo del otro), y que el booleano de mentor lo cambiase ya el backend y lo fijase incialmente segun la eleccion inicial.
-
-
-->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar
-->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo)
+->Hacer lo de abrir las secciones desde arriba <---
+->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar<----
+->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto
 
 contigopripo@gmail.com
-
-
------>>>Preguntar si deberia poner notificaciones en el perfil
 
 (Cosas futuro)
 ->Lo de las consultas multiples en sql es transaction y comit, a ver si hay algo similar????
@@ -73,9 +35,13 @@ contigopripo@gmail.com
 ->Añadir algun atributo a la notificacion que sea del estilo el tipo, para que a un usuario no le lleguen muchas
 ->Añadir al nivel de estudios un entero para indicar una jerarquia y hacer busquedas por estudios minimos?
 ->Añadir log de los eventos para quitar todos los souts de las excepciones
+->Criterio de ordenación en la búsqueda???
 
 
-
-
+->Meter logger?
+->Meter gancho de salida?
 ->En el programa de institucion: lista de mentores asociados y verificados con sus puntuaciones y de mentores por verificar
-->Los mentores no verificados (que han dicho las instituciones que no estan verificados, indicarlo tambien)
+->Los mentores no verificados (que han dicho las instituciones que no estan verificados, indicarlo tambien)?? esto creo que no
+->Cuando un mentor cambia de institución, dejaría de estar validado
+->Al buscar por institución, solo saldrían los validados
+->Añadir institución a las mentorizaciones

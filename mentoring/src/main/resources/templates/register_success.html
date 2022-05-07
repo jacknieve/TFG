@@ -3,7 +3,7 @@
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 
 <head>
-	<title>Verficiacion fallida</title>
+	<title>Registro exitoso</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -56,10 +56,10 @@
 		<div class="espacioEntreSecciones"></div>
 		<div class="row">
 		<section class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 cuerpoSeccion" style="height: auto; overflow-y: auto; text-align: justify;">
-			<h3>La verificación ha fallado</h3>
-
-			<p>Perdón, no hemos podido verificar su cuenta. Es posible que ya esté verificada o que el código de
-				verificación no sea correcto.</p>
+			<h3>Se ha registrado con éxito</h3>
+			<p>Se ha enviado un correo electrónico a la cuenta de correo que indicó durante el registro con un enlace
+				para verificar su cuenta. Hasta que no la verifiques, no podrás iniciar sesión.</p>
+			<p><a th:href="@{/login}">Haga click para iniciar sesión</a></p>
 		</section>
 		</div>
 	</div>

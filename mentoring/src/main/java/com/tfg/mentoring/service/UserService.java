@@ -80,7 +80,8 @@ public class UserService {
 	private UsuariosActivos usuariosActivos;
     
     
-    public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB{
+    public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB, 
+    JDBCConnectionException, QueryTimeoutException{
     	String random = RandomString.make(64);
     	Usuario user = new Usuario(useraux.getCorreo(), passwordEncoder.encode(useraux.getPassword()), false, random);
     	//System.out.println(user.toString());
@@ -138,7 +139,7 @@ public class UserService {
         mailSender.send(message);
     }
     
-    public boolean verify(String verificationCode) {
+    public boolean verify(String verificationCode) throws JDBCConnectionException, QueryTimeoutException{
         Usuario user = urepo.findByVerificationCode(verificationCode);
          //Si no se encuentra al usuario o este ya esta verificado
         if (user == null || user.isEnabled()) {
@@ -176,15 +177,21 @@ public class UserService {
 			System.out.println(e.getMessage());
 		}
     	if(u.isNotificar_correo() && !usuariosActivos.getUsers().contains(u.getUsername())) {
-    		try {
-    			notificarPorCorreo(u, titulo, descripcion);
-    		}
-    		catch (MessagingException | UnsupportedEncodingException e) {//Aqui habria que tratarla mejor
-    			//Estas excepciones saltarian sobre todo si la cuenta de correo del usuario no existe, pero, para que se lance este metodo
-    			//Debe existir
-    			System.out.println(e.getMessage());
-    		}
+    			Thread thread = new Thread(){ 
+        		    public void run(){ 
+        		    	try {
+							notificarPorCorreo(u, titulo, descripcion);
+							System.out.println("Se envio el correo");
+						} catch (UnsupportedEncodingException | MessagingException e) {
+							// TODO Auto-generated catch block
+							System.out.println(e.getMessage());
+							e.printStackTrace();
+						}
+        		    } 
+        		  };
+        		  thread.start();
     	}
+    	
     }
     
     public void notificarPorCorreo(Usuario u, String titulo, String descripcion) throws MessagingException, UnsupportedEncodingException{
@@ -249,15 +256,14 @@ public class UserService {
 		return user;
 	}
 	
-	public void limpiarUsuario(UserAux user) {
+	public void limpiarUsuario(UserAux user) throws JDBCConnectionException, QueryTimeoutException{
 		if(user.getMentor()) {
-			mrepo.deleteById(user.getCorreo());
+			mrepo.limpiarUsuario(user.getCorreo());
 		}
 		else {
-			menrepo.deleteById(user.getCorreo());
+			menrepo.limpiarUsuario(user.getCorreo());
 		}
-		//Quizas solo haga falta quitar esta o de error, no estoy seguro
-		urepo.deleteById(user.getCorreo());
+		urepo.limpiarUsuario(user.getCorreo());
 	}
 	
 	public void addListasModelo(ModelAndView modelo) {
@@ -281,8 +287,16 @@ public class UserService {
 				modelo.addObject("color", i.getColor());
 			}
 			else {
-				modelo.addObject("color", "#8DFFC7");
+				modelo.addObject("color", "#5AB9EA");
 			}
+			if(i.getColorB() != null && !i.getColorB().equals("")) {
+				modelo.addObject("colorB", i.getColorB());
+			}
+			else {
+				modelo.addObject("colorB", "#5AB9EA");
+			}
+			modelo.addObject("letrasBB", i.isLetrasBB());
+			modelo.addObject("letrasBlancas", i.isLetrasBlancas());
 			try {
 				File file = ResourceUtils.getFile("classpath:static/images/usuarios/instituciones/"+i.getNombre());
 				if(file.exists() && file.isDirectory() && file.list().length==1) {

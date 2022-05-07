@@ -45,6 +45,12 @@ public class Institucion implements Serializable{
 	//private String logo; //Ruta hasta el fichero que contiene el logo
 	@Column(name = "color")
 	private String color; //Codigo de color que quieren en la interfaz
+	@Column(name = "colorbandas")
+	private String colorB; //Codigo de color que quieren en la interfaz
+	@Column(name = "letrasblancas")
+	private boolean letrasBlancas; //Codigo de color que quieren en la interfaz
+	@Column(name = "letrasblancasbandas")
+	private boolean letrasBB; //Codigo de color que quieren en la interfaz
 	@Column(name = "webpage")
 	private String webpage; //Pagina web de la institucion
 	@Column(name = "direccion")
@@ -72,7 +78,7 @@ public class Institucion implements Serializable{
 	}
 
 	public Institucion(Usuario usuario, String nombre, String color, String webpage, String direccion,
-			boolean visibilidad) {
+			boolean visibilidad, String colorB, boolean letrasBlancas, boolean letrasBB) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -80,6 +86,9 @@ public class Institucion implements Serializable{
 		this.webpage = webpage;
 		this.direccion = direccion;
 		this.visibilidad = visibilidad;
+		this.colorB=colorB;
+		this.letrasBB=letrasBB;
+		this.letrasBlancas=letrasBlancas;
 	}
 
 	public Usuario getUsuario() {
@@ -138,13 +147,41 @@ public class Institucion implements Serializable{
 	public void setExtensiones(List<Extension> extensiones) {
 		this.extensiones = extensiones;
 	}
+	
+	
+
+	public String getColorB() {
+		return colorB;
+	}
+
+	public void setColorB(String colorB) {
+		this.colorB = colorB;
+	}
+
+	public boolean isLetrasBlancas() {
+		return letrasBlancas;
+	}
+
+	public void setLetrasBlancas(boolean letrasBlancas) {
+		this.letrasBlancas = letrasBlancas;
+	}
+
+	public boolean isLetrasBB() {
+		return letrasBB;
+	}
+
+	public void setLetrasBB(boolean letrasBB) {
+		this.letrasBB = letrasBB;
+	}
 
 	@Override
 	public String toString() {
-		return "Institucion [usuario=" + usuario + ", nombre=" + nombre + ", color=" + color
-				+ ", webpage=" + webpage + ", direccion=" + direccion + ", visibilidad=" + visibilidad
-				+ ", extensiones=" + extensiones + "]";
+		return "Institucion [correo=" + correo + ", usuario=" + usuario + ", nombre=" + nombre + ", color=" + color
+				+ ", colorB=" + colorB + ", letrasBlancas=" + letrasBlancas + ", letrasBB=" + letrasBB + ", webpage="
+				+ webpage + ", direccion=" + direccion + ", visibilidad=" + visibilidad + ", extensiones=" + extensiones
+				+ "]";
 	}
+
 	
 	
 	

@@ -1,16 +1,85 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
 	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Spring Security Example</title>
-		<meta charset="UTF-8">
-    </head>
-    <body>
-        <h1>Welcome!</h1>
-        
-        <p>Click <a th:href="@{/login}">here</a> to see a greeting.</p>
-        <p>Click <a th:href="@{/auth/registration/mentor?m=1}">aquí</a> para registrarte como mentor.</p>
-        <p>Click <a th:href="@{/auth/registration/mentorizado?m=0}">aquí</a> para registrarte como mentorizado.</p>
-        <p>Click <a th:href="@{/auth/registration/kk}">aquí</a> para registrarte como mentorizado.</p>
-    </body>
+
+<head>
+	<title>Bienvenido a Mentoring</title>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+	<script type="text/javascript" th:src="@{/js/principal.js}"></script>
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
+	<link th:href="@{/css/general.css}" rel="stylesheet">
+</head>
+<body ng-app="appPrincipal" ng-cloak>
+	<div ng-controller="principalController">
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header">
+			<a class="navbar-brand" href="#"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
+					height="60" alt="" /></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<span class="linkNavRight d-block d-lg-none">
+				<a th:href="@{/login}">
+					<div class="buttonNav">Iniciar sesión</div>
+				</a>
+				<a th:href="@{/auth/registration/mentorizado}">
+					<div class="buttonNav">Registrarse</div>
+				</a>
+			</span>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#">Participa</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#">Informe de estado</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#">Intituciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#">Acerca de nosotros</a>
+					</li>
+				</ul>
+			</div>
+			<span class="linkNavRight d-none d-lg-block">
+				<a th:href="@{/login}">
+					<div class="buttonNav">Iniciar sesión</div>
+				</a>
+				<a th:href="@{/auth/registration/mentorizado}">
+					<div class="buttonNav">Registrarse</div>
+				</a>
+			</span>
+		</nav>
+		<div class="main">
+		<h1>Welcome!</h1>
+
+		<p>Click <a th:href="@{/login}">aquí</a> para iniciar sesión.</p>
+		<p>Click <a th:href="@{/auth/registration/mentor}">aquí</a> para registrarte como mentor.</p>
+		<p>Click <a th:href="@{/auth/registration/mentorizado}">aquí</a> para registrarte como mentorizado.</p>
+		</div>
+		<hr>
+		<footer class="container">
+			<div class="row">
+
+				<div class="text-center col-lg-12">
+					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+					<h4>Normativa</h4>
+					<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+					<h4>Contacto</h4>
+					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+				</div>
+			</div>
+		</footer>
+		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+	</div>
+</body>
+
 </html>

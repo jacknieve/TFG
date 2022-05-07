@@ -9,14 +9,16 @@ public class MentorizacionUser {
 	private UsuarioPerfil uperfil;
 	private FasesMentorizacion fase;
 	private Long fecha_fin;
+	private boolean verificado;
 	
-	public MentorizacionUser(String correo, String foto, UsuarioPerfil uperfil, FasesMentorizacion fase, Long fecha_fin) {
+	public MentorizacionUser(String correo, String foto, UsuarioPerfil uperfil, FasesMentorizacion fase, Long fecha_fin, boolean verificado) {
 		super();
 		this.correo = correo;
 		this.foto = foto;
 		this.uperfil = uperfil;
 		this.fase = fase;
 		this.fecha_fin = fecha_fin;
+		this.verificado = verificado;
 	}
 	
 	public MentorizacionUser(Mentorizacion m, UsuarioPerfil up, String correo) {
@@ -31,6 +33,10 @@ public class MentorizacionUser {
 		else {
 			this.fecha_fin=null;
 		}
+		if(up.isMentor()) {
+			this.verificado=up.isVerificado();
+		}
+		else this.verificado=false;
 	}
 
 	public MentorizacionUser() {
@@ -80,12 +86,24 @@ public class MentorizacionUser {
 	public void setFase(FasesMentorizacion fase) {
 		this.fase = fase;
 	}
+	
+	
+
+	public boolean isVerificado() {
+		return verificado;
+	}
+
+	public void setVerificado(boolean verificado) {
+		this.verificado = verificado;
+	}
 
 	@Override
 	public String toString() {
 		return "MentorizacionUser [correo=" + correo + ", foto=" + foto + ", uperfil=" + uperfil + ", fase=" + fase
-				+ ", fecha_fin=" + fecha_fin + "]";
+				+ ", fecha_fin=" + fecha_fin + ", verificado=" + verificado + "]";
 	}
+
+	
 
 	
 

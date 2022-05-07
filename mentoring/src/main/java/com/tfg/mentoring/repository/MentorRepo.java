@@ -22,17 +22,6 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	
 	Optional<Mentor> findByUsuarioUsernameAndUsuarioEnable(String username, boolean enable);
 	
-	/*@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1 AND m.institucion = ?2 AND m.horaspormes >= ?3")
-	List<Mentor> buscarCompleto(String area, String institucion, float horas);
-	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.usuario_mentor = a.correo AND a.area = ?1 AND m.horaspormes >= ?2")
-	List<Mentor> buscarAreaHoras(String area, float horas);
-	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.horaspormes >= ?1")
-	List<Mentor> buscarHoras(float horas);
-	
-	@Query(nativeQuery = true, value="SELECT m.* FROM usuarios u, mentores m WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND m.institucion = ?1 AND m.horaspormes >= ?2")
-	List<Mentor> buscarInstitucionHoras(String institucion, float horas);*/
 	
 	//Prototipo de busqueda, me trae todo por culpa de las areas
 	//Se podria probar a añadir un area por defecto que tenga todos, asi no hay que hacer la comprobacion de null, y quizas funcionaria
@@ -46,6 +35,11 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE mentores SET feliminacion = current_timestamp WHERE usuario_mentor = ?1 ")
 	void borrarMentor(String username);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery = true, value="DELETE FROM mentores WHERE usuario_mentor = ?1")
+	void limpiarUsuario(String username);
 	
 	
 }
