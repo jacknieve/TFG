@@ -10,11 +10,12 @@
 	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
 	<link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
+
 <body ng-app="appPrincipal" ng-cloak>
 	<div ng-controller="principalController">
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top header">
-			<a class="navbar-brand" href="#"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
-					height="60" alt="" /></a>
+			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}"
+					width="60" height="60" alt="" /></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -30,16 +31,19 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#">Participa</a>
+						<a class="headerLink nav-link" href="#unirse">Participa</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#">Informe de estado</a>
+						<a class="headerLink nav-link" href="#estado">Informe de estado</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#">Intituciones</a>
+						<a class="headerLink nav-link" href="#servicios">¿Qué ofrecemos?</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#">Acerca de nosotros</a>
+						<a class="headerLink nav-link" href="#clientes">Instituciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#nosotros">Acerca de nosotros</a>
 					</li>
 				</ul>
 			</div>
@@ -53,33 +57,143 @@
 			</span>
 		</nav>
 		<div class="main">
-		<h1>Welcome!</h1>
+			<div class="espacioEntreSecciones"></div>
+			<a name="unirse"></a>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Únete a nuestra comunidad, <br class="d-sm-none" />¿Cómo deseas participar?
+					</div>
+				</div>
+				<br>
+				<div class="container" style="padding-left: 5%; padding-right: 5%;">
+					<div class="row">
+						<div class="col-4 col-md-2">
+							<!--https://www.flaticon.es/icono-gratis/compartir_2783680-->
+							<a th:href="@{/auth/registration/mentor}"><img class="fotoOpcion"
+									th:src="@{/images/compartir.png}" alt="" /></a>
+						</div>
+						<div class="col-8 col-md-10">
+							<div class="row">
+								<div class="col-md-10 offset-md-1 text-center">
+									<a th:href="@{/auth/registration/mentor}">
+										<div class="buttonNav" style="width: 100%;">Compartiendo</div>
+									</a>
+								</div>
+								<div class="col-md-10 offset-md-1" style="margin-top: calc(2px + 0.5vw);">
+									<div class="cuerpoSubSeccionHome">
+										<strong>Se un mentor</strong>, aporta tus experiencia y conocimientos para
+										ayudar a los mentorizados a crecer y a desarrollar su carrera profesional.
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-8 col-md-10">
+							<div class="row">
+								<div class="col-md-10 offset-md-1 text-center">
+									<a th:href="@{/auth/registration/mentorizado}">
+										<div class="buttonNav" style="width: 100%;">Aprendiendo</div>
+									</a>
+								</div>
+								<div class="col-md-10 offset-md-1" style="margin-top: calc(2px + 0.5vw);">
+									<div class="cuerpoSubSeccionHome">
+										<strong>Se un mentorizado</strong>, aprende de los mentores, usa la experiencia que te transmitan para crecer.
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-4 col-md-2">
+							<!--https://www.flaticon.es/icono-gratis/estudiar_566985-->
+							<a th:href="@{/auth/registration/mentorizado}"><img class="fotoOpcion"
+									th:src="@{/images/estudiar.png}" alt="" /></a>
+						</div>
 
-		<p>Click <a th:href="@{/login}">aquí</a> para iniciar sesión.</p>
-		<p>Click <a th:href="@{/auth/registration/mentor}">aquí</a> para registrarte como mentor.</p>
-		<p>Click <a th:href="@{/auth/registration/mentorizado}">aquí</a> para registrarte como mentorizado.</p>
+					</div>
+					<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="estado"></a>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Estado actual de la aplicación
+					</div>
+				</div>
+				<br>
+				<h2>Aquí iria lo del informe de estado</h2>
+
+				<p>Con estadísticas y eso del uso de la aplicación, el número de mentores, mentorizados, instituciones?, mentorizaciones abiertas
+				y cerradas, nota media...</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="servicios"></a>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						¿Que servicios ofrecemos?
+					</div>
+				</div>
+				<br>
+				<h2>Servicios ofrecidos por la aplicación</h2>
+
+				<p>Aquí podría ir un carrusel con los servicios que ofrece la aplicación</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="clientes"></a>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Nuestros clientes
+					</div>
+				</div>
+				<br>
+				<h2>Lista de instituciones</h2>
+
+				<p>Un conjunto de todos los logos de las instituciones que hubiesen contratado la aplicación y que hubiesen permitido que su logo apareciese aquí</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<a name="nosotros"></a>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Acerca de nosotros
+					</div>
+				</div>
+				<br>
+				<h2>Info sobre nosotros</h2>
+
+				<p>Aquí pondriamos algo de información acerca de nosotros, quienes somos, como surgió la idea de esta aplicación... </p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<hr>
+			<footer class="container">
+				<div class="row">
+
+					<div class="text-center col-lg-12">
+						<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+					</div>
+					<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+						<h4>Normativa</h4>
+						<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a>
+						</p>
+					</div>
+					<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+						<h4>Contacto</h4>
+						<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+					</div>
+				</div>
+			</footer>
+			<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+			<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+			<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
 		</div>
-		<hr>
-		<footer class="container">
-			<div class="row">
-
-				<div class="text-center col-lg-12">
-					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
-				</div>
-				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
-					<h4>Normativa</h4>
-					<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
-				</div>
-				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
-					<h4>Contacto</h4>
-					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
-				</div>
-			</div>
-		</footer>
-		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
-		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
-		<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
-	</div>
 </body>
 
 </html>

@@ -26,7 +26,8 @@ body {
 
 .encabezadoSeccion{
 	background-color: #5AB9EA; /*Cambiar tambien en UserService  addInstitucionUtils*/
-	border: 1px solid #254E58;
+	/*border: 1px solid #254E58;*/
+	border: 1px solid rgba(37,78,88,0.75);
 	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 24px;
 	border-radius: 15px 15px 0px 0px;
@@ -35,7 +36,7 @@ body {
 
 .pieSeccion{
 	background-color: #5AB9EA;
-	border: 1px solid #254E58;
+	border: 1px solid rgba(37,78,88,0.75);
 	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 24px;
 	border-radius: 0px 0px 15px 15px;
@@ -119,6 +120,45 @@ button:disabled{
 	overflow-y: scroll;
 	height: 600px;
 	word-wrap: break-word;
+}
+
+.cuerpoSeccionHome{
+	transition:0.5s linear all;
+	background-color: #F6F6F6;
+	border: 2px solid rgba(0,0,0,0.30);
+	border-radius: 15px;
+	font-family: Tahoma, Geneva, sans-serif;
+	overflow-y: scroll;
+	height: auto; 
+	overflow-y: auto;
+	word-wrap: break-word;
+}
+
+.encabezadoSeccionHome{
+	background-color: #CDCDCD; /*Cambiar tambien en UserService  addInstitucionUtils*/
+	/*border: 1px solid #254E58;*/
+	border: 1px solid rgba(37,78,88,0.75);
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 18px;
+	border-radius: 20px;
+	font-weight: 700;
+	text-align: center;
+	margin-top: 10px;
+	padding: 4px;
+}
+
+.cuerpoSubSeccionHome{
+	border-top: 1px double rgba(37,78,88,0.75);
+	border-bottom: 1px double rgba(37,78,88,0.75);
+	font-size:calc(12px + 0.5vw);
+	text-align: justify;
+}
+
+
+.fotoOpcion{
+	border-radius: 20px;	
+	height: 100%;
+	width: 100%;	
 }
 
 .cuerpoSeccion.ng-show{

@@ -8,21 +8,15 @@ Mas cosas que hacer:
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
-->Ver que excepciones hay (añadir las que puse al cerrar en las demas) <-
 ->Cambiar casos de uso para ser menos restrictivos en las excepciones? <----
 
 ----Frontend----
-->El header y el footer de login y registro el mismo que el de home sin loggear
 ->Cambiar peticiones para traer ya todo?
-
->>Interfaces que faltan<<
--Incio <-
--Inicio logeada <--
+->Cambiar el footer (en algun momento)
 
 
-->Hacer lo de abrir las secciones desde arriba <---
 ->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar<----
-->Cambiar Long de puntuacion a int (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto
+->Cambiar Long de puntuacion a Integer (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto
 
 contigopripo@gmail.com
 
@@ -36,8 +30,9 @@ contigopripo@gmail.com
 ->Añadir al nivel de estudios un entero para indicar una jerarquia y hacer busquedas por estudios minimos?
 ->Añadir log de los eventos para quitar todos los souts de las excepciones
 ->Criterio de ordenación en la búsqueda???
+->Hacer lo de abrir las secciones desde arriba
 
-
+->Revisar excepciones
 ->Meter logger?
 ->Meter gancho de salida?
 ->En el programa de institucion: lista de mentores asociados y verificados con sus puntuaciones y de mentores por verificar
