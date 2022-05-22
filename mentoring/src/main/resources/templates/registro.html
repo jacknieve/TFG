@@ -88,7 +88,7 @@
     					</div>
 						<div class="col-lg-6">
 							<span class="campoObligatorio">*</span><label th:text="Correo">Correo</label>
-							<input type="email" th:field="*{correo}"></input>
+							<input type="email" th:field="*{correo}" maxlength="240"></input>
 							<p th:each="error: ${#fields.errors('correo')}" th:text="${error}" class="mensajeError">Validation error</p>
 						</div>
 						<div class="col-lg-6">

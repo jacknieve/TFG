@@ -284,13 +284,13 @@ button:disabled{
 }
 
 .botonInterfaz{
-	font-family: Tahoma, Geneva, sans-serif;
+	font-family: Verdana, Tahoma, Geneva, sans-serif;
 	font-size: 16px;
 	background-color: #FFFFFF;
 	border: 3px solid #464646;
 	border-radius: 15px;
 	text-align: center;
-	width: 150px;
+	min-width: 150px;
 	height: 32px;
 	color: black;
 }
@@ -425,5 +425,36 @@ button:disabled{
 
 .campoObligatorio{
 	color: red;
+}
+
+
+
+.sidebar{
+	float: right;
+	min-width: 18%;
+	max-width: 40%;
+	max-height: 100%;
+	/*overflow-y: scroll;*/
+}
+
+.zonaNotificacionesLateral{
+	z-index: 50;
+	position: fixed;
+	min-width: 18%;
+	max-width: 40%;
+	max-height: 100%;
+	font-size:calc(10px + 0.5vw);
+	overflow-y: scroll;
+}
+
+@media only screen and (max-width: 768px) {
+  .sidebar2{
+	min-width: 35%;
+	/*overflow-y: scroll;*/
+}
+
+.zonaNotificacionesLateral2{
+	min-width: 35%;
+}
 }
 

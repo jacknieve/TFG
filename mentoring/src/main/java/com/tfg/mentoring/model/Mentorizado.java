@@ -19,8 +19,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-
-import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.model.auxiliar.requests.UserAux;
 
 @Entity
 @Table(name="mentorizados")
@@ -38,7 +37,7 @@ public class Mentorizado {
 	private String papellido;
 	@Column(name = "sapellido")
 	private String sapellido;
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="nivelestudios", nullable=false)
 	private NivelEstudios nivelEstudios;
 	@Column(name = "telefono")

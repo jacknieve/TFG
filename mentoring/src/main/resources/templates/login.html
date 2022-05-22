@@ -30,19 +30,19 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#unirse">Participa</a>
+						<a class="headerLink nav-link" th:href="@{/home#unirse}">Participa</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#estado">Informe de estado</a>
+						<a class="headerLink nav-link" th:href="@{/home#estado}">Informe de estado</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#servicios">¿Qué ofrecemos?</a>
+						<a class="headerLink nav-link" th:href="@{/home#servicios}">¿Qué ofrecemos?</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#clientes">Instituciones</a>
+						<a class="headerLink nav-link" th:href="@{/home#clientes}">Instituciones</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#nosotros">Acerca de nosotros</a>
+						<a class="headerLink nav-link" th:href="@{/home#nosotros}">Acerca de nosotros</a>
 					</li>
 				</ul>
 		</div>
@@ -69,7 +69,7 @@
 				</div>
 				<form th:action="@{/login}" method="post" class="row">
 					<div class="col-sm-4"> Correo : </div>
-					<div class="col-sm-8"><input type="email" name="username" maxlength="255" required /></div>
+					<div class="col-sm-8"><input type="email" name="username" maxlength="240" required /></div>
 					<div class="col-sm-4" style="padding-top: 10px;"> Contraseña: </div>
 					<div class="col-sm-8" style="padding-top: 10px;"><input type="password" name="password"
 							maxlength="255" required /></div>

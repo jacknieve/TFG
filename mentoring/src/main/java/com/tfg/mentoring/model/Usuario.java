@@ -1,30 +1,22 @@
 package com.tfg.mentoring.model;
 
-import java.util.Arrays;
-import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.tfg.mentoring.model.auxiliar.Roles;
+import com.tfg.mentoring.model.auxiliar.enums.Roles;
 
 //Esto para los errores al verificar los campos
 //https://www.baeldung.com/spring-thymeleaf-error-messages
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario implements UserDetails{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Usuario{
+
 	@Id
-	@Column(name = "username", nullable=false)
+	@Column(name = "username", nullable=false, length = 240)
 	private String username;
 	@Column(name = "password", nullable=false)
 	private String password;
@@ -38,12 +30,6 @@ public class Usuario implements UserDetails{
 	private boolean notificar_correo;
 	@Column(name = "verification_code", length = 64)
     private String verificationCode;
-	//orphanRemoval para indicar que la entidad hija sera eliminada directamente al dejar de
-	//referenciar a la padre
-	//Aqui igual mejor invertir, porque al recuperar un mentor, mentorizado... se recuperarían si no también sus notificaciones
-	/*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(name="correo")
-	private List<Notificacion> notificaciones = new ArrayList<>();*/
 	
 	
 	public Usuario() {
@@ -97,7 +83,6 @@ public class Usuario implements UserDetails{
 		this.rol = rol;
 	}
 
-	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
 		return this.password;
@@ -107,40 +92,19 @@ public class Usuario implements UserDetails{
 		this.password=password;
 	}
 
-	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return this.username;
 	}
 	
-	//UserDetails methods
 	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-			//Nos devuelve los permisos del usuario en forma de array
-		return Arrays.asList(new SimpleGrantedAuthority(this.rol.toString()));
-	}
 	
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	
-	@Override
 	public boolean isAccountNonLocked() {
 		// TODO Auto-generated method stub
 		return this.unlocked;
 	}
 	
 	
-	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return this.enable;
@@ -180,6 +144,12 @@ public class Usuario implements UserDetails{
 				+ ", enable=" + enable + ", notificar_correo=" + notificar_correo + ", verificationCode="
 				+ verificationCode + "]";
 	}
+	
+	
+
+	
+
+	
 
 	
 	

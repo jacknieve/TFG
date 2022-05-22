@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Bienvenido a Mentoring</title>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+	<script type="text/javascript" th:src="@{/js/principal.js}"></script>
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
+	<link th:href="@{/css/general.css}" rel="stylesheet">
+</head>
+
+<body ng-app="appPrincipal" ng-cloak>
+	<div ng-controller="principalController">
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header"
+			th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" href="#">
+				<img th:src="@{/images/icono_prueba.png}" id="borderIcono" width="60" height="60" alt="" />
+			</a>
+			<span th:if="${logo}">
+				<a class="navbar-brand" href="#">
+					<!--Aqui iria a la pagina de la institucion-->
+					<img th:src="@{${logo}}" width="90" height="60" class="borderIcono" alt="" />
+				</a>
+			</span>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<span class="linkNavRight d-block d-lg-none">
+				<button ng-click="abrirBorrar()" class="buttonNav">
+					Eliminar cuenta
+				</button>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+			<div th:switch="${rol}" class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul th:case="'Mentorizado'" class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Notificaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis
+							mentores</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#busqueda}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Buscar mentores</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#puntuar}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Puntuar mentorizaciones</a>
+					</li>
+				</ul>
+				<ul th:case="'Mentor'" class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Notificaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentorizados</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#peticiones}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Solicitudes recibidas</a>
+					</li>
+				</ul>
+				<div th:case="*">
+					Tienes un rol no esperado para estar aqui, de hecho, no deberias haber podido entrar.
+				</div>
+			</div>
+
+			<span class="linkNavRight d-none d-lg-block">
+				<button ng-click="abrirBorrar()" class="buttonNav">
+					Eliminar cuenta
+				</button>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+		</nav>
+		<div class="main">
+		<div class="espacioEntreSecciones"></div>
+			<section class="container cuerpoSeccionHome">
+				<div class="row" style="min-height: 30px;">
+					<div class="col-lg-8 offset-lg-1 col-md-7 offset-md-1" style="padding-top: 20px;">
+						Ya has iniciado sesión, accede a tu cuenta para ver lo que puedes hacer
+					</div>
+					<div class="col-lg-2 col-md-3" style="padding-top: 20px;">
+						<a th:href="@{/user/principal}"><div class="buttonNav" style="width: 100%;">Mi cuenta</div></a>
+					</div>
+				</div>
+					<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Estado actual de la aplicación
+					</div>
+				</div>
+				<br>
+				<h2>Aquí iria lo del informe de estado</h2>
+
+				<p>Con estadísticas y eso del uso de la aplicación, el número de mentores, mentorizados, instituciones?, mentorizaciones abiertas
+				y cerradas, nota media...</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						¿Que servicios ofrecemos?
+					</div>
+				</div>
+				<br>
+				<h2>Servicios ofrecidos por la aplicación</h2>
+
+				<p>Aquí podría ir un carrusel con los servicios que ofrece la aplicación</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Nuestros clientes
+					</div>
+				</div>
+				<br>
+				<h2>Lista de instituciones</h2>
+
+				<p>Un conjunto de todos los logos de las instituciones que hubiesen contratado la aplicación y que hubiesen permitido que su logo apareciese aquí</p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<section class="container cuerpoSeccionHome">
+				<div class="row">
+					<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 encabezadoSeccionHome">
+						Acerca de nosotros
+					</div>
+				</div>
+				<br>
+				<h2>Info sobre nosotros</h2>
+
+				<p>Aquí pondriamos algo de información acerca de nosotros, quienes somos, como surgió la idea de esta aplicación... </p>
+				<br>
+			</section>
+			<div class="espacioEntreSecciones"></div>
+			<hr>
+		<footer class="container">
+			<div class="row">
+
+				<div class="text-center col-lg-12">
+					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+					<h4>Normativa</h4>
+					<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
+				</div>
+				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+					<h4>Contacto</h4>
+					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+				</div>
+			</div>
+		</footer>
+		<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+	</div>
+</body>
+
+</html>

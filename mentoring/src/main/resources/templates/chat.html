@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Tus chats</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet" />
+	<link th:href="@{/css/general.css}" rel="stylesheet" />
+	<link th:href="@{/css/chat.css}" rel="stylesheet" />
+	<link th:href="@{/css/notification.lee}" rel="stylesheet/less" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+	<script type="text/javascript" th:src="@{/js/sockjs.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/notification.js}"></script>
+	<script type="text/javascript" th:src="@{/js/chat.js}"></script>
+</head>
+
+<body ng-app="appChat" ng-cloak>
+	<!--<div notifications="bottom right"></div>-->
+	<div class="sidebar sidebar2">
+		<div class="zonaNotificacionesLateral zonaNotificacionesLateral2">
+			<div notifications="bottom right"></div>
+		</div>
+	</div>
+	<div class="container cuadroChats" ng-controller="chatController">
+		<div class="row">
+
+			<div class="col-lg-12 cabeceraChats">
+				<!--Falta añadir todo el tema de los colores-->
+				<div class="row">
+					<div class="col-4 color1Chat" style="border-right: 1px solid black;">
+						<div class="row">
+							<div class="col-sm-5">
+								<img src="images/perfil/Captura.PNG" class="fotoPerfilChat" alt="" />
+							</div>
+							<div class="col-sm-7 nombrePerfilChat">
+								<span th:text="${nombre}" />
+							</div>
+						</div>
+					</div>
+					<div class="col-8 color2Chat">
+						<div class="row">
+							<div class="col-sm-2 col-5" ng-show="mostrarChat">
+								<img src="images/perfil/Captura.PNG" class="fotoPerfilChatTarget" alt="" />
+							</div>
+							<div class="col-sm-9 col-7 offset-sm-1 nombrePerfilChatTarget" ng-show="mostrarChat">
+								{{salaActual.nombreOtro}}
+							</div>
+							
+						</div>
+						<div class="avisoPerfilChatTarget" ng-hide="mostrarChat">
+							Seleccione un chat para empezar a chatear
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-12 cuerpoChats">
+				<div class="row" style="height: 100%;">
+
+					<div class="col-4 color2Chat" style="border-right: 1px solid black; overflow-y: scroll;">
+						<div class="row">
+							<div class="col-lg-12 volverSeccion">
+								<div class="row" style="width: 100%; margin: 0px;">
+									<div class="col-sm-8 offset-sm-2">
+										<form action="#" th:action="@{/user/principal}" style="width: 100%;">
+											<button class="volverButton">Volver a principal</button>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-12" style="border-bottom: 1px solid black;" ng-repeat="sala in salas" ng-class="{ 'seccionDesabilitada': cargando}">
+								<!--Aqui lo repetible-->
+								<div class="row contactoChat" ng-click="abrirChat(sala)"
+									ng-class="{ 'salaDesabilitada': sala.abierta}">
+									<div class="col-6 col-sm-5 col-md-4 col-lg-3">
+										<img src="images/perfil/Captura.PNG" class="fotoPerfilChatTarget" alt="" />
+									</div>
+									<div class="col-6 col-sm-7 col-md-8 col-lg-9 listaChatNombre">
+										{{sala.nombreOtro}}
+									</div>
+									<div class="col-12 listaChatInfo" ng-show="sala.nuevos">
+										¡Nuevos mensajes!
+									</div>
+									<div class="col-12 listaChatInfo" ng-show="sala.cerrada" style="color: red;">
+										Cerrada
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-12" ng-show="sinSalas">
+							<div class="avisoListaContactos">
+								No tienes ningun contacto
+							</div>
+							</div>
+							<div class="col-lg-12" ng-show="errorContactos" style="color: red; text-align: justify;">
+							<div class="avisoListaContactos">
+								Se ha producido un error al intentar acceder a sus contactos
+							</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="col-8">
+						<div class="row">
+							<div class="col-lg-12 zonaMensajes">
+								<div class="row">
+									<div class="col-lg-12" ng-repeat="m in mensajes">
+										<div ng-class="posicionMensaje(m)">{{m.contenido}}</div>
+									</div>
+									<div class="col-lg-12" ng-show="salaActual.cerrada">
+                                        Este chat se ha cerrado, ya no podrá enviar ni recibir más mensajes
+                                    </div>
+                                    <div class="col-lg-12" ng-show="errorMensajes" style="color: red; text-align: justify;">
+                                    	<div class="avisoListaContactos">
+                                        	Se ha producido un error al intentar acceder a los mensajes de este chat
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+							<div class="col-lg-12" ng-class="{ 'seccionDesabilitada': cargando}">
+								<div class="row" ng-class="{ 'salaDesabilitada': !mostrarChat || salaActual.cerrada}">
+									<div class="col-10 col-md-11" style="padding-right: 0px; margin-right: 0px;">
+										<textarea ng-model="cuerpoMensaje" maxlength="300"
+											class="textareaMensaje"></textarea>
+									</div>
+									<div class="col-2 col-md-1 sendBotonSection">
+										<button ng-click="enviarMensaje()" ng-disabled="cargando" class="sendBoton">
+											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
+											<img src="images/enviar.png" class="sendImage" alt="" />
+										</button>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+	<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+</body>
+
+</html>

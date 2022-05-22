@@ -11,11 +11,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
-import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.Roles;
+import com.tfg.mentoring.model.auxiliar.UserAuth;
+import com.tfg.mentoring.model.auxiliar.enums.Roles;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.service.UserService;
@@ -29,9 +30,12 @@ public class InitialController {
 	private MentorizadoRepo menrepo;
 	@Autowired
 	private MentorRepo mrepo;
+	
+	@Autowired
+	WebSocketMessageBrokerStats webSocketMessageBrokerStats;
 
 	@GetMapping({ "/", "/home" })
-	public ModelAndView home(@AuthenticationPrincipal Usuario us) {
+	public ModelAndView home(@AuthenticationPrincipal UserAuth us) {
 
 		if (us == null) {
 			System.out.println("No estoy autentificado");
@@ -126,7 +130,7 @@ public class InitialController {
 	}
 
 	@GetMapping("/login")
-	public ModelAndView showLoginForm(@AuthenticationPrincipal Usuario us) {
+	public ModelAndView showLoginForm(@AuthenticationPrincipal UserAuth us) {
 
 		if (us == null) {
 			return new ModelAndView("login");
@@ -161,14 +165,14 @@ public class InitialController {
 		}
 	}
 
-	@GetMapping("/perror")
+	/*@GetMapping("/perror")
 	public ModelAndView perror() {
 		ModelAndView model = new ModelAndView("error_page");
 		model.addObject("mensaje", "No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
 				+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
 		model.addObject("hora", new Date());
 		return model;
-	}
+	}*/
 
 	@GetMapping("/perrorl")
 	public ModelAndView perrorl() {
@@ -178,5 +182,31 @@ public class InitialController {
 		model.addObject("hora", new Date());
 		return model;
 	}
+	
+	@GetMapping("/cierre")
+	public void cierre() {
+		System.out.println("El usuario a abandonado la pagina");
+		
+	}
+	
+	@GetMapping("/info")
+	public void info() {
+		System.out.println("Session Stats info " +webSocketMessageBrokerStats.getWebSocketSessionStatsInfo());
+		
+	}
+	
+	
+	//Esto me lo guardo porque devuleve un map y es muy interesante
+	/*@GetMapping("/configuracion")
+	public Map<String, Object> configuracion(@AuthenticationPrincipal UserAuth us, HttpServletRequest request) {
+
+		Map<String, Object> configuracion = new HashMap<String, Object>();
+		configuracion.put("prebindUrl", xmpp.getPrebindUrl());
+		configuracion.put("bindUrl", "http://" + xmpp.getHost() + ":" + xmpp.getPort() + "" + xmpp.getHttpBind());
+		System.out.println(us.toString());
+		configuracion.put("jid", us.getJid());
+		return configuracion;
+	}*/
+
 
 }

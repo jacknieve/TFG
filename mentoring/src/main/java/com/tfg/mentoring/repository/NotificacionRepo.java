@@ -28,5 +28,8 @@ public interface NotificacionRepo extends JpaRepository<Notificacion, String>{
 	
 	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado = 0")
 	List<Notificacion> getNews(String user);
+	
+	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND motivo = 4 AND estado = 0")
+	List<Notificacion> notificacionesMensajes(String user);
 
 }

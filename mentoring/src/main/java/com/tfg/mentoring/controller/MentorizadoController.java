@@ -24,19 +24,21 @@ import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizacion;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.Peticion;
-import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.CamposBusqueda;
-import com.tfg.mentoring.model.auxiliar.EnvioPeticion;
-import com.tfg.mentoring.model.auxiliar.EstadosPeticion;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
-import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
-import com.tfg.mentoring.model.auxiliar.MentorizacionCerrar;
-import com.tfg.mentoring.model.auxiliar.MentorizacionUser;
-import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
+import com.tfg.mentoring.model.auxiliar.UserAuth;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorizacionDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
+import com.tfg.mentoring.model.auxiliar.enums.EstadosPeticion;
+import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
+import com.tfg.mentoring.model.auxiliar.requests.CamposBusqueda;
+import com.tfg.mentoring.model.auxiliar.requests.EnvioPeticion;
+import com.tfg.mentoring.model.auxiliar.requests.MentorizacionCerrar;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizacionRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.PeticionRepo;
+import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 
 @RestController
@@ -54,9 +56,11 @@ public class MentorizadoController {
 
 	@Autowired
 	private UserService uservice;
+	@Autowired
+	private SalaChatServicio schats;
 	
 	// A esto hay que meterle "seguridad", es decir, try y catch para las excepciones y demas
-	@PostMapping("/busqueda") public ResponseEntity<List<MentorBusqueda>> buscar(@RequestBody CamposBusqueda campos) { 
+	@PostMapping("/busqueda") public ResponseEntity<List<MentorDTO>> buscar(@RequestBody CamposBusqueda campos) { 
 		if(campos == null || campos.getHoras() < 4 || campos.getHoras() >80) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -65,7 +69,7 @@ public class MentorizadoController {
 		 	if(campos.getInstitucion() == null || campos.getInstitucion().equals("sin")) campos.setInstitucion(null); 
 		 	try { 
 		 		mentores = mrepo.buscarPrototipo(campos.getInstitucion(), campos.getHoras(), campos.getArea());
-		 		List<MentorBusqueda> resultado = uservice.getMentorBusqueda(mentores);
+		 		List<MentorDTO> resultado = uservice.getMentorBusqueda(mentores);
 		 		if(resultado.isEmpty()) {
 		 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		 		}
@@ -81,7 +85,7 @@ public class MentorizadoController {
 	
 	
 	@PostMapping("/obtenermentor")
-	public ResponseEntity<UsuarioPerfil> getPerfilBusqueda(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<UsuarioDTO> getPerfilBusqueda(@AuthenticationPrincipal UserAuth us,
 			@RequestBody String mentor) {
 		if(mentor == null || us.getUsername() == null) {
 			System.out.println("El mentorizado es null o la entrada es mala");
@@ -92,7 +96,7 @@ public class MentorizadoController {
 			//Optional<Mentor> m = mrepo.findById(mentor);
 			Optional<Mentor> m = mrepo.findByUsuarioUsernameAndUsuarioEnable(mentor, true);
 			if (m.isPresent()) {
-				UsuarioPerfil up = uservice.getPerfilMentor(m.get());
+				UsuarioDTO up = uservice.getPerfilMentor(m.get());
 				return new ResponseEntity<>(up, HttpStatus.OK);
 			} else {
 				System.out.println("No hay mentor");
@@ -113,7 +117,7 @@ public class MentorizadoController {
 	// Tambien, en los post, habria que asegurarse que la clase que llega es
 	// correcta? o eso ya lo comprueba ya Spring, creo que si
 	@PostMapping("/enviarsolicitud")
-	public ResponseEntity<MensajeError> enviarSolicitud(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> enviarSolicitud(@AuthenticationPrincipal UserAuth us,
 			@RequestBody EnvioPeticion peticion) {
 		if(peticion == null || us.getUsername() == null || peticion.getMentor() == null) {
 			System.out.println("El mentorizado es null o la entrada es mala");
@@ -138,7 +142,7 @@ public class MentorizadoController {
 						if(resultado.getMentor().getUsuario().isEnabled()) {
 						// Solo vamos a enviar notificacion si es la primera vez
 							uservice.enviarNotificacion(m.get().getUsuario(), "Nueva peticion", "El usuario "
-								+ men.get().getNombre() + " te ha enviado una petición de mentorizacion.");
+								+ men.get().getNombre() + " te ha enviado una petición de mentorizacion.", MotivosNotificacion.PETICION);
 							return new ResponseEntity<>(null, HttpStatus.OK);
 						}
 						else {
@@ -180,17 +184,17 @@ public class MentorizadoController {
 	}
 	
 	@GetMapping("/mentorizaciones")
-	public ResponseEntity<List<MentorizacionUser>> getMentorizaciones(@AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<List<MentorizacionDTO>> getMentorizaciones(@AuthenticationPrincipal UserAuth us) {
 		try {
 			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
 			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesMentorizado(us.getUsername());
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			for (Mentorizacion m : mentorizaciones) {
 				// System.out.println(n.getEstado().toString());
-				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+				mUser.add(new MentorizacionDTO(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 			}
 
 			return new ResponseEntity<>(mUser, HttpStatus.OK);
@@ -204,24 +208,26 @@ public class MentorizadoController {
 		}
 	}
 
-	// Obtener peticiones nuevas
+	// Obtener mentorizaciones nuevas
 	@GetMapping("/mentorizaciones/actualizar/{date}")
-	public ResponseEntity<List<MentorizacionUser>> getNewMentorizaciones(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<List<MentorizacionDTO>> getNewMentorizaciones(@AuthenticationPrincipal UserAuth us,
 			@PathVariable("date") Long date) {
 		if (date != null) {// Tambien ver si de primeras ya se puede ver si es parseable
 			try {
 				Timestamp fecha = new Timestamp(date);
+				System.out.println(fecha);
 				List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-				List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+				List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
 				mentorizaciones = mentorizacionrepo.getNuevasMentorizado(us.getUsername(), fecha);
+				System.out.println(mentorizaciones.toString());
 				if (mentorizaciones.isEmpty()) {
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 				}
 				for (Mentorizacion m : mentorizaciones) {
 					if (m.getFin() == null) {
-						mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+						mUser.add(new MentorizacionDTO(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 					} else {
-						mUser.add(new MentorizacionUser(m, null, m.getMentor().getCorreo()));
+						mUser.add(new MentorizacionDTO(m, null, m.getMentor().getCorreo()));
 					}
 
 				}
@@ -242,7 +248,7 @@ public class MentorizadoController {
 
 	
 	@PostMapping("/mentorizaciones/cerrar")
-	public ResponseEntity<MensajeError> cerrarMentorizacion(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> cerrarMentorizacion(@AuthenticationPrincipal UserAuth us,
 			@RequestBody MentorizacionCerrar mentorizacion) {
 		if(mentorizacion == null || us.getUsername() == null || mentorizacion.getMentor() == null || mentorizacion.getPuntuacion() < -1
 				|| mentorizacion.getPuntuacion() > 10) {
@@ -259,8 +265,9 @@ public class MentorizadoController {
 				// Primero comprobar si ya existe una mentorizacion y si ya existe una peticion
 				mentorizacionrepo.cerrarPuntuarMentorizacion(mentorizacion.getPuntuacion(), mentorizacion.getComentario(),
 						mentorizacion.getMentor(), us.getUsername());
+				schats.cerrarChat(m.get().getCorreo(), men.get().getCorreo(), false);
 				uservice.enviarNotificacion(m.get().getUsuario(), "Mentorizacion cerrada", "El usuario "+men.get().getNombre()+
-						" ha cerrado una mentorización que tenía abierta contigo.");
+						" ha cerrado una mentorización que tenía abierta contigo.", MotivosNotificacion.CIERRE);
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
 				System.out.println("Fallo al acceder a los usuarios");
@@ -281,16 +288,16 @@ public class MentorizadoController {
 	}
 	
 	@GetMapping("/mentorizaciones/porpuntuar")
-	public ResponseEntity<List<MentorizacionUser>> getMentorizacionesPorPuntuar(@AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<List<MentorizacionDTO>> getMentorizacionesPorPuntuar(@AuthenticationPrincipal UserAuth us) {
 		try {
 			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
 			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuar(us.getUsername());
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			for (Mentorizacion m : mentorizaciones) {
-				mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+				mUser.add(new MentorizacionDTO(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 			}
 
 			return new ResponseEntity<>(mUser, HttpStatus.OK);
@@ -305,19 +312,19 @@ public class MentorizadoController {
 	}
 	
 	@GetMapping("/mentorizaciones/porpuntuar/{date}")
-	public ResponseEntity<List<MentorizacionUser>> getNewMentorizacionesPorPuntuar(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<List<MentorizacionDTO>> getNewMentorizacionesPorPuntuar(@AuthenticationPrincipal UserAuth us,
 			@PathVariable("date") Long date) {
 		if (date != null) {// Tambien ver si de primeras ya se puede ver si es parseable
 			try {
 				Timestamp fecha = new Timestamp(date);
 				List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-				List<MentorizacionUser> mUser = new ArrayList<MentorizacionUser>();
+				List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
 				mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuarNuevas(us.getUsername(), fecha);
 				if (mentorizaciones.isEmpty()) {
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 				}
 				for (Mentorizacion m : mentorizaciones) {
-					mUser.add(new MentorizacionUser(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
+					mUser.add(new MentorizacionDTO(m, uservice.getPerfilMentor(m.getMentor()), m.getMentor().getCorreo()));
 
 				}
 				// System.out.println(mUser.toString());
@@ -336,7 +343,7 @@ public class MentorizadoController {
 	}
 	//Comprobar mentorizacion
 	@PostMapping("/mentorizaciones/puntuar")
-	public ResponseEntity<MensajeError> puntuarMentorizacion(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> puntuarMentorizacion(@AuthenticationPrincipal UserAuth us,
 			@RequestBody MentorizacionCerrar mentorizacion) {
 		if(mentorizacion == null || us.getUsername() == null || mentorizacion.getMentor() == null || mentorizacion.getPuntuacion() < -1
 				|| mentorizacion.getPuntuacion() > 10 || mentorizacion.getFechafin() == null) {

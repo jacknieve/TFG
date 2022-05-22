@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
-import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.Roles;
-import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.model.auxiliar.UserAuth;
+import com.tfg.mentoring.model.auxiliar.enums.Roles;
+import com.tfg.mentoring.model.auxiliar.requests.UserAux;
 import com.tfg.mentoring.service.UserService;
 
 //@CrossOrigin(origins = "http://localhost:8080")
@@ -58,7 +58,7 @@ public class RegisterController {
 
 	// Probar a pasar en el prototipo argumentos a un metodo como este
 	@GetMapping("/registration/{mentor}")
-	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor, @AuthenticationPrincipal Usuario us) {
+	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor, @AuthenticationPrincipal UserAuth us) {
 		if (us == null) {
 			// Usuario user = new Usuario();
 			if (mentor == null) {//aqui por null en los parametros
@@ -114,7 +114,7 @@ public class RegisterController {
 	}
 
 	@PostMapping("/register/cambio")
-	public ModelAndView cambioRolRegistro(@ModelAttribute("useraux") UserAux useraux, @AuthenticationPrincipal Usuario us) {
+	public ModelAndView cambioRolRegistro(@ModelAttribute("useraux") UserAux useraux, @AuthenticationPrincipal UserAuth us) {
 		System.out.println("cambio");
 		if (us == null) {
 			if (useraux != null) {
@@ -172,7 +172,7 @@ public class RegisterController {
 
 	@PostMapping("/register")
 	public ModelAndView registerUserAccount(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result,
-			HttpServletRequest request, @AuthenticationPrincipal Usuario us) {
+			HttpServletRequest request, @AuthenticationPrincipal UserAuth us) {
 		System.out.println("registro");
 		if(useraux == null) { //Peticion nula
 			ModelAndView model = new ModelAndView("error_page");

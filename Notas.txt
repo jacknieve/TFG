@@ -3,19 +3,55 @@ Mas cosas que hacer:
 -Seguir diseño
 -Probar con ngResource, a ver si así funciona bien cors
 
+->Cosas que comentar en reunion<-
+Cosas que añadir en el diseño:
+-Diagrama de clases
+-MER
+-Diagrama de secuencia para casos de uso presentados
+-Diagrama de arquitectura
+-Diagrama del sistema
+-Endpoints del rest y que hacen
+-Controladores de angular y que hacen?
+-Estética de la aplicación
+->Pruebas
+->Completar lo que falta de los primeros puntos
+->Integracion (igual nos vale con la maquina virtual)
+->Chat
+->Ficheros
+->Instituciones
+->Redistribuir logica y comentar (tambien meter interfaces, y quizas cambiar algunos nombres de las clases auxiliares)
+->Tambien intentar cambiar la comprobacion de rol a una previa y guardar si es mentor o no en un booleano, pero esto solo en los que solo pueden acceder mentorores y mentorizados, por ejemplo, en principal, tambien podrian las instituciones
+->Quitar souts innecesarios
+
+
 -Acordarse de añadir lo de JavaMail en la introduccion de la memoria
+-Cambiar toda referencia en la memoria y en lo requisitos de enviar informe a mostrar informe en la aplicacion
+
+-><-
+
+
 ---->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar, sobre todo si voy a meter algo fuera del alcance
 -Orden de cosas-
 (tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
-->Cambiar casos de uso para ser menos restrictivos en las excepciones? <----
+
+
+Incluir notificaciones en perfil (tambien en inicio logeado?)
+Cambiar mensajes de error y acierto a las notificaciones
+Imagenes de perfil
+
 
 ----Frontend----
 ->Cambiar peticiones para traer ya todo?
 ->Cambiar el footer (en algun momento)
 
+->Esto podria mejorar muchos aspectos, pero, de momento, opcional, sobre todo cuando recibes una notificacion nueva, para avisarla,
+o cuando una accion sale bien o con error, en vez de la que tenemos.
+--Para notificaciones : https://parzibyte.me/blog/2018/12/18/notificaciones-angularjs-angular-ui-notification/
+<-Pero esto despues del chat, sobre todo lo de cambiar el acierto y el error en principal.
 
-->Cambiar los casos de uso para que se adapten a lo que haga de cerrar relacion y puntuar<----
+->Añadir lo del timeout
+
 ->Cambiar Long de puntuacion a Integer (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto
 
 contigopripo@gmail.com
@@ -31,12 +67,106 @@ contigopripo@gmail.com
 ->Añadir log de los eventos para quitar todos los souts de las excepciones
 ->Criterio de ordenación en la búsqueda???
 ->Hacer lo de abrir las secciones desde arriba
+->OpenSSL?
+
+
 
 ->Revisar excepciones
 ->Meter logger?
 ->Meter gancho de salida?
 ->En el programa de institucion: lista de mentores asociados y verificados con sus puntuaciones y de mentores por verificar
-->Los mentores no verificados (que han dicho las instituciones que no estan verificados, indicarlo tambien)?? esto creo que no
 ->Cuando un mentor cambia de institución, dejaría de estar validado
 ->Al buscar por institución, solo saldrían los validados
 ->Añadir institución a las mentorizaciones
+->Quizas habria que cambiar todas las veces que importamos js desde url a desde fichero, por si no hay conexion
+->Redistribuir logica a servicios, y  si podemos, las cosas que mapeamos, mapearlas ya de la salida de la base de datos como en todos los ejemplos.
+https://auth0.com/blog/how-to-automatically-map-jpa-entities-into-dtos-in-spring-boot-using-mapstruct/
+->Comprobar en el nombre que no contenga caracteres no validos para los nombres de ficheros
+
+
+
+--Chat--
+->Recuperar ventana de chats <-Aqui traer info del usuario, como minimo su correo
+<-Aqui tambien traer, en la lista de chats, si tienen mensajes nuevos en ese chat? (quizas esto es demasiado, y mas para un protoripo)
+->Crear ventana de chats
+->Recuperar ventana de chats con un chat indicado
+->Recuperar mensajes de un chat ( e indicar que ese usuario entra al chat)
+->Notificaciones de mensajes en ventana del chat, pondrá bajo el chat correspondiente que tiene mensajes nuevos y esto se quitará al entrar en el chat
+->Errores del chat
+
+
+
+--Enlaces chat
+https://www.callicoder.com/spring-boot-websocket-chat-example/
+https://spring.io/guides/gs/messaging-stomp-websocket/ <-
+https://medium.com/javarevisited/building-persistable-one-to-one-chat-application-using-spring-boot-and-websockets-303ba5d30bb0 <-
+https://nulpointerexception.com/2019/05/14/a-tutorial-on-implementing-a-chat-application-like-whatsapp-using-websocket-and-spring/
+https://www.oscarblancarteblog.com/2017/02/23/websocket-con-java/
+https://stackoverflow.com/questions/26299403/angularjs-and-websockets-beyond/26300758#26300758
+https://www.baeldung.com/spring-websockets-send-message-to-user
+--Videollamada
+https://programmerclick.com/article/65331895648/
+
+--Carga de ficheros:
+https://www.codejava.net/frameworks/spring-boot/spring-boot-file-upload-tutorial
+
+
+-------------------
+Desde el mentorizado/mentor se le puede dar a abrir chat, y te redirige a una ventana con el chat (solo el chat, la unica forma de volver, un enlace que cierra la conexion abierta y devuelve al usuario a su pagina principal. Si ha entrado desde un perfil, se abrirá directamente el chat con ese perfil, si no, aparecera donde estarían los mensajes un aviso de que escoja el chat que desea abrir. Desde ese momento o cuando abra un chat, se suscribe a la cola de la sala de chat correspondiente, y se le indica al servidor que no reciba notificaciones por que ya esta online, al cerrar el chat o al cambiar de chat, se desconecta de la cola, e
+indica al sevidor que deja de recibir mensajes en esa sala, por lo que si recibe uno nuevo, que se lo notifique, para notificar, es decir
+para no perder tiempo, podemos hacer un threat que se encargue de comprobar si el receptor debe ser notificado o no (aqui se podria hacer una lista en memoria de los que estan conectados y a que sala, para ver rapidamente. 
+Tambien se poria abrir un segundo canal para notificaciones al usuario, el cliente se conectaria a esta cola al abrir la ventana de chats, y recibira notificaciones cuando recibiese un mensaje en un chat no abierto, o, para simplicar, de cualquier chat (se podria probar a rechazar desde el cliente los recibidos del chat abierto, comparando en js el canal del mensaje en la notificiacion con el canal abierto. Esta cola de notificaciones usaría el id del usuario, por lo que sería necesario añadir un nuevo campo id, o ver si se puede poner el correo en el path de la cola.
+Tambien ver si hay alguna forma de indicarle al sevidor cuando se cierra la ventana, podemos probar con el ondestroy a hacer que el servidor imprima algo -> Esto no funciona
+
+->Quizas modificiar notificacion para que tambien tenga motivo o algo asi, para modificar la notificacion en caso de recibir varios mensajes y no volver a notificar al usuario por correo
+->Una llamada para abrir el chat, que traiga la sala del chat correspondiente
+->Al enviar un mensaje, si el usuario esta conectado al chat, guardarlo ya como entregado
+->Al traer las mentorizaciones o al abrir su perfil, tambien traer el número de mensajes sin leer? (esto lo podemos dejar como mejora si nos da tiempo)
+->Añadir tipo al mensaje para que pueda ser una imagen
+->Para lo de mandar ficheros, añadir un nuevo boton que permita abrir el archivo (esto deberia bloquear el textarea, puesto que este mensaje va a llevar de cuerpo el path cuando se entregue. Este mensaje mejor se enviaría por http al servidor, pero el servidor se lo enviaría una vez listo al receptor como un mensaje (por lo tanto, aqui necesitariamos que el metodo de enviar comprobase si debe enviarlo al websockect o invocar un http). El servidor comprobaría el fichero y lo guardaría en el path del usuario, crearia el mensaje, lo guardaria en la DB y se lo reenviaría al cliente, a continuación, devolvería al emisor un mensaje para que lo pusiese en el chat. El mensaje, tanto para el emisor, como para el receptor, sería un mensaje con el cuerpo el nombre del fichero y un enlace o boton al método de descarga (o visualizacion) del fichero. El usuario, en su perfil, podría ver tanto los ficheros que tiene colgados en este como los que ha enviado.
+->Para los errores del chat, probar mejor las notificaciones esas chulas que vimos a ver que tal quedan
+
+
+
+
+
+
+
+
+--Video streaming
+https://www.section.io/engineering-education/building-a-video-streaming-app-with-spring/
+--Video conferencia
+https://doc-kurento.readthedocs.io/en/stable/tutorials/java/tutorial-one2one.html
+->Pero requiere ssl
+--Calendar
+https://stackoverflow.com/questions/54886906/create-google-calendar-event-from-java-backend-from-oauth-authenticated-users-on
+
+
+
+
+
+
+
+
+
+
+
+SalaChat [id=SalaChatId [mentor=jacknieve@gmail.com, mentorizado=solowowglez@gmail.com, inicio=Fri May 20 17:38:58 CEST 2022], mentor=Mentor [correo=jacknieve@gmail.com, usuario=Usuario [username=jacknieve@gmail.com, password=$2a$10$krz4h/zWyEt3LvQ5u5m5N.QXfdTDOkIH5OCJ38yaOlH.GdKYol5.., rol=MENTOR, unlocked=true, enable=true, notificar_correo=false, verificationCode=null], nombre=Pablo, papellido=Gonzalez, sapellido=Alonso, nivelEstudios=NivelEstudios [nivelestudios=Graduado], telefono=987654321, descripcion=Me llamo pablo y soy mu majo. Pero que mu majo., linkedin=, feliminacion=null, fregistro=2022-04-20 21:53:14.414, horaspormes=5.0, fnacimiento=1996-11-06 00:00:00.0, areas=[AreaConocimiento [area=Informatica], AreaConocimiento [area=Telecomunicaciones]], entidad=USC, institucion=Institucion [correo=usc@usc.es, usuario=Usuario [username=usc@usc.es, password=falsa, rol=INSTITUCION, unlocked=true, enable=true, notificar_correo=false, verificationCode=null], nombre=USC, color=#2D5F9F, colorB=#C5C5C5, letrasBlancas=true, letrasBB=true, webpage=null, direccion=null, visibilidad=true, extensiones=[]], verificado=false], mentorizado=Mentorizado [correo=solowowglez@gmail.com, usuario=Usuario [username=solowowglez@gmail.com, password=$2a$10$OrzaZcF6pGV8QGd39TvIRetfHodwTocMpqbl6jo6vg7S7tSKpilqa, rol=MENTORIZADO, unlocked=true, enable=true, notificar_correo=true, verificationCode=null], nombre=Juan, papellido=kk, sapellido=kk, nivelEstudios=NivelEstudios [nivelestudios=Secundaria], telefono=, descripcion=Hola, quiero poner aqui mucho texto para probar el tema de los espacios y tambien palabras muy largas y eso kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+loren epso no se que mas me estoy inventando cosas para rellenar esto. En un lugar de españa, donde no me apetece acordarme, vivia un perrito, si un perritito, y porque era perrito? pues ni idea, lo sabe usted?, y que mas puedo poner aqui, que me da miedo quedarme a media, linkedin=, feliminacion=null, fregistro=2022-04-21 17:59:26.399, fnacimiento=2022-03-07 00:00:00.0, areas=[AreaConocimiento [area=Telecomunicaciones], AreaConocimiento [area=Informatica], AreaConocimiento [area=Derecho]], institucion=Institucion [correo=usc@usc.es, usuario=Usuario [username=usc@usc.es, password=falsa, rol=INSTITUCION, unlocked=true, enable=true, notificar_correo=false, verificationCode=null], nombre=USC, color=#2D5F9F, colorB=#C5C5C5, letrasBlancas=true, letrasBB=true, webpage=null, direccion=null, visibilidad=true, extensiones=[]]], cierre=null, mensajes=[MensajeChat [id_sala=MensajeChatId [mentor=jacknieve@gmail.com, mentorizado=solowowglez@gmail.com, inicio=Fri May 20 17:38:58 CEST 2022, fenvio=Fri May 20 17:38:58 CEST 2022, deMentor=false], contenido=kk]]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

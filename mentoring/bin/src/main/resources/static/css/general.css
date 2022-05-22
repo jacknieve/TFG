@@ -1,0 +1,429 @@
+.headertwo{
+	background-color: #8DFFC7;
+	background-color: #E7717D;
+	background-color: #AFD275;
+	border: 3px solid #84CEEB;
+	background-color: #88BDBC;
+}
+
+.header{
+	background-color: #5AB9EA; /*Cambiar tambien en UserService  addInstitucionUtils*/
+	
+	z-index: 20;
+}
+
+.main{
+	margin-top: 100px;
+}
+
+body {
+  overflow-y: scroll;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  background-color: #F7F9FB;
+}
+
+.encabezadoSeccion{
+	background-color: #5AB9EA; /*Cambiar tambien en UserService  addInstitucionUtils*/
+	/*border: 1px solid #254E58;*/
+	border: 1px solid rgba(37,78,88,0.75);
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 15px 15px 0px 0px;
+	font-weight: 700;
+}
+
+.pieSeccion{
+	background-color: #5AB9EA;
+	border: 1px solid rgba(37,78,88,0.75);
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	border-radius: 0px 0px 15px 15px;
+	font-weight: 700;
+}
+
+#borderIcono {
+border-right: 5px solid #1C6EA4;
+border-bottom: 5px solid #1C6EA4;
+border-radius: 40px;
+z-index: 50;
+}
+
+.borderIcono {
+margin: 0px;
+padding: 0px;
+}
+
+.headerLink {
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 19px;
+letter-spacing: 0px;
+word-spacing: 0px;
+color: #000000;
+font-weight: 400;
+text-decoration: none;
+font-style: normal;
+font-variant: normal;
+text-transform: none;
+}
+.headerLink:hover{
+	opacity: 0.6;
+}
+
+.linkNavRight {
+align-self: flex-end center;
+}
+
+.buttonNav {
+	background-color: #F6F6F6;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.buttonNav:hover {
+	background-color: #868686;
+	border: 3px solid #464646;
+	color: white;
+}
+
+
+a:hover {
+	text-decoration: none;
+}
+
+button:hover{
+	background-color: #858585;
+}
+
+button:disabled{
+	background-color: #858585;
+	opacity: 0.5;
+}
+
+.espacioEntreSecciones{
+	height: 10px;
+	margin: 5px;
+}
+
+
+
+.cuerpoSeccion{
+	transition:0.5s linear all;
+	background-color: #F6F6F6;
+	border: 1px solid black;
+	font-family: Tahoma, Geneva, sans-serif;
+	overflow-y: scroll;
+	height: 600px;
+	word-wrap: break-word;
+}
+
+.cuerpoSeccionHome{
+	transition:0.5s linear all;
+	background-color: #F6F6F6;
+	border: 2px solid rgba(0,0,0,0.30);
+	border-radius: 15px;
+	font-family: Tahoma, Geneva, sans-serif;
+	overflow-y: scroll;
+	height: auto; 
+	overflow-y: auto;
+	word-wrap: break-word;
+}
+
+.encabezadoSeccionHome{
+	background-color: #CDCDCD; /*Cambiar tambien en UserService  addInstitucionUtils*/
+	/*border: 1px solid #254E58;*/
+	border: 1px solid rgba(37,78,88,0.75);
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 18px;
+	border-radius: 20px;
+	font-weight: 700;
+	text-align: center;
+	margin-top: 10px;
+	padding: 4px;
+}
+
+.cuerpoSubSeccionHome{
+	border-top: 1px double rgba(37,78,88,0.75);
+	border-bottom: 1px double rgba(37,78,88,0.75);
+	font-size:calc(12px + 0.5vw);
+	text-align: justify;
+}
+
+
+.fotoOpcion{
+	border-radius: 20px;	
+	height: 100%;
+	width: 100%;	
+}
+
+.cuerpoSeccion.ng-show{
+	transition:0.5s linear all;
+	height: 500px;
+}
+
+.cuerpoSeccion.ng-hide{
+	transition:0.5s linear all;
+	height: 0px;
+}
+.elementoExpansible{
+	opacity: 1;
+}
+
+.elementoExpansible.ng-show{
+	transition:0.5s linear all;
+	opacity: 1;
+}
+
+.elementoExpansible.ng-hide{
+	transition:0.5s linear all;
+	opacity: 0;
+}
+
+.elementoExpansible.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+
+.cuerpoSeccion.ng-enter.ng-enter-active {
+  height: 500px;
+}
+
+.elementoRepetible{
+	border-bottom: 1px solid black;
+}
+
+.elementoRepetibleDos{
+	border: 1px solid black;
+	position: relative;
+}
+
+.subSeccion{
+	border-bottom: 1px solid black;
+	margin: 0px;
+}
+@media only screen and (min-width: 768px) {
+  .subSeccionIzquierda{
+	border-right: 1px solid black;
+	}
+}
+@media only screen and (min-width: 992px) {
+  .subSeccionIzquierdaDos{
+	border-right: 1px solid black;
+	}
+}
+
+
+
+.botonBorrarNotificacion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: red;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.botonSeccion{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	font-size: 18px;
+	border-radius: 10px;
+	font-weight: 700;
+	color: blue;
+	width: 32px;
+	height: 30px;
+	text-align: center;
+	margin: 0px;
+	padding-bottom: 27px;
+}
+
+.fotoPerfil {
+	border: 5px solid #1C6EA4;
+	border-radius: 80px;
+	height: 120px;
+	width: 120px;	
+}
+
+.textoContacto{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+}
+
+.botonFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 120px;
+	height: 32px;
+	color: black;
+}
+
+.textoDescripcionFase{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 11px;
+	text-align: justify;
+}
+
+.areaConocimiento{
+	border: 2px solid #464646;
+	border-radius: 5px;
+	height: 32px;
+	background-color: #ECECEC;
+}
+
+.botonInterfaz{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16px;
+	background-color: #FFFFFF;
+	border: 3px solid #464646;
+	border-radius: 15px;
+	text-align: center;
+	width: 150px;
+	height: 32px;
+	color: black;
+}
+
+.popup{
+	position: fixed;
+	z-index: 200;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	vertical-align: middle;
+	width: 300px;
+	min-height: 70px;
+	background-color: #F6F6F6;
+	border: 3px solid black;
+	pointer-events: all;
+}
+
+.popupError{
+	width: 600px;
+}
+
+
+.popupFondo{
+	position: fixed;
+	z-index: 100;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(220,220,220,0.5);
+}
+
+.seccionDesabilitada{
+  	pointer-events: none;
+}
+
+.sinResultados{
+	vertical-align: middle;
+	text-align: center;
+}
+
+.sinResultadosSeccion{
+	height: 100px;
+}
+
+.sinResultadosSeccionBusqueda{
+	height: 240px;
+}
+
+.mensajeError{
+	color: red;
+	font-weight: bold;
+}
+
+.redoImage{
+	background-color: #CDCDCD;
+	border-radius: 10px;
+	width: 30px;
+	height: 30px;
+}
+
+.redoBoton{
+	background-color: #CDCDCD;
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 35px;
+	height: 35px;
+	padding: 0px;
+}
+
+.infoBoton{
+	background-color: none;
+	border-radius: 10px;
+	border: 0px;
+	width: 35px;
+	height: 35px;
+	padding: 0px;
+}
+
+.textAreaPopUp{
+	width: 96%;
+	min-height: 80px;
+	margin: 2%;
+}
+
+[type=radio]{
+	position: absolute;
+  	opacity: 0;
+  	width: 0;
+  	height: 0;
+}
+
+.imagenPuntuar{
+  	width: 30px;
+  	height: 30px;
+}
+
+[type=radio] + img{
+	cursor: pointer;
+}
+
+[type=radio]:checked + img {
+  	opacity: 0.3;
+}
+
+.mensajeError{
+	color : red;
+	font-weight: bold;
+}
+
+.viewRangeHoras{
+	border: none;
+  	display: inline;
+  	font-family: inherit;
+  	font-size: inherit;
+  	padding: none;
+  	width: 50px;
+	background-color: inherit;
+	-moz-appearance: textfield;
+}
+
+.cuerpoPageSmall{
+	min-height: 60vh;
+	width: 100%;
+}
+
+.cuerpoSeccionEstrecho{
+	min-width: 50%;
+}
+
+.campoObligatorio{
+	color: red;
+}
+

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -32,11 +33,16 @@ import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.Notificacion;
 import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.MentorBusqueda;
-import com.tfg.mentoring.model.auxiliar.Roles;
-import com.tfg.mentoring.model.auxiliar.UserAux;
-import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
+import com.tfg.mentoring.model.auxiliar.MensajeConAsunto;
+import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.UsuariosActivos;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
+import com.tfg.mentoring.model.auxiliar.enums.AsuntoMensaje;
+import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
+import com.tfg.mentoring.model.auxiliar.enums.Roles;
+import com.tfg.mentoring.model.auxiliar.requests.UserAux;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
@@ -50,290 +56,335 @@ import net.bytebuddy.utility.RandomString;
 public class UserService {
 
 	@Autowired
-    private PasswordEncoder passwordEncoder;
-     
-    @Autowired
-    private JavaMailSender mailSender;
-    
-    @Autowired
-    private MentorizadoRepo menrepo;
-    
-    @Autowired
-    private MentorRepo mrepo;
-    
-    @Autowired
-    private UsuarioRepo urepo;
-    
-    @Autowired
-    private NotificacionRepo nrepo;
-    
-    @Autowired
-    private InstitucionRepo irepo;
-    
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Autowired
+	private MentorizadoRepo menrepo;
+
+	@Autowired
+	private MentorRepo mrepo;
+
+	@Autowired
+	private UsuarioRepo urepo;
+
+	@Autowired
+	private NotificacionRepo nrepo;
+
+	@Autowired
+	private InstitucionRepo irepo;
+
 	@Autowired
 	private ModelMapper maper;
-    
+
 	@Autowired
 	private ListLoad listas;
-	
+
 	@Autowired
 	private UsuariosActivos usuariosActivos;
-    
-    
-    public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException, ExcepcionDB, 
-    JDBCConnectionException, QueryTimeoutException{
-    	String random = RandomString.make(64);
-    	Usuario user = new Usuario(useraux.getCorreo(), passwordEncoder.encode(useraux.getPassword()), false, random);
-    	//System.out.println(user.toString());
-    	//System.out.println(useraux.toString());
-	    if(useraux.getMentor()) {
-	    	user.setRol(Roles.MENTOR);
-	    	Mentor mentor = new Mentor(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
-	    	try {
-	    	mrepo.save(mentor);
-	    	}catch(DataIntegrityViolationException e) {
-	    		throw new ExcepcionDB("Clave duplicada");
-	    	}
-	    	sendVerificationEmail(user, mentor.getNombre(), siteURL);
-	    	
-	    }
-	    else {
-	    	user.setRol(Roles.MENTORIZADO);
-	    	Mentorizado mentorizado = new Mentorizado(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
-	    	try {
-	    	menrepo.save(mentorizado);
-	    	}catch(DataIntegrityViolationException e) {
-	    		throw new ExcepcionDB("Clave duplicada");
-	    	}
-	    	sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
-	    	
-	    }
-    }
-     //https://mail.codejava.net/frameworks/spring-boot/email-verification-example
-    private void sendVerificationEmail(Usuario user, String nombre, String siteURL) throws MessagingException, UnsupportedEncodingException{
-    	String toAddress = user.getUsername();
-        String fromAddress = "mentoring.pablo@gmail.com";
-        String senderName = "Mentoring";
-        String subject = "Por favor, verifique su registro";
-        String content = "Saludos [[name]],<br>"
-                + "Por favor, haga click en el link para verificar su registro:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFICAR</a></h3>"
-                + "Muchas gracias,<br>"
-                + "Mentoring.";
-         
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-         
-        helper.setFrom(fromAddress, senderName);
-        helper.setTo(toAddress);
-        helper.setSubject(subject);
-         
-        content = content.replace("[[name]]", nombre);
-        String verifyURL = siteURL + "/auth/verify?code=" + user.getVerificationCode();
-         
-        content = content.replace("[[URL]]", verifyURL);
-         
-        helper.setText(content, true);
-         
-        //Aqui crear una excepcion personalizada en caso de excepcion
-        mailSender.send(message);
-    }
-    
-    public boolean verify(String verificationCode) throws JDBCConnectionException, QueryTimeoutException{
-        Usuario user = urepo.findByVerificationCode(verificationCode);
-         //Si no se encuentra al usuario o este ya esta verificado
-        if (user == null || user.isEnabled()) {
-            return false;
-        } else {
-            user.setVerificationCode(null);
-            user.setEnable(true);
-            urepo.save(user);
-            if(user.getRol() == Roles.MENTOR) {
-            	//Aqui, los titulos y la descripcion se podría extraer de la base de datos al arrancar el servidor y tenerlo en un
-    	    	//hashmap o similar, dado que en principio no deberian cambiar, y así el administrador podría llegar a cambiarlo desde
-    	    	//su interfaz de control
-    	    	enviarNotificacion(user, "Bienvenido/a ", 
-    	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
-    	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar, o su descripción.");
-            }
-            else if(user.getRol() == Roles.MENTORIZADO) {
-            	enviarNotificacion(user, "Bienvenido/a ", 
-    	    			"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
-    	    			+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.");
-            }
-            user.setNotificar_correo(false);
-            return true;
-        }
-         
-    }
-    
-    
-    public void enviarNotificacion(Usuario u, String titulo, String descripcion) {
-    	Notificacion notificacion = new Notificacion(u, titulo, descripcion);
-    	try {
-    		nrepo.save(notificacion);
-    	}catch (JDBCConnectionException | QueryTimeoutException e) {//Si falla el acceso a la base de datos o tarda mucho
+	// Esto habria que ponerlo en otro sitio
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
+
+	public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException,
+			ExcepcionDB, JDBCConnectionException, QueryTimeoutException {
+		String random = RandomString.make(64);
+		Usuario user = new Usuario(useraux.getCorreo(), passwordEncoder.encode(useraux.getPassword()), false, random);
+		System.out.println(user.toString());
+		System.out.println(useraux.toString());
+		if (useraux.getMentor()) {
+			user.setRol(Roles.MENTOR);
+			Mentor mentor = new Mentor(user, useraux, irepo.findByNombre(useraux.getInstitucion()).get(0));
+			try {
+				mrepo.save(mentor);
+			} catch (DataIntegrityViolationException e) {
+				throw new ExcepcionDB("Clave duplicada");
+			}
+			sendVerificationEmail(user, mentor.getNombre(), siteURL);
+
+		} else {
+			user.setRol(Roles.MENTORIZADO);
+			Mentorizado mentorizado = new Mentorizado(user, useraux,
+					irepo.findByNombre(useraux.getInstitucion()).get(0));
+			try {
+				menrepo.save(mentorizado);
+			} catch (DataIntegrityViolationException e) {
+				throw new ExcepcionDB("Clave duplicada");
+			}
+			sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
+
+		}
+	}
+
+	// https://mail.codejava.net/frameworks/spring-boot/email-verification-example
+	private void sendVerificationEmail(Usuario user, String nombre, String siteURL)
+			throws MessagingException, UnsupportedEncodingException {
+		String toAddress = user.getUsername();
+		String fromAddress = "mentoring.pablo@gmail.com";
+		String senderName = "Mentoring";
+		String subject = "Por favor, verifique su registro";
+		String content = "Saludos [[name]],<br>" + "Por favor, haga click en el link para verificar su registro:<br>"
+				+ "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFICAR</a></h3>" + "Muchas gracias,<br>" + "Mentoring.";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+
+		content = content.replace("[[name]]", nombre);
+		String verifyURL = siteURL + "/auth/verify?code=" + user.getVerificationCode();
+
+		content = content.replace("[[URL]]", verifyURL);
+
+		helper.setText(content, true);
+
+		// Aqui crear una excepcion personalizada en caso de excepcion
+		mailSender.send(message);
+	}
+
+	public boolean verify(String verificationCode) throws JDBCConnectionException, QueryTimeoutException {
+		Usuario user = urepo.findByVerificationCode(verificationCode);
+		// Si no se encuentra al usuario o este ya esta verificado
+		if (user == null || user.isEnabled()) {
+			return false;
+		} else {
+			user.setVerificationCode(null);
+			user.setEnable(true);
+			urepo.save(user);
+			if (user.getRol() == Roles.MENTOR) {
+				// Aqui, los titulos y la descripcion se podría extraer de la base de datos al
+				// arrancar el servidor y tenerlo en un
+				// hashmap o similar, dado que en principio no deberian cambiar, y así el
+				// administrador podría llegar a cambiarlo desde
+				// su interfaz de control
+				enviarNotificacion(user, "Bienvenido/a ",
+						"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
+								+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que podría ayudar, o su descripción.",
+						MotivosNotificacion.SISTEMA);
+			} else if (user.getRol() == Roles.MENTORIZADO) {
+				enviarNotificacion(user, "Bienvenido/a ",
+						"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
+								+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.",
+						MotivosNotificacion.SISTEMA);
+			}
+			user.setNotificar_correo(false);
+			return true;
+		}
+
+	}
+
+	public void enviarNotificacion(Usuario u, String titulo, String descripcion, MotivosNotificacion motivo) {
+		try {
+			Notificacion notificacion = new Notificacion(u, titulo, descripcion, motivo);
+			nrepo.save(notificacion);
+			if (!usuariosActivos.getUsers().containsKey(u.getUsername())) {
+				if (u.isNotificar_correo()) {
+					Thread thread = new Thread() {
+						public void run() {
+							try {
+								notificarPorCorreo(u, titulo, descripcion);
+								System.out.println("Se envio el correo");
+							} catch (UnsupportedEncodingException | MessagingException e) {
+								// TODO Auto-generated catch block
+								System.out.println(e.getMessage());
+								e.printStackTrace();
+							}
+						}
+					};
+					thread.start();
+				}
+			} else {
+				messagingTemplate.convertAndSendToUser(u.getUsername(), "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
+			}
+		} catch (JDBCConnectionException | QueryTimeoutException e) {// Si falla el acceso a la base de datos o tarda
+																		// mucho
 			// TODO: handle exception
 			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
-    	if(u.isNotificar_correo() && !usuariosActivos.getUsers().contains(u.getUsername())) {
-    			Thread thread = new Thread(){ 
-        		    public void run(){ 
-        		    	try {
-							notificarPorCorreo(u, titulo, descripcion);
-							System.out.println("Se envio el correo");
-						} catch (UnsupportedEncodingException | MessagingException e) {
-							// TODO Auto-generated catch block
-							System.out.println(e.getMessage());
-							e.printStackTrace();
+
+	}
+
+	public void enviarNotificacionMensaje(String username, boolean porCorreo) {
+		try {
+			Optional<Usuario> u = urepo.findById(username);
+			if (u.isPresent()) {
+				if (nrepo.notificacionesMensajes(username).isEmpty()) {
+					String titulo = "Mensajes nuevos";
+					String descripcion = "Has recibido nuevos mensajes";
+					Notificacion notificacion = new Notificacion(u.get(), titulo, descripcion, MotivosNotificacion.MENSAJE);
+					nrepo.save(notificacion);
+					if (porCorreo) {
+						if (u.get().isNotificar_correo()) {
+
+							try {
+								notificarPorCorreo(u.get(), titulo, descripcion);
+								System.out.println("Se envio el correo");
+							} catch (UnsupportedEncodingException | MessagingException e) {
+								// TODO Auto-generated catch block
+								System.out.println(e.getMessage());
+								e.printStackTrace();
+							}
 						}
-        		    } 
-        		  };
-        		  thread.start();
-    	}
-    	
-    }
-    
-    public void notificarPorCorreo(Usuario u, String titulo, String descripcion) throws MessagingException, UnsupportedEncodingException{
-    	String toAddress = u.getUsername();
-        String fromAddress = "mentoring.pablo@gmail.com";
-        String senderName = "Mentoring";
-        String subject = titulo;
-        String content = "Saludos,<br>"
-                + descripcion
-                + "<br>Muchas gracias por su atención,<br>"
-                + "Mentoring.";
-         
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-         
-        helper.setFrom(fromAddress, senderName);
-        helper.setTo(toAddress);
-        helper.setSubject(subject);
-         
-        helper.setText(content, true);
-         
-        //Aqui crear una excepcion personalizada en caso de excepcion
-        mailSender.send(message);
-    }
-    
-    
-    
-    public List<MentorBusqueda> getMentorBusqueda(List<Mentor> mentores){
-		return mentores
-				.stream()
-				.map(this::convertMentortoMentorBusqueda)
-				.collect(Collectors.toList());
+					} else {
+						messagingTemplate.convertAndSendToUser(u.get().getUsername(), "/queue/messages",
+								new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
+					}
+				} // En caso contrario, nada
+			} else {
+				// Esto se registraria en un log
+				System.out.println("Se ha intentado enviar una notificacion a un usuario que no existe");
+			}
+
+		} catch (JDBCConnectionException | QueryTimeoutException e) {// Si falla el acceso a la base de datos o
+																		// tarda
+																		// mucho
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
 	}
-	
-	private MentorBusqueda convertMentortoMentorBusqueda(Mentor m) {
-		MentorBusqueda user = new MentorBusqueda();
-		user = maper.map(m, MentorBusqueda.class);
+
+	public void notificarPorCorreo(Usuario u, String titulo, String descripcion)
+			throws MessagingException, UnsupportedEncodingException {
+		String toAddress = u.getUsername();
+		String fromAddress = "mentoring.pablo@gmail.com";
+		String senderName = "Mentoring";
+		String subject = titulo;
+		String content = "Saludos,<br>" + descripcion + "<br>Muchas gracias por su atención,<br>" + "Mentoring.";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+
+		helper.setText(content, true);
+
+		// Aqui crear una excepcion personalizada en caso de excepcion
+		mailSender.send(message);
+	}
+
+	public List<MentorDTO> getMentorBusqueda(List<Mentor> mentores) {
+		return mentores.stream().map(this::convertMentortoMentorBusqueda).collect(Collectors.toList());
+	}
+
+	private MentorDTO convertMentortoMentorBusqueda(Mentor m) {
+		MentorDTO user = new MentorDTO();
+		user = maper.map(m, MentorDTO.class);
 		return user;
 	}
-	
-	public UsuarioPerfil getPerfilMentor(Mentor mentor){
-		UsuarioPerfil user = new UsuarioPerfil();
-		user = maper.map(mentor, UsuarioPerfil.class);
-		if(user.getFnacimiento() != null) {
-			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+	public UsuarioDTO getPerfilMentor(Mentor mentor) {
+		UsuarioDTO user = new UsuarioDTO();
+		user = maper.map(mentor, UsuarioDTO.class);
+		if (user.getFnacimiento() != null) {
+			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
+					.toLocalDate();
 			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
 		}
-		
-		//System.out.println(user.toString());
+
+		// System.out.println(user.toString());
 		return user;
 	}
-	
-	public UsuarioPerfil getPerfilMentorizado(Mentorizado mentorizado){
-		UsuarioPerfil user = new UsuarioPerfil();
-		user = maper.map(mentorizado, UsuarioPerfil.class);
-		if(user.getFnacimiento() != null) {
-			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+	public UsuarioDTO getPerfilMentorizado(Mentorizado mentorizado) {
+		UsuarioDTO user = new UsuarioDTO();
+		user = maper.map(mentorizado, UsuarioDTO.class);
+		if (user.getFnacimiento() != null) {
+			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
+					.toLocalDate();
 			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
 		}
-		
-		//System.out.println(user.toString());
+
+		// System.out.println(user.toString());
 		return user;
 	}
-	
-	public void limpiarUsuario(UserAux user) throws JDBCConnectionException, QueryTimeoutException{
-		if(user.getMentor()) {
+
+	public void limpiarUsuario(UserAux user) throws JDBCConnectionException, QueryTimeoutException {
+		if (user.getMentor()) {
 			mrepo.limpiarUsuario(user.getCorreo());
-		}
-		else {
+		} else {
 			menrepo.limpiarUsuario(user.getCorreo());
 		}
 		urepo.limpiarUsuario(user.getCorreo());
 	}
-	
+
 	public void addListasModelo(ModelAndView modelo) {
-	    modelo.addObject("estudios", listas.getEstudios());
-	    modelo.addObject("instituciones", listas.getInstituciones());
-	    modelo.addObject("areas", listas.getAreas());
+		modelo.addObject("estudios", listas.getEstudios());
+		modelo.addObject("instituciones", listas.getInstituciones());
+		modelo.addObject("areas", listas.getAreas());
 	}
-	
+
 	public void addListasModeloSinAreas(ModelAndView modelo) {
-	    modelo.addObject("estudios", listas.getEstudios());
-	    modelo.addObject("instituciones", listas.getInstituciones());
+		modelo.addObject("estudios", listas.getEstudios());
+		modelo.addObject("instituciones", listas.getInstituciones());
 	}
-	
-	public boolean comprobarPassword(String password, Usuario u) {
+
+	public boolean comprobarPassword(String password, UserAuth u) {
 		return passwordEncoder.matches(password, u.getPassword());
 	}
-	
+
 	public void addInstitucionUtils(ModelAndView modelo, Institucion i) {
-		if(!i.getNombre().equals("Otra")) {
-			if(i.getColor() != null && !i.getColor().equals("")) {
+		if (!i.getNombre().equals("Otra")) {
+			if (i.getColor() != null && !i.getColor().equals("")) {
 				modelo.addObject("color", i.getColor());
-			}
-			else {
+			} else {
 				modelo.addObject("color", "#5AB9EA");
 			}
-			if(i.getColorB() != null && !i.getColorB().equals("")) {
+			if (i.getColorB() != null && !i.getColorB().equals("")) {
 				modelo.addObject("colorB", i.getColorB());
-			}
-			else {
+			} else {
 				modelo.addObject("colorB", "#5AB9EA");
 			}
 			modelo.addObject("letrasBB", i.isLetrasBB());
 			modelo.addObject("letrasBlancas", i.isLetrasBlancas());
 			try {
-				File file = ResourceUtils.getFile("classpath:static/images/usuarios/instituciones/"+i.getNombre());
-				if(file.exists() && file.isDirectory() && file.list().length==1) {
+				File file = ResourceUtils.getFile("classpath:static/images/usuarios/instituciones/" + i.getNombre());
+				if (file.exists() && file.isDirectory() && file.list().length == 1) {
 					File image = file.listFiles()[0];
 					Optional<String> extension = getExtensionByStringHandling(image.getName());
-					if(extension.isPresent()) {
-						if(extension.get().equals("png") || extension.get().equals("jpg") || extension.get().equals("PNG")) {
-							String path = "/images/usuarios/instituciones/"+i.getNombre()+"/"+image.getName();
+					if (extension.isPresent()) {
+						if (extension.get().equals("png") || extension.get().equals("jpg")
+								|| extension.get().equals("PNG")) {
+							String path = "/images/usuarios/instituciones/" + i.getNombre() + "/" + image.getName();
 							System.out.println(path);
 							modelo.addObject("logo", path);
-						}
-						else {
+						} else {
 							System.out.println("Fallo al leer la extension");
 						}
-					}
-					else {
+					} else {
 						System.out.println("Fallo al leer la extension");
 					}
-				}
-				else {
-					System.out.println("El fichero no existe, no es un directorio o no tiene ficheros dentro (o tiene mas de 1)");
+				} else {
+					System.out.println(
+							"El fichero no existe, no es un directorio o no tiene ficheros dentro (o tiene mas de 1)");
 				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				// e.printStackTrace();
 				System.out.println("El directorio de la institucion no existe");
 				System.out.println(e.getMessage());
 			}
+		} else {
+			modelo.addObject("letrasBB", false);
+			modelo.addObject("letrasBlancas", false);
 		}
 	}
-	//https://www.baeldung.com/java-file-extension#:~:text=java%E2%80%9C.,returns%20extension%20of%20the%20filename.
+
+	// https://www.baeldung.com/java-file-extension#:~:text=java%E2%80%9C.,returns%20extension%20of%20the%20filename.
 	public Optional<String> getExtensionByStringHandling(String filename) {
-	    return Optional.ofNullable(filename)
-	      .filter(f -> f.contains("."))
-	      .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+		return Optional.ofNullable(filename).filter(f -> f.contains("."))
+				.map(f -> f.substring(filename.lastIndexOf(".") + 1));
 	}
-	
-    
-    
+
 }

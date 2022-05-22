@@ -7,20 +7,23 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Principal Mentor</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"></script>
-	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
-	<!-- Bootstrap -->
 	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
 	<link th:href="@{/css/general.css}" rel="stylesheet">
-
+	<link th:href="@{/css/notification.lee}" rel="stylesheet/less" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"></script>
+	<script type="text/javascript" th:src="@{/js/sockjs.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/notification.js}"></script>
+	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
 </head>
 
 <body ng-app="appConsumer" ng-cloak>
 	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top header" th:style="'background-color: '+@{${color}}+';'">
-			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
-					height="60" alt="" /></a>
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top header"
+			th:style="'background-color: '+@{${color}}+';'">
+			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}"
+					width="60" height="60" alt="" /></a>
 			<span th:if="${logo}">
 				<a class="navbar-brand" href="#">
 					<!--Aqui iria a la pagina de la institucion-->
@@ -42,11 +45,16 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#mentorizaciones" 
-						th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentorizados</a>
+						<a class="headerLink nav-link" href="#mentorizaciones"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis mentorizados</a>
 					</li>
 					<li class="nav-item">
-						<a class="headerLink nav-link" href="#peticiones" th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Solicitudes recibidas</a>
+						<a class="headerLink nav-link" href="#peticiones"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Solicitudes recibidas</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/chat}"
+							th:style="${letrasBlancas ? 'color: white' : 'color: black'}">Mis chats</a>
 					</li>
 				</ul>
 			</div>
@@ -59,6 +67,11 @@
 				</a>
 			</span>
 		</nav>
+		<div class="sidebar sidebar2">
+			<div class="zonaNotificacionesLateral zonaNotificacionesLateral2">
+				<div notifications="bottom right"></div>
+			</div>
+		</div>
 		<div class="main">
 			<div class="espacioEntreSecciones"></div>
 			<section class="container" ng-controller="notificacionController">
@@ -248,7 +261,7 @@
 								</div>
 							</div>
 							<div class="row subSeccion" style="min-height: 35px; padding-top: 1px;">
-								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+								<div class="col-md-3 col-sm-6 text-center offset-md-3"
 									ng-hide="mentorizacion.expandido">
 									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
 										ng-disabled="cargando">Mostrar
@@ -264,6 +277,11 @@
 									<button class="botonInterfaz" ng-click="confirmarCerrar(mentorizacion)"
 										ng-disabled="cargando">Terminar relación</button>
 								</div>
+								<div class="col-md-3 col-sm-6 text-center">
+									<button class="botonInterfaz" ng-click="redirijirChat(mentorizacion.correo)"
+										ng-disabled="cargando">Abrir chat</button>
+								</div>
+
 							</div>
 							<div ng-show="mentorizacion.aceptarcerrar" class="popupFondo">
 								<div class="popup">¿Seguro que quieres cerrar esta relación? <br>

@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
-import com.tfg.mentoring.model.auxiliar.FasesMentorizacion;
+import com.tfg.mentoring.model.auxiliar.enums.FasesMentorizacion;
 
 @Entity(name="Mentorizacion")
 @Table(name="mentorizaciones")
@@ -40,7 +40,6 @@ public class Mentorizacion {
 	@Column(name="fase")
 	private FasesMentorizacion fase;
 	
-	//Quizas añadir un boolean para saber si esta puntuada o se rechazo puntuarla
 	
 	public Mentorizacion() {
 		

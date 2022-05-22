@@ -178,6 +178,8 @@ button:disabled{
 	width: 120px;	
 }
 
+
+
 .textoContacto{
 	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 16px;
@@ -335,4 +337,194 @@ button:disabled{
 
 .campoObligatorio{
 	color: red;
+}
+
+/*A partir de aqui, iria en un chat.css*/
+
+.fotoPerfilChat{
+	border: 2px solid #1C6EA4;
+	border-radius: 80px;
+	/*margin-top: 0.5%;
+	margin-left: 2%;*/
+	margin: 8%;
+	width: 80%;
+}
+
+.fotoPerfilChatTarget{
+	border: 5px solid #1C6EA4;
+	border-radius: 80px;
+	/*margin-top: 0.5%;
+	margin-left: 2%;*/
+	margin-top: 14%;
+	width: 100%;
+}
+
+.nombrePerfilChatTarget{
+	font-size:calc(8px + 0.5vw);
+	font-weight: bold;
+	display : flex;
+  	align-items : center;
+}
+
+
+.nombrePerfilChat{
+	font-size:calc(8px + 0.5vw);
+	font-weight: bold;
+	margin : 0px;
+	padding: 0px;
+	display : flex;
+  	align-items : center;
+}
+.cuadroChats{
+	margin-top: 4vh;
+	/*height: 650px;*/
+
+	background-color: #E2E2E2;
+	border: 1px solid black;
+	font-family: Tahoma, Geneva, sans-serif;
+	word-wrap: break-word;
+}
+
+.cuerpoChats{
+	height: 500px;
+
+	background-color: #E2E2E2;
+	font-family: Tahoma, Geneva, sans-serif;
+	word-wrap: break-word;
+}
+
+.zonaMensajes{
+	height: 430px;
+	background-color: #F6F6F6;
+	font-family: Tahoma, Geneva, sans-serif;
+	word-wrap: break-word;
+	padding-top: 10px;
+	overflow-y: scroll;
+}
+
+
+.cabeceraChats{
+	/*height: 120px;*/
+	border-bottom: 1px solid black;
+}
+
+.volverSeccion{
+	height: 50px;
+	display : flex;
+  	align-items : center;
+	border-bottom: 1px solid black;
+	/*padding-left: 30%;*/
+	width: 100%;
+}
+
+.volverButton {
+	background-color: #B6B6B6;
+	border: 3px solid #464646;
+	border-radius: 10px;
+	text-align: center;
+	width: 100%;
+	min-height: 30px;
+	font-size:calc(7px + 0.5vw);
+	font-weight: bold;
+	color: black;
+	padding: 0px;
+}
+
+.volverButton:hover {
+	background-color: #868686;
+	border: 3px solid #464646;
+	color: white;
+}
+
+.listaChats{
+	padding: 0px;
+}
+
+.listaChatNombre{
+	font-size:calc(7px + 0.5vw);
+	font-weight: bold;
+	display : flex;
+  	align-items : center;
+	padding: 0px;
+	margin: 0px;
+}
+
+.listaChatInfo{
+	font-size:calc(8px + 0.5vw);
+	font-weight: bold;
+	display : flex;
+  	align-items : center;
+	padding: 0px;
+	margin: 0px;
+	padding-left: 5px;
+	color: green;
+}
+
+.color1Chat{
+	background-color: #5AB9EA;
+}
+
+.color2Chat{
+	background-color: #84CEEB;
+}
+
+.contactoChat:hover{
+
+	cursor: pointer;
+}
+
+.mensajeUser{
+	min-width: 20%;
+	max-width: 80%;
+	min-height: 30px;
+	background-color: #8DFFC7;
+	border: 1px solid black;
+	border-radius: 10px;
+	float: right;
+	margin-bottom: 5px;
+}
+
+.mensajeOtro{
+	min-width: 20%;
+	max-width: 80%;
+	min-height: 30px;
+	background-color: #E7717D;
+	border: 1px solid black;
+	border-radius: 10px;
+	float: left;
+	margin-bottom: 5px;
+}
+
+.textareaMensaje{
+	width: 96%;
+	height: 60px;
+	margin-top: 5px;
+}
+
+.sendBotonSection{
+	display : flex;
+  	align-items : center;
+	margin-left: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.sendBoton{
+	background-color: #84CEEB;
+	border: 2px solid black;
+	border-radius: 10px;
+	width: 30%;
+	height: 60%;
+	padding: 0px;
+	min-width: 40px;
+	margin-right: 10px;
+}
+
+.sendBoton:hover{
+	background-color: #006192;
+}
+
+.sendImage{
+	width: 80%;
+	height: 80%;
 }

@@ -1,24 +1,24 @@
 package com.tfg.mentoring.model.auxiliar;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class UsuariosActivos {
 
-	public List<String> users;
+	public Map<String,InfoUsuarioActivo> users;
 
     public UsuariosActivos() {
-        users = new ArrayList<String>();
+        users = new HashMap<String,InfoUsuarioActivo>();
     }
 
-	public List<String> getUsers() {
+	public Map<String,InfoUsuarioActivo> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<String> users) {
+	public void setUsers(Map<String,InfoUsuarioActivo>users) {
 		this.users = users;
 	}
 }

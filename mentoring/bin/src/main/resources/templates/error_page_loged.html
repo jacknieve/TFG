@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<title>Se ha producido un error!</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
+	<link th:href="@{/css/general.css}" rel="stylesheet">
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top header">
+			<a class="navbar-brand" th:href="@{/home}">
+				<img th:src="@{/images/icono_prueba.png}" id="borderIcono" width="60" height="60" alt="" />
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<span class="linkNavRight d-block d-lg-none">
+				<button ng-click="abrirBorrar()" class="buttonNav">
+					Eliminar cuenta
+				</button>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+			<div th:switch="${rol}" class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul th:case="'Mentorizado'" class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal}" >Notificaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}">Mis
+							mentores</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#busqueda}">Buscar mentores</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#puntuar}">Puntuar mentorizaciones</a>
+					</li>
+				</ul>
+				<ul th:case="'Mentor'" class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal}">Notificaciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#mentorizaciones}">Mis mentorizados</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" th:href="@{/user/principal#peticiones}">Solicitudes recibidas</a>
+					</li>
+				</ul>
+				<div th:case="*">
+					Tienes un rol no esperado para estar aqui, de hecho, no deberias haber podido entrar.
+				</div>
+			</div>
+
+			<span class="linkNavRight d-none d-lg-block">
+				<button ng-click="abrirBorrar()" class="buttonNav">
+					Eliminar cuenta
+				</button>
+				<a th:href="@{/auth/logout}">
+					<div class="buttonNav">Cerrar sesión</div>
+				</a>
+			</span>
+		</nav>
+	<div class="cuerpoPageSmall main">
+		<div class="espacioEntreSecciones"></div>
+		<div class="row">
+		<section class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2 cuerpoSeccion" style="height: auto; overflow-y: auto; text-align: justify;">
+			<h3>Se ha producido un error:</h3>
+			<p th:if="${mensaje != null}" th:text="${mensaje}">Se ha dado una condición de error</p>
+			<p th:if="${hora != null}" th:text="'Fecha y hora de la inicidencia: '+${hora}"></p>
+			<p>Clica <a th:href="@{/home}">aquí</a> para volver al inicio.</p>
+		</section>
+		</div>
+	</div>
+	<hr>
+	<footer class="container">
+		<div class="row">
+
+			<div class="text-center col-lg-12">
+				<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+			</div>
+			<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+				<h4>Normativa</h4>
+				<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
+			</div>
+			<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+				<h4>Contacto</h4>
+				<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+			</div>
+		</div>
+	</footer>
+	<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+</body>
+
+</html>

@@ -2,7 +2,6 @@ package com.tfg.mentoring.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.tfg.mentoring.model.auxiliar.EstadosNotificacion;
+import com.tfg.mentoring.model.auxiliar.enums.EstadosNotificacion;
+import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 
 
 
@@ -25,7 +25,7 @@ public class Notificacion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@ManyToOne(cascade = CascadeType.ALL, optional=false, fetch = FetchType.EAGER)
+	@ManyToOne(optional=false, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_user")
 	private Usuario usuario;
 	
@@ -37,14 +37,17 @@ public class Notificacion {
 	private EstadosNotificacion estado;
 	@Column(name="fechaenv")
 	private Date fechaenv;
+	@Column(name="motivo")
+	private MotivosNotificacion motivo;
 	
-	public Notificacion(Usuario usuario, String titulo, String descripcion) {
+	public Notificacion(Usuario usuario, String titulo, String descripcion, MotivosNotificacion motivo) {
 		super();
 		this.usuario = usuario;
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.fechaenv = new Date();
 		this.estado = EstadosNotificacion.ENTREGADA;
+		this.motivo=motivo;
 	}
 
 	public Notificacion() {
@@ -91,11 +94,21 @@ public class Notificacion {
 		return fechaenv;
 	}
 
+	public MotivosNotificacion getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(MotivosNotificacion motivo) {
+		this.motivo = motivo;
+	}
+
 	@Override
 	public String toString() {
 		return "Notificacion [id=" + id + ", usuario=" + usuario + ", titulo=" + titulo + ", descripcion=" + descripcion
-				+ ", estado=" + estado + ", fechaenv=" + fechaenv + "]";
+				+ ", estado=" + estado + ", fechaenv=" + fechaenv + ", motivo=" + motivo + "]";
 	}
+
+	
 	
 	
 	

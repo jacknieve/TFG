@@ -19,10 +19,10 @@ import javax.persistence.Table;
 
 /*La siguiente vez, poner el correo vacio, asi se impide que se intente poner de alguna forma otro con el correo vacio?
  * Para insertar la institucion otros (quizas se podria hacer de manera automatica al iniciar)
- * insert into usuarios (enable, password, rol, unlocked, username, verification_code)
- values (FALSE, 'nohay', 3, false, 'OtraInstitucion', null);
- * insert into instituciones (color, direccion, nombre, visibilidad, webpage, usuario_username)
- values (null, null, 'Otra', false, null, 'OtraInstitucion');
+ * insert into usuarios (enable, password, rol, unlocked, username, verification_code, notificar_correo)
+ values (FALSE, 'nohay', 3, false, 'OtraInstitucion', null, false);
+ * insert into instituciones (color, direccion, nombre, visibilidad, webpage, usuario_username, colorbandas, letrasblancas, letrasblancasbandas)
+ values (null, null, 'Otra', false, null, 'OtraInstitucion', null, false, false);
 */
 
 @Entity

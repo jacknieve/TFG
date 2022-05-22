@@ -19,7 +19,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.tfg.mentoring.model.auxiliar.UserAux;
+import com.tfg.mentoring.model.auxiliar.requests.UserAux;
 
 @Entity
 @Table(name="mentores")
@@ -39,7 +39,7 @@ public class Mentor {
 	private String papellido;
 	@Column(name = "sapellido")
 	private String sapellido;
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="nivelestudios", nullable=false)
 	private NivelEstudios nivelEstudios;
 	@Column(name = "telefono")
@@ -53,7 +53,7 @@ public class Mentor {
 	@Column(name="fregistro")
 	private Date fregistro;
 	@Column(name="horaspormes")
-	private Float horaspormes;
+	private Integer horaspormes;
 	@Column(name="fnacimiento")
 	private Date fnacimiento;
 	@ManyToMany(cascade = CascadeType.ALL)
@@ -70,7 +70,7 @@ public class Mentor {
 	private boolean verificado;
 
 	public Mentor(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
-			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Float horaspormes,
+			String telefono, String descripcion, String linkedin, Date feliminacion, Date fregistro, Integer horaspormes,
 			Date fnacimiento, Institucion institucion, String entidad, Boolean verificado) {
 		super();
 		this.usuario = usuario;
@@ -205,11 +205,11 @@ public class Mentor {
 		this.fregistro = fregistro;
 	}
 
-	public Float getHoraspormes() {
+	public Integer getHoraspormes() {
 		return horaspormes;
 	}
 
-	public void setHoraspormes(Float horaspormes) {
+	public void setHoraspormes(Integer horaspormes) {
 		this.horaspormes = horaspormes;
 	}
 

@@ -36,12 +36,14 @@ import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.NivelEstudios;
 import com.tfg.mentoring.model.Notificacion;
 import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.EstadosNotificacion;
-import com.tfg.mentoring.model.auxiliar.IdNotificacion;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
-import com.tfg.mentoring.model.auxiliar.NotificacionUser;
-import com.tfg.mentoring.model.auxiliar.Roles;
-import com.tfg.mentoring.model.auxiliar.UsuarioPerfil;
+import com.tfg.mentoring.model.auxiliar.UserAuth;
+import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.UserAuthDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
+import com.tfg.mentoring.model.auxiliar.enums.EstadosNotificacion;
+import com.tfg.mentoring.model.auxiliar.enums.Roles;
+import com.tfg.mentoring.model.auxiliar.requests.IdNotificacion;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizacionRepo;
@@ -49,6 +51,8 @@ import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.NotificacionRepo;
 import com.tfg.mentoring.repository.PeticionRepo;
 import com.tfg.mentoring.repository.UsuarioRepo;
+import com.tfg.mentoring.service.ActiveUsersService;
+import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 import com.tfg.mentoring.service.util.ListLoad;
 
@@ -74,11 +78,16 @@ public class UserController {
 
 	@Autowired
 	private UserService uservice;
-
+	@Autowired
+	private SalaChatServicio schats;
+	@Autowired
+	private ActiveUsersService acservice;
+	
 	@Autowired
 	private ListLoad listas;
 	@Autowired
 	private SimpleDateFormat format;
+	
 
 /////////////////////////////////////////////////////////////////////////
 ////////                  Perfil de usuario                       ///////
@@ -86,7 +95,7 @@ public class UserController {
 
 	// Proveer la pagina del perfil
 	@GetMapping("/perfil")
-	public ModelAndView getPerfilPrivado(@AuthenticationPrincipal Usuario us) {
+	public ModelAndView getPerfilPrivado(@AuthenticationPrincipal UserAuth us) {
 		// System.out.println(us.toString());
 		if (us.getRol() == Roles.MENTOR) {
 			try {
@@ -182,14 +191,14 @@ public class UserController {
 
 	// Obtener la informacion del perfil del usuario
 	@GetMapping("/info")
-	public ResponseEntity<UsuarioPerfil> getInfoPerfil(@AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<UsuarioDTO> getInfoPerfil(@AuthenticationPrincipal UserAuth us) {
 		try {
 			if (us.getRol() == Roles.MENTOR) {
 				Optional<Mentor> m = mrepo.findById(us.getUsername());
 				if (m.isPresent()) {
 					System.out.println(m.get().toString());
 					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					UsuarioPerfil up = uservice.getPerfilMentor(m.get());
+					UsuarioDTO up = uservice.getPerfilMentor(m.get());
 					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());// Esto se podria meter en el
 																						// mapeo cambiandole el nombre
 					up.setMentor(true);
@@ -203,7 +212,7 @@ public class UserController {
 				Optional<Mentorizado> m = menrepo.findById(us.getUsername());
 				if (m.isPresent()) {
 					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					UsuarioPerfil up = uservice.getPerfilMentorizado(m.get());
+					UsuarioDTO up = uservice.getPerfilMentorizado(m.get());
 					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
 					up.setMentor(false);
 					up.setHoraspormes(4);// Aqui le ponemos este valor para que no se nos queje al intentar modificar la
@@ -231,7 +240,7 @@ public class UserController {
 
 	// Actualizar la informacion del perfil del usuario
 	@PostMapping("/setinfo")
-	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody UsuarioPerfil up, @AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody UsuarioDTO up, @AuthenticationPrincipal UserAuth us) {
 		if (up == null || us.getUsername() == null || up.getNombre() == null) {
 			System.out.println("El usuario o la informacion estaban a null");
 			// Esto no deberia pasar nunca si se llama desde la aplicacion
@@ -330,7 +339,7 @@ public class UserController {
 
 	// Eliminar areas de conocimiento de un usuario
 	@PostMapping("/areas/delete")
-	public ResponseEntity<MensajeError> borrarAreaUsuario(@AuthenticationPrincipal Usuario us,
+	public ResponseEntity<MensajeError> borrarAreaUsuario(@AuthenticationPrincipal UserAuth us,
 			@RequestBody AreaConocimiento area) {
 		if (area == null || us.getUsername() == null || area.getArea() == null) {
 			System.out.println("El mentorizado estaba null");
@@ -407,17 +416,17 @@ public class UserController {
 
 	// Obtener notificaciones
 	@GetMapping("/notificaciones")
-	public ResponseEntity<List<NotificacionUser>> getAllNotificaciones(@AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<List<NotificacionDTO>> getAllNotificaciones(@AuthenticationPrincipal UserAuth us) {
 		try {
 			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
-			List<NotificacionUser> nUser = new ArrayList<NotificacionUser>();
+			List<NotificacionDTO> nUser = new ArrayList<NotificacionDTO>();
 			Notificaciones = notrepo.getNotificaciosUser(us.getUsername());
 			if (Notificaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			// notrepo.actualizaEstadoNotificaciosUser(us.getUsername());
 			for (Notificacion n : Notificaciones) {
-				nUser.add(new NotificacionUser(n));
+				nUser.add(new NotificacionDTO(n));
 				if (n.getEstado() == EstadosNotificacion.ENTREGADA) {
 					n.setEstado(EstadosNotificacion.LEIDA);
 				}
@@ -440,9 +449,9 @@ public class UserController {
 
 	// Obtener notificaciones nuevas
 	@GetMapping("/notificaciones/nuevas")
-	public ResponseEntity<List<NotificacionUser>> getNewNotificaciones(@AuthenticationPrincipal Usuario us) {
+	public ResponseEntity<List<NotificacionDTO>> getNewNotificaciones(@AuthenticationPrincipal UserAuth us) {
 		try {
-			List<NotificacionUser> nUser = new ArrayList<NotificacionUser>();
+			List<NotificacionDTO> nUser = new ArrayList<NotificacionDTO>();
 			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
 			Notificaciones = notrepo.getNews(us.getUsername());
 			if (Notificaciones.isEmpty()) {
@@ -450,7 +459,7 @@ public class UserController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			for (Notificacion n : Notificaciones) {
-				nUser.add(new NotificacionUser(n));
+				nUser.add(new NotificacionDTO(n));
 				if (n.getEstado() == EstadosNotificacion.ENTREGADA) {
 					n.setEstado(EstadosNotificacion.LEIDA);
 				}
@@ -500,15 +509,16 @@ public class UserController {
 /////////////////////////////////////////////////////////////////////////
 
 	@GetMapping("/principal")
-	public ModelAndView getPaginaPrincipal(@AuthenticationPrincipal Usuario us) {
+	public ModelAndView getPaginaPrincipal(@AuthenticationPrincipal UserAuth us) {
 		try {
 			// System.out.println(us.toString());
 			if (us.getRol() == Roles.MENTOR) {
 				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
 				if (mentor.isPresent()) {
-					// Aqeui habria que recuperar cosas de su institucion para la pagina
+					// Aqui habria que recuperar cosas de su institucion para la pagina
 					ModelAndView modelo = new ModelAndView("prMentor");
 					uservice.addInstitucionUtils(modelo, mentor.get().getInstitucion());
+					acservice.salirChat(us.getUsername());
 					return modelo;
 				} else {
 					System.out.println("No existe");
@@ -522,12 +532,12 @@ public class UserController {
 			} else if (us.getRol() == Roles.MENTORIZADO) {
 				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
 				if (mentorizado.isPresent()) {
-					// System.out.println(mentorizado.get().toString());
-					// System.out.println(format.format(mentorizado.get().getFnacimiento()));
+					System.out.println(mentorizado.get().toString());
 					ModelAndView modelo = new ModelAndView("prMentorizado");
 					modelo.addObject("instituciones", listas.getInstituciones());
 					modelo.addObject("areas", listas.getAreas());
 					uservice.addInstitucionUtils(modelo, mentorizado.get().getInstitucion());
+					acservice.salirChat(us.getUsername());
 					return modelo;
 				} else {
 					System.out.println("No existe");
@@ -559,7 +569,7 @@ public class UserController {
 	}
 
 	@PostMapping("/eliminar")
-	public ModelAndView eliminarCuentaUsuario(@AuthenticationPrincipal Usuario us,
+	public ModelAndView eliminarCuentaUsuario(@AuthenticationPrincipal UserAuth us,
 			@ModelAttribute("password") String password, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			System.out.println(password);
@@ -567,14 +577,24 @@ public class UserController {
 				String username = us.getUsername();
 				if (us.getRol() == Roles.MENTOR) {
 					try {
+						Usuario u = urepo.findByUsername(username);
+						if(u == null) {//Ya de paso se comprueba, pero no es necesario para la base de datos, si no para enviar la notificacion
+							ModelAndView model = new ModelAndView("error_page_loged");
+							model.addObject("mensaje", "Se ha producido un fallo al intentar acceder a su cuenta, por favor, si recibe este mensaje,"
+										+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+							model.addObject("rol", "Mentor");
+							model.addObject("hora", new Date());
+							return model;
+						}
 						// Aqui tambien faltaria alguna notificacion a los mentorizados
 						prepo.borrarPeticionesMentor(username);
+						schats.cerrarChatSalirMentor(username);
 						mentorizacionrepo.borrarMentorizacionesMentor(username);
 						mrepo.borrarMentor(username);
 						urepo.borrarUsuario(username);// Esto lo ultimo, para que, en el peor de los casos, un usuario
 														// pueda volver a
 						// logearse para intentar volver a borrar de nuevo su cuenta
-						uservice.notificarPorCorreo(us, "Cuenta de mentoring eliminada",
+						uservice.notificarPorCorreo(u, "Cuenta de mentoring eliminada",
 								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"
 										+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
 										+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
@@ -604,14 +624,24 @@ public class UserController {
 					}
 				} else if (us.getRol() == Roles.MENTORIZADO) {
 					try {
+						Usuario u = urepo.findByUsername(username);
+						if(u == null) {//Ya de paso se comprueba, pero no es necesario para la base de datos, si no para enviar la notificacion
+							ModelAndView model = new ModelAndView("error_page_loged");
+							model.addObject("mensaje", "Se ha producido un fallo al intentar acceder a su cuenta, por favor, si recibe este mensaje,"
+										+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
+							model.addObject("rol", "Mentorizado");
+							model.addObject("hora", new Date());
+							return model;
+						}
 						// Aqui tambien faltaria alguna notificacion a los mentores
 						prepo.borrarPeticionesMentorizado(username);
+						schats.cerrarChatSalirMentorizado(username);
 						mentorizacionrepo.borrarMentorizacionesMentorizado(username);
 						menrepo.borrarMentorizado(username);
 						urepo.borrarUsuario(username);// Esto lo ultimo, para que, en el peor de los casos, un usuario
 														// pueda volver a
 						// logearse para intentar volver a borrar de nuevo su cuenta
-						uservice.notificarPorCorreo(us, "Cuenta de mentoring eliminada",
+						uservice.notificarPorCorreo(u, "Cuenta de mentoring eliminada",
 								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"
 										+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
 										+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
@@ -675,6 +705,20 @@ public class UserController {
 					+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
 			model.addObject("hora", new Date());
 			return model;
+		}
+	}
+	
+	//Esto nos sirve para que AngularJS pueda saber si el usuario es o no mentor, para el chat, por ejemplo
+	@GetMapping("/miinfo")
+	public ResponseEntity<UserAuthDTO> miRol(@AuthenticationPrincipal UserAuth u){
+		if(u.getRol() == Roles.MENTOR) {
+			return new ResponseEntity<>(new UserAuthDTO(u.getUsername(), true), HttpStatus.OK);
+		}
+		else if(u.getRol() == Roles.MENTORIZADO) {
+			return new ResponseEntity<>(new UserAuthDTO(u.getUsername(), false), HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
 		}
 	}
 

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Registro</title>
+	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
+	<link th:href="@{/css/general.css}" rel="stylesheet">
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top header">
+		<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}" width="60"
+				height="60" alt="" /></a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<span class="linkNavRight d-block d-lg-none">
+			<a th:href="@{/login}">
+				<div class="buttonNav">Iniciar sesión</div>
+			</a>
+			<a th:href="@{/auth/registration/mentorizado}">
+				<div class="buttonNav">Registrarse</div>
+			</a>
+		</span>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#unirse">Participa</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#estado">Informe de estado</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#servicios">¿Qué ofrecemos?</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#clientes">Instituciones</a>
+					</li>
+					<li class="nav-item">
+						<a class="headerLink nav-link" href="#nosotros">Acerca de nosotros</a>
+					</li>
+				</ul>
+		</div>
+		<span class="linkNavRight d-none d-lg-block">
+			<a th:href="@{/login}">
+				<div class="buttonNav">Iniciar sesión</div>
+			</a>
+			<a th:href="@{/auth/registration/mentorizado}">
+				<div class="buttonNav">Registrarse</div>
+			</a>
+		</span>
+	</nav>
+	<div class="main">
+	<div class="espacioEntreSecciones"></div>
+	<section class="container cuerpoSeccion" style="height: auto; overflow-y: auto;">
+		<br>
+		<div class="row">
+			<div class="col-lg-12 text-right">
+				<form action="#" th:action="@{/auth/register/cambio}" th:object="${useraux}" method="POST"
+					enctype="utf8" class="float-right">
+					<div class="col-lg-12" style="display: none;">
+        				<input type="checkbox" th:field="*{mentor}"></input>
+    				</div>
+					<button type="submit" class="botonInterfaz" style="width: 300px;" th:text="*{mensajeCambio}">
+						Prefiero registrarme con otro rol
+					</button>
+				</form>
+			</div>
+			<div class="col-lg-12 text-center" th:if="${errorGlobal}"><span th:text="${errorGlobal}" class="mensajeError"/></div>
+		</div>
+		<div class="row">
+			<div class="col-lg-10 offset-lg-1">
+				<form action="#" th:action="@{/auth/register}" method="POST" th:object="${useraux}" enctype="utf8"
+					class="container">
+					<div class="row">
+						<div class="col-lg-12">
+							<h4>Te vas a registrar como <span
+									th:text="${useraux.mentor} ? 'mentor' : 'mentorizado'">mentorizado</span></h4>
+						</div>
+						<div class="col-lg-12" style="display: none;">
+        					<input type="checkbox" th:field="*{mentor}"></input>
+        					<input type="text" th:field="*{mensajeCambio}"></input>
+    					</div>
+						<div class="col-lg-6">
+							<span class="campoObligatorio">*</span><label th:text="Correo">Correo</label>
+							<input type="email" th:field="*{correo}"></input>
+							<p th:each="error: ${#fields.errors('correo')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-lg-6">
+							<span class="campoObligatorio">*</span><label th:text="'Contraseña'">Contraseña</label>
+							<input type="password" th:field="*{password}" />
+							<p th:each="error : ${#fields.errors('password')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-12">
+							<span class="campoObligatorio">*</span><label th:text="Nombre">Nombre</label>
+							<input th:field="*{nombre}" />
+							<p th:each="error: ${#fields.errors('nombre')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-6">
+							<label th:text="'Primer apellido'">Primer apellido</label>
+							<input th:field="*{papellido}" />
+							<p th:each="error: ${#fields.errors('papellido')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-6">
+							<label th:text="'Segundo apellido'">Segundo apellido</label>
+							<input th:field="*{sapellido}" />
+							<p th:each="error: ${#fields.errors('sapellido')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-6">
+							<label th:text="Telefono">Telefono</label>
+							<input type="tel" th:field="*{telefono}" />
+							<p th:each="error: ${#fields.errors('telefono')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-6">
+							<label th:text="'Nivel de estudios'">Nivel de estudios</label>
+							<select th:field="*{nivelEstudios}">
+								<option th:value="Otros" th:text="'--Escoge uno--'"></option>
+								<option th:each="i : ${estudios}" th:value="${i.nivelestudios}"
+									th:text="${i.nivelestudios}">
+								</option>
+							</select>
+						</div>
+						<div class="col-md-12">
+							<label th:text="'Tu linkedin'">Tu linkedin</label>
+							<input type="url" th:field="*{linkedin}" />
+							<p th:each="error: ${#fields.errors('linkedin')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-12" th:if="${useraux.mentor}">
+							<label><span class="campoObligatorio">*</span>Horas por mes que desea mentorizar: </label>
+							4<input type="range" min="4" max="80" step="1" value="4"
+								onchange="actualizarSalidaRange(this.value);" th:field="*{horaspormes}"/>80 : <input type="number"
+								id="valorRange" th:value="*{horaspormes}" class="viewRangeHoras" disabled />
+						</div>
+						<div class="col-md-6">
+							<label th:text="'Fecha de nacimiento'">Fecha de nacimiento: </label>
+							<input type="date" id="fnacimiento" th:field="*{fnacimiento}" min="1900-01-01"
+								max="4000-12-31" value="" />
+						</div>
+						<div class="col-md-6" th:if="${useraux.mentor}">
+							<label th:text="Entidad">Entidad: </label>
+							<input th:field="*{entidad}" />
+							<p th:each="error: ${#fields.errors('entidad')}" th:text="${error}" class="mensajeError">Validation error</p>
+						</div>
+						<div class="col-md-12">
+							<label>Institución al que pertenece programa de mentoring en el que
+								desea participar</label>
+							<select th:field="*{institucion}">
+								<option th:value="Otra" th:text="'--Escoge una--'"></option>
+								<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
+								</option>
+							</select>
+						</div>
+						<div class="col-md-12">
+							<span class="campoObligatorio">*</span>
+							<input type="checkbox" required />
+							<label>Acepto los <a href="#" th:text="'Términos y condiciones'">Términos y
+									condiciones</a></label>
+
+						</div>
+						<div class="col-md-12 campoObligatorio"> *Campos obligatorios
+						</div>
+						<div class="col-md-12"> Es posible que el registro tarde unos segundos.
+						</div>
+						<div class="col-md-12">
+							<button type="submit" th:text="Aceptar" class="botonInterfaz float-right">Aceptar</button>
+						</div>
+						<div class="col-md-12">
+							Haz clic <a th:href="@{/login.html}" th:text="'aquí'">aquí</a> si prefieres iniciar sesión
+							con una cuenta registrada.
+						</div>
+					</div>
+				</form>
+
+
+			</div>
+		</div>
+	</section>
+	</div>
+	<hr>
+	<footer class="container">
+		<div class="row">
+			<div class="text-center col-lg-12">
+				<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+			</div>
+			<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
+				<h4>Normativa</h4>
+				<p>Aqui puedes consultar las mormas de uso de la aplicación: <a href="#">ver normas de uso</a></p>
+			</div>
+			<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
+				<h4>Contacto</h4>
+				<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+			</div>
+		</div>
+	</footer>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+	<!--<script type="text/javascript" th:src="@{/js/angular.min.js}"></script>-->
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script type="text/javascript" th:src="@{/js/jquery-3.4.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-4.4.1.js}"></script>
+	<script>
+		function actualizarSalidaRange(valor) {
+			document.getElementById('valorRange').value = valor;
+		}
+		//https://stackoverflow.com/questions/32378590/set-date-input-fields-max-date-to-today
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth() + 1; //January is 0!
+		var yyyy = today.getFullYear();
+
+		if (dd < 10) {
+			dd = '0' + dd;
+		}
+
+		if (mm < 10) {
+			mm = '0' + mm;
+		}
+
+		today = yyyy + '-' + mm + '-' + dd;
+		document.getElementById("fnacimiento").setAttribute("max", today);
+	</script>
+</body>
+
+</html>
