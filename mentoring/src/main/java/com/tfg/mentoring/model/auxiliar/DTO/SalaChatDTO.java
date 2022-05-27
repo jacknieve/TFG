@@ -9,16 +9,17 @@ public class SalaChatDTO implements CuerpoMensaje{
 	private String nombreOtro;
 	private boolean nuevos;
 	private boolean cerrada;
-	//Faltaria el path de la foto de perfil
+	private String foto;
 	
 	
-	public SalaChatDTO(long id, String otroUsuario, String nombreOtro, boolean cerrada) {
+	public SalaChatDTO(long id, String otroUsuario, String nombreOtro, boolean cerrada, String foto) {
 		super();
 		this.id = id;
 		this.otroUsuario=otroUsuario;
 		this.nombreOtro=nombreOtro;
 		this.nuevos = false;
 		this.cerrada = cerrada;
+		this.foto = foto;
 	}
 
 	public SalaChatDTO() {
@@ -70,12 +71,24 @@ public class SalaChatDTO implements CuerpoMensaje{
 	public void setCerrada(boolean cerrada) {
 		this.cerrada = cerrada;
 	}
+	
+	
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
 
 	@Override
 	public String toString() {
 		return "SalaChatDTO [id=" + id + ", otroUsuario=" + otroUsuario + ", nombreOtro=" + nombreOtro + ", nuevos="
-				+ nuevos + ", cerrada=" + cerrada + "]";
+				+ nuevos + ", cerrada=" + cerrada + ", foto=" + foto + "]";
 	}
+
+	
 
 	
 

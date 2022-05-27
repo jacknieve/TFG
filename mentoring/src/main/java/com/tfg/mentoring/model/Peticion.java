@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.tfg.mentoring.model.Ids.PeticionId;
 import com.tfg.mentoring.model.auxiliar.enums.EstadosPeticion;
 
 @Entity(name="Peticion")

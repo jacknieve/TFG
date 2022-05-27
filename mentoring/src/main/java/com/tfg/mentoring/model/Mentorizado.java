@@ -63,7 +63,7 @@ public class Mentorizado {
 	private Institucion institucion;
 	
 	public Mentorizado(Usuario usuario, String nombre, String papellido, String sapellido, NivelEstudios nivelEstudios,
-			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, Institucion institucion ) {
+			String telefono, String descripcion, String linkedin, Date fregistro, Date fnacimiento, Institucion institucion) {
 		super();
 		this.usuario = usuario;
 		this.nombre = nombre;
@@ -102,8 +102,7 @@ public class Mentorizado {
 			}
 		}
 		this.linkedin=useraux.getLinkedin();
-		this.institucion=institucion;		
-				
+		this.institucion=institucion;			
 	}
 
 	public Mentorizado() {
@@ -210,8 +209,6 @@ public class Mentorizado {
 	public String getCorreo() {
 		return correo;
 	}
-	
-	
 
 	public Institucion getInstitucion() {
 		return institucion;
@@ -229,6 +226,8 @@ public class Mentorizado {
 				+ ", fregistro=" + fregistro + ", fnacimiento=" + fnacimiento + ", areas=" + areas + ", institucion="
 				+ institucion + "]";
 	}
+
+	
 
 	
 

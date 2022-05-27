@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.tfg.mentoring.model.Peticion;
-import com.tfg.mentoring.model.PeticionId;
+import com.tfg.mentoring.model.Ids.PeticionId;
 
 public interface PeticionRepo extends JpaRepository<Peticion, PeticionId>{
 

@@ -15,7 +15,8 @@
 	<script type="text/javascript" th:src="@{/js/sockjs.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/notification.js}"></script>
-	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
+	<script type="text/javascript" th:src="@{/js/prUsuario.js}"></script>
+	<script type="text/javascript" th:src="@{/js/prMentorizado.js}"></script>
 
 </head>
 
@@ -103,7 +104,8 @@
 				</div>
 				<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
 
-					<div class="col-lg-12 mensajeError">{{mensajeError}}
+					<div class="col-lg-12 mensajeError">Se ha producido un error al intentar acceder a las
+						notificaciones, puedes usar este botón para volver a intentarlo
 						<span class="float-right">
 							<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
 								<img th:src="@{/images/redo.png}" class="redoImage" alt="" /></button>
@@ -129,17 +131,11 @@
 					</div>
 					<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
 						ng-class="{ 'sinResultadosSeccion': sinresultados}">
-						<div class="col-lg-12" ng-show="cargando">Cargando...</div>
-						<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
-							posibles nuevas mentorizaciones debido a que se ha producido un
-							fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección
-							y
-							vuelvalá a desplegar.</div>
 						<div class="col-lg-10 offset-lg-1">
 							<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
 								<div class="row subSeccion">
 									<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-										<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
+										<img ng-src="{{mentorizacion.uperfil.foto}}" class="fotoPerfil" alt="" />
 										<div class="textoContacto" ng-show="mentorizacion.expandido">
 											<strong>Correo eletronico:</strong>
 											<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
@@ -205,6 +201,22 @@
 										<br>
 									</div>
 								</div>
+								<div class="row subSeccion"
+									ng-show="mentorizacion.expandido && !mentorizacion.sinficheros">
+									<div class="col-lg-10 offset-lg-1">
+										<p>Ficheros disponibles:</p>
+										<div class="row">
+											<div class="col-md-6 areaConocimiento"
+												ng-repeat="file in mentorizacion.uperfil.ficheros"> {{file}}
+												<button ng-click="dowloadFile(file, mentorizacion.correo)" ng-disabled="cargando"
+													class="redoBoton" style="margin-left: auto;">
+													<img th:src="@{/images/download.png}" class="redoImage" alt="" />
+												</button>
+											</div>
+										</div>
+										<br>
+									</div>
+								</div>
 								<div class="row subSeccion">
 									<div class="col-md-3 col-sm-6 text-center offset-md-3"
 										ng-hide="mentorizacion.expandido">
@@ -212,7 +224,7 @@
 											ng-disabled="cargando">Mostrar
 											datos</button>
 									</div>
-									<div class="col-md-3 col-sm-6 text-center offset-md-6"
+									<div class="col-md-3 col-sm-6 text-center offset-md-3"
 										ng-show="mentorizacion.expandido">
 										<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
 											ng-disabled="cargando">Ocultar
@@ -223,9 +235,9 @@
 											ng-disabled="cargando">Terminar relación</button>
 									</div>
 									<div class="col-md-3 col-sm-6 text-center">
-									<button class="botonInterfaz" ng-click="redirijirChat(mentorizacion.correo)"
-										ng-disabled="cargando">Abrir chat</button>
-								</div>
+										<button class="botonInterfaz" ng-click="redirijirChat(mentorizacion.correo)"
+											ng-disabled="cargando">Abrir chat</button>
+									</div>
 								</div>
 								<div ng-show="mentorizacion.cerrar" class="popupFondo" style="z-index: 50;">
 									<div class="popup" style="width: 400px">Antes de cerrar la mentorización,<br> ¿desea
@@ -319,22 +331,13 @@
 								</div>
 
 							</div>
-							<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-								<div class="popup">
-									La mentorización se ha cerrado con éxito: <br>
-									<button class="botonInterfaz" style="width: 100px;"
-										ng-click="cerrarAcierto()">Cerrar</button>
-								</div>
-							</div>
-							<div ng-show="enError" class="popupFondo" style="z-index: 300;">
-								<div class="popup popupError">
-									Se ha producido un error: <br>
-									<p>{{mensajeError}}</p>
-									<button class="botonInterfaz" style="width: 100px;"
-										ng-click="cerrarError()">Cerrar</button>
-								</div>
-							</div>
 						</div>
+						<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+						<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+							posibles nuevas mentorizaciones debido a que se ha producido un
+							fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección
+							y
+							vuelvalá a desplegar.</div>
 						<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas
 						</div>
 						<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han
@@ -400,7 +403,7 @@
 								<div class="elementoRepetibleDos" ng-repeat="mentor in mentores">
 									<div class="row subSeccion">
 										<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-											<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+											<img class="fotoPerfil" ng-src="{{mentor.foto}}" alt="" />
 											<div class="textoContacto" ng-show="mentor.expandido">
 												<strong>Correo eletronico:</strong>
 												<span style="font-size: 12px">{{mentor.correo}}</span><br>
@@ -452,11 +455,7 @@
 									</div>
 									<div class="row">
 										<div class="col-md-8 text-center offset-md-2">
-											<div ng-show="mentor.cargando">Cargando... (esto puede llevar unos segundos
-												si
-												es
-												necesario
-												notificar por correo al mentor)</div>
+											<div ng-show="mentor.cargando">Cargando...</div>
 										</div>
 									</div>
 									<div class="row">
@@ -497,21 +496,6 @@
 										</div>
 									</div>
 								</div>
-								<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-									<div class="popup" style="z-index: 350;">
-										La solicitud se ha enviado con éxito <br>
-										<button class="botonInterfaz" style="width: 100px;"
-											ng-click="cerrarAcierto()">Cerrar</button>
-									</div>
-								</div>
-								<div ng-show="enError" class="popupFondo" style="z-index: 400;">
-									<div class="popup popupError" style="z-index: 450;">
-										Se ha producido un error: <br>
-										<p>{{mensajeError}}</p>
-										<button class="botonInterfaz" style="width: 100px;"
-											ng-click="cerrarError()">Cerrar</button>
-									</div>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -543,17 +527,12 @@
 					</div>
 					<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
 						ng-class="{ 'sinResultadosSeccion': sinresultados}">
-						<div class="col-lg-12" ng-show="cargando">Cargando...</div>
-						<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
-							posibles nuevas mentorizaciones por puntuar debido a que se ha producido un
-							fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección
-							y
-							vuelvalá a desplegar.</div>
+
 						<div class="col-lg-10 offset-lg-1">
 							<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
 								<div class="row subSeccion">
 									<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-										<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+										<img class="fotoPerfil" ng-src="{{mentorizacion.uperfil.foto}}" alt="" />
 										<div class="textoContacto" ng-show="mentorizacion.expandido">
 											<strong>Correo eletronico:</strong>
 											<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
@@ -581,7 +560,8 @@
 											<div class="row" ng-show="mentorizacion.expandido">
 												<div class="col-lg-12" ng-show="mentorizacion.uperfil.entidad != ''">
 													<strong>Entidad:</strong>
-													{{mentorizacion.uperfil.entidad}} </div>
+													{{mentorizacion.uperfil.entidad}}
+												</div>
 												<div class="col-md-5"><strong>Horas por mes:</strong>
 													{{mentorizacion.uperfil.horaspormes}}</div>
 												<div class="col-md-7"><strong>Nivel de estudios:</strong>
@@ -616,9 +596,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-8 text-center offset-md-2">
-										<div ng-show="cargando">Cargando... (esto puede llevar unos segundos si es
-											necesario
-											notificar por correo al mentor)</div>
+										<div ng-show="cargando">Cargando...</div>
 									</div>
 								</div>
 								<div class="row subSeccion">
@@ -726,22 +704,13 @@
 								</div>
 
 							</div>
-							<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-								<div class="popup" style="z-index: 350;">
-									La mentorización se ha puntuado con éxito <br>
-									<button class="botonInterfaz" style="width: 100px;"
-										ng-click="cerrarAcierto()">Cerrar</button>
-								</div>
-							</div>
-							<div ng-show="enError" class="popupFondo" style="z-index: 400;">
-								<div class="popup popupError" style="z-index: 450;">
-									Se ha producido un error: <br>
-									<p>{{mensajeError}}</p>
-									<button class="botonInterfaz" style="width: 100px;"
-										ng-click="cerrarError()">Cerrar</button>
-								</div>
-							</div>
 						</div>
+						<div class="col-lg-12" ng-show="cargando">Cargando...</div>
+						<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+							posibles nuevas mentorizaciones por puntuar debido a que se ha producido un
+							fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección
+							y
+							vuelvalá a desplegar.</div>
 						<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones por
 							puntuar
 						</div>
@@ -763,7 +732,7 @@
 		<footer class="container">
 			<div class="row">
 				<div class="text-center col-lg-12">
-					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot;</p>
 				</div>
 				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
 					<h4>Normativa</h4>
@@ -771,7 +740,8 @@
 				</div>
 				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
 					<h4>Contacto</h4>
-					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+					<p>Para cualquier incidencia, contáctenos vía email a <span
+							style="color: deepskyblue;">mentoring@gmail.com</span></p>
 				</div>
 			</div>
 		</footer>

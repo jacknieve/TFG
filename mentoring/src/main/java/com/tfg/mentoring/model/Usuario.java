@@ -30,6 +30,8 @@ public class Usuario{
 	private boolean notificar_correo;
 	@Column(name = "verification_code", length = 64)
     private String verificationCode;
+	@Column(name="foto", length = 250)
+	private String foto;//Extension de la imagen de perfil
 	
 	
 	public Usuario() {
@@ -45,6 +47,7 @@ public class Usuario{
 		this.unlocked=true;
 		this.enable=true;
 		this.notificar_correo=true;
+		this.foto = null;
 	}
 	
 	public Usuario(String correo, String password, boolean enable, String verificationCode) {
@@ -56,11 +59,12 @@ public class Usuario{
 		this.enable=enable;
 		this.verificationCode = verificationCode;
 		this.notificar_correo=true;
+		this.foto = null;
 	}
 
 
 	public Usuario( String username, String password, Roles rol, boolean unlocked,
-			boolean enable, String verificationCode, boolean notificar_correo) {
+			boolean enable, String verificationCode, boolean notificar_correo, String foto) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -69,6 +73,7 @@ public class Usuario{
 		this.enable = enable;
 		this.verificationCode = verificationCode;
 		this.notificar_correo=notificar_correo;
+		this.foto = foto;
 	}
 
 	public void setUsername(String correo) {
@@ -138,27 +143,21 @@ public class Usuario{
 		this.notificar_correo = notificar_correo;
 	}
 
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 	@Override
 	public String toString() {
 		return "Usuario [username=" + username + ", password=" + password + ", rol=" + rol + ", unlocked=" + unlocked
 				+ ", enable=" + enable + ", notificar_correo=" + notificar_correo + ", verificationCode="
-				+ verificationCode + "]";
+				+ verificationCode + ", foto=" + foto + "]";
 	}
 	
-	
-
-	
-
-	
-
-	
-	
-
-	
-	
-	
-	
-
 	
 	
 

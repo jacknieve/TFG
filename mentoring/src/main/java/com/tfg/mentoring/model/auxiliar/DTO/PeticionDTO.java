@@ -2,48 +2,43 @@ package com.tfg.mentoring.model.auxiliar.DTO;
 
 import java.text.SimpleDateFormat;
 
+import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.Peticion;
 import com.tfg.mentoring.model.auxiliar.enums.EstadosPeticion;
 
 public class PeticionDTO {
 
-	private String mentorizado;
 	private String nombre;
 	private String motivo;
 	private boolean nueva;
 	private String fechaenv;
+	private UsuarioDTO info;
 	
-	public PeticionDTO(String mentorizado, String nombre, String motivo, boolean nueva, String fechaenv) {
+	public PeticionDTO(String nombre, String motivo, boolean nueva, String fechaenv, UsuarioDTO info) {
 		super();
-		this.mentorizado = mentorizado;
 		this.nombre = nombre;
 		this.motivo = motivo;
 		this.nueva = nueva;
 		this.fechaenv = fechaenv;
+		this.info = info;
 	}
 	
-	public PeticionDTO(Peticion p) {
+	public PeticionDTO(Peticion p, UsuarioDTO info) {
 		super();
-		this.mentorizado = p.getMentorizado().getCorreo();
-		this.nombre = p.getMentorizado().getNombre()+" "+p.getMentorizado().getPapellido()+" "+p.getMentorizado().getSapellido();
+		Mentorizado m = p.getMentorizado();
+		this.nombre = m.getNombre()+" "+m.getPapellido()+" "+m.getSapellido();
 		this.motivo = p.getMotivo();
 		if(p.getEstado() == EstadosPeticion.ENVIADA) this.nueva = true;
 		else this.nueva=false;
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.fechaenv = df.format(p.getId().getCreadaEn());
+		this.info = info;
 	}
 
 	public PeticionDTO() {
 		super();
 	}
 
-	public String getMentorizado() {
-		return mentorizado;
-	}
-
-	public void setMentorizado(String mentorizado) {
-		this.mentorizado = mentorizado;
-	}
 
 	public String getNombre() {
 		return nombre;
@@ -76,12 +71,29 @@ public class PeticionDTO {
 	public void setFechaenv(String fechaenv) {
 		this.fechaenv = fechaenv;
 	}
+	
+	
+	
+
+	public UsuarioDTO getInfo() {
+		return info;
+	}
+
+	public void setInfo(UsuarioDTO info) {
+		this.info = info;
+	}
 
 	@Override
 	public String toString() {
-		return "PeticionUser [mentorizado=" + mentorizado + ", nombre=" + nombre + ", motivo=" + motivo + ", nueva="
-				+ nueva + ", fechaenv=" + fechaenv + "]";
+		return "PeticionDTO [nombre=" + nombre + ", motivo=" + motivo + ", nueva=" + nueva + ", fechaenv=" + fechaenv
+				+ ", info=" + info + "]";
 	}
+
+	
+
+	
+
+	
 	
 	
 }

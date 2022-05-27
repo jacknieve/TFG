@@ -15,7 +15,8 @@
 	<script type="text/javascript" th:src="@{/js/sockjs.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/notification.js}"></script>
-	<script type="text/javascript" th:src="@{/js/restconsumeruser.js}"></script>
+	<script type="text/javascript" th:src="@{/js/prUsuario.js}"></script>
+	<script type="text/javascript" th:src="@{/js/prMentor.js}"></script>
 </head>
 
 <body ng-app="appConsumer" ng-cloak>
@@ -98,7 +99,8 @@
 					<div class="col-lg-12 sinResultados" ng-show="mostrarsin">No tiene notificaciones</div>
 				</div>
 				<div class="row text-left cuerpoSeccion" style="height: 50px" ng-show="enfallo">
-					<div class="col-lg-12 mensajeError">{{mensajeError}}
+					<div class="col-lg-12 mensajeError">Se ha producido un error al intentar acceder a las
+						notificaciones, puedes usar este botón para volver a intentarlo
 						<span class="float-right">
 							<button ng-click="reiniciarActualizacion()" ng-disabled="cargando" class="redoBoton">
 								<img th:src="@{/images/redo.png}" class="redoImage" alt="" /></button>
@@ -123,16 +125,11 @@
 				</div>
 				<div class="row text-left cuerpoSeccion" ng-show="mostrarMentorizaciones"
 					ng-class="{ 'sinResultadosSeccion': sinresultados}">
-					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
-					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
-						posibles nuevas mentorizaciones debido a que se ha producido un
-						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
-						vuelvalá a desplegar.</div>
 					<div class="col-lg-10 offset-lg-1">
 						<div class="elementoRepetibleDos" ng-repeat="mentorizacion in mentorizaciones">
 							<div class="row subSeccion">
 								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-									<img src="/images/perfil/Captura.PNG" class="fotoPerfil" alt="" />
+									<img ng-src="{{mentorizacion.uperfil.foto}}" class="fotoPerfil" alt="" />
 									<div class="textoContacto" ng-show="mentorizacion.expandido">
 										<strong>Correo eletronico:</strong>
 										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
@@ -181,7 +178,8 @@
 							<div ng-show="mentorizacion.expandido" class="row subSeccion">
 								<div class="col-lg-12">Avanzar en la hoja de ruta: <button
 										ng-click="aceptarCambioFase(mentorizacion)" ng-disabled="cargando"
-										class="botonInterfaz" style="width: 220px; float:right;">Aceptar el cambio de
+										class="botonInterfaz" style="min-width: 220px; float:right;">Aceptar el cambio
+										de
 										fase</button>
 								</div>
 								<div class="col-lg-12">
@@ -260,6 +258,21 @@
 									<br>
 								</div>
 							</div>
+							<div class="row subSeccion" ng-show="mentorizacion.expandido && !mentorizacion.sinficheros">
+								<div class="col-lg-10 offset-lg-1">
+									<p>Ficheros disponibles:</p>
+									<div class="row">
+										<div class="col-md-6 areaConocimiento"
+											ng-repeat="file in mentorizacion.uperfil.ficheros"> {{file}}
+											<button ng-click="dowloadFile(file, mentorizacion.correo)" ng-disabled="cargando"
+												class="redoBoton" style="margin-left: auto;">
+												<img th:src="@{/images/download.png}" class="redoImage" alt="" />
+											</button>
+										</div>
+									</div>
+									<br>
+								</div>
+							</div>
 							<div class="row subSeccion" style="min-height: 35px; padding-top: 1px;">
 								<div class="col-md-3 col-sm-6 text-center offset-md-3"
 									ng-hide="mentorizacion.expandido">
@@ -267,7 +280,7 @@
 										ng-disabled="cargando">Mostrar
 										datos</button>
 								</div>
-								<div class="col-md-3 col-sm-6 text-center offset-md-6"
+								<div class="col-md-3 col-sm-6 text-center offset-md-3"
 									ng-show="mentorizacion.expandido">
 									<button class="botonInterfaz" ng-click="plegarMentorizacion(mentorizacion)"
 										ng-disabled="cargando">Ocultar
@@ -297,20 +310,11 @@
 							</div>
 						</div>
 					</div>
-					<div ng-show="enAcierto" class="popupFondo" style="z-index: 300;">
-						<div class="popup" style="z-index: 400;">
-							La mentorización se ha cerrado con éxito: <br>
-							<button class="botonInterfaz" style="width: 100px;"
-								ng-click="cerrarAcierto()">Cerrar</button>
-						</div>
-					</div>
-					<div ng-show="enError" class="popupFondo" style="z-index: 300;">
-						<div class="popup popupError" style="z-index: 400;">
-							Se ha producido un error: <br>
-							<p>{{mensajeError}}</p>
-							<button class="botonInterfaz" style="width: 100px;" ng-click="cerrarError()">Cerrar</button>
-						</div>
-					</div>
+					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles nuevas mentorizaciones debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
 					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene mentorizaciones abiertas</div>
 					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
 						las mentorizaciones debido a que se ha producido un
@@ -337,20 +341,16 @@
 				</div>
 				<div class="row text-left cuerpoSeccion" ng-show="mostrarPeticiones"
 					ng-class="{ 'sinResultadosSeccion': sinresultados}">
-					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
-					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
-						posibles
-						nuevas solicitudes debido a que se ha producido un
-						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
-						vuelvalá a desplegar.</div>
+
+
 					<div class="col-lg-10 offset-lg-1">
 						<div class="elementoRepetibleDos" ng-repeat="peticion in peticiones">
 							<div class="row subSeccion">
 								<div class="col-lg-3 text-center subSeccionIzquierdaDos">
-									<img class="fotoPerfil" th:src="@{/images/icono_prueba.png}" alt="" />
+									<img class="fotoPerfil" ng-src="{{peticion.info.foto}}" alt="" />
 									<div class="textoContacto" ng-show="peticion.expandido">
 										<strong>Correo eletronico:</strong>
-										<span style="font-size: 12px">{{peticion.mentorizado}}</span><br>
+										<span style="font-size: 12px">{{peticion.info.correo}}</span><br>
 										<span ng-hide="peticion.info.telefono == ''">
 											<strong>Telefono:</strong>
 											<span style="font-size: 14px">{{peticion.info.telefono}}</span>
@@ -398,9 +398,7 @@
 							</div>
 							<div class="row">
 								<div class="col-md-8 text-center offset-md-2">
-									<div ng-show="peticion.cargando">Cargando... (esto puede llevar unos segundos si es
-										necesario
-										notificar por correo al mentorizado)</div>
+									<div ng-show="peticion.cargando">Cargando... </div>
 								</div>
 							</div>
 							<div class="row">
@@ -423,16 +421,14 @@
 								</div>
 							</div>
 						</div>
-						<div ng-show="enError" class="popupFondo">
-							<div class="popup popupError">
-								Se ha producido un error: <br>
-								<p>{{mensajeError}}</p>
-								<button class="botonInterfaz" style="width: 100px;"
-									ng-click="cerrarError()">Cerrar</button>
-							</div>
-						</div>
 					</div>
+					<div class="col-lg-12 text-center" ng-show="cargando">Cargando...</div>
 					<div class="col-lg-12 sinResultados" ng-show="sinresultados">No tiene solicitudes pendientes</div>
+					<div class="col-lg-12" ng-show="errorActualizar" style="color: red;">No se estan obteniendo las
+						posibles
+						nuevas solicitudes debido a que se ha producido un
+						fallo al actualizar. Para volver a iniciar la actualización automática, pliegue esta sección y
+						vuelvalá a desplegar.</div>
 					<div class="col-lg-12 sinResultados" ng-show="errorBusqueda" style="color: red;">No se han obtenido
 						las
 						solicitudes debido a que se ha producido un
@@ -452,7 +448,7 @@
 		<footer class="container">
 			<div class="row">
 				<div class="text-center col-lg-12">
-					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot; <a href="#">My Website</a></p>
+					<p>Copyright &copy; 2021 &middot; All Rights Reserved &middot;</p>
 				</div>
 				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-1">
 					<h4>Normativa</h4>
@@ -460,7 +456,8 @@
 				</div>
 				<div class="text-center col-lg-3 offset-lg-2 col-md-5 offset-md-2">
 					<h4>Contacto</h4>
-					<p>Para cualquier incidencia, contáctenos vía email a <a href="#">mentoring@gmail.com</a></p>
+					<p>Para cualquier incidencia, contáctenos vía email a <span
+							style="color: deepskyblue;">mentoring@gmail.com</span></p>
 				</div>
 			</div>
 		</footer>

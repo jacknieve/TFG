@@ -118,7 +118,6 @@ public class Mentor {
 		this.entidad=useraux.getEntidad();
 		this.institucion=institucion;		
 		this.verificado=false;
-				
 	}
 
 	public Mentor() {
@@ -230,8 +229,6 @@ public class Mentor {
 	}
 	
 
-	
-
 	public String getEntidad() {
 		return entidad;
 	}
@@ -272,6 +269,8 @@ public class Mentor {
 				+ ", areas=" + areas + ", entidad=" + entidad + ", institucion=" + institucion + ", verificado="
 				+ verificado + "]";
 	}
+
+	
 
 	
 

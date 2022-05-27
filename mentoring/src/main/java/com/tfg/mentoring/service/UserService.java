@@ -3,20 +3,13 @@ package com.tfg.mentoring.service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.QueryTimeoutException;
 
 import org.hibernate.exception.JDBCConnectionException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,6 +21,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
+import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
@@ -35,11 +29,9 @@ import com.tfg.mentoring.model.Notificacion;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.MensajeConAsunto;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
-import com.tfg.mentoring.model.auxiliar.UsuariosActivos;
-import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
-import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
 import com.tfg.mentoring.model.auxiliar.enums.AsuntoMensaje;
+import com.tfg.mentoring.model.auxiliar.enums.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 import com.tfg.mentoring.model.auxiliar.enums.Roles;
 import com.tfg.mentoring.model.auxiliar.requests.UserAux;
@@ -75,21 +67,24 @@ public class UserService {
 
 	@Autowired
 	private InstitucionRepo irepo;
+	
 
-	@Autowired
-	private ModelMapper maper;
-
+	
 	@Autowired
 	private ListLoad listas;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate; //Esto quizas mejor un servicio de envio de mensajes
+	
 
+	
+	
 	@Autowired
-	private UsuariosActivos usuariosActivos;
-	// Esto habria que ponerlo en otro sitio
-	@Autowired
-	private SimpMessagingTemplate messagingTemplate;
+	private ActiveUsersService acservice;
+	
 
 	public void register(UserAux useraux, String siteURL) throws UnsupportedEncodingException, MessagingException,
-			ExcepcionDB, JDBCConnectionException, QueryTimeoutException {
+			ExcepcionDB, JDBCConnectionException, QueryTimeoutException, SecurityException, ExcepcionRecursos, FileNotFoundException{
 		String random = RandomString.make(64);
 		Usuario user = new Usuario(useraux.getCorreo(), passwordEncoder.encode(useraux.getPassword()), false, random);
 		System.out.println(user.toString());
@@ -102,6 +97,17 @@ public class UserService {
 			} catch (DataIntegrityViolationException e) {
 				throw new ExcepcionDB("Clave duplicada");
 			}
+			File filesUsers = new File("recursos/user-files/mentores/"+useraux.getCorreo()+"/");
+			File filesUsersPerfil = new File("recursos/user-files/mentores/"+useraux.getCorreo()+"/perfil/");
+			File filesUsersChat = new File("recursos/user-files/mentores/"+useraux.getCorreo()+"/chat/");
+			if(!filesUsers.mkdir() || !filesUsersPerfil.mkdir() || !filesUsersChat.mkdir()) {
+				throw new ExcepcionRecursos("No ha sido posible crear el directorio para el mentor");
+			}
+			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentores/").getAbsolutePath()+"/"+useraux.getCorreo()+"/";
+			File imagen = new File(path);
+			if(imagen.mkdir()) {
+				throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el mentor");
+			}
 			sendVerificationEmail(user, mentor.getNombre(), siteURL);
 
 		} else {
@@ -112,6 +118,17 @@ public class UserService {
 				menrepo.save(mentorizado);
 			} catch (DataIntegrityViolationException e) {
 				throw new ExcepcionDB("Clave duplicada");
+			}
+			File filesUsers = new File("recursos/user-files/mentorizados/"+useraux.getCorreo()+"/");
+			File filesUsersPerfil = new File("recursos/user-files/mentorizados/"+useraux.getCorreo()+"/perfil/");
+			File filesUsersChat = new File("recursos/user-files/mentorizados/"+useraux.getCorreo()+"/chat/");
+			if(!filesUsers.mkdir() || !filesUsersPerfil.mkdir() || !filesUsersChat.mkdir()) {
+				throw new ExcepcionRecursos("No ha sido posible crear el directorio para el mentorizado");
+			}
+			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentores/").getAbsolutePath()+"/"+useraux.getCorreo()+"/";
+			File imagen = new File(path);
+			if(imagen.mkdir()) {
+				throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el mentorizado");
 			}
 			sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
 
@@ -180,8 +197,8 @@ public class UserService {
 	public void enviarNotificacion(Usuario u, String titulo, String descripcion, MotivosNotificacion motivo) {
 		try {
 			Notificacion notificacion = new Notificacion(u, titulo, descripcion, motivo);
-			nrepo.save(notificacion);
-			if (!usuariosActivos.getUsers().containsKey(u.getUsername())) {
+			
+			if (!acservice.activo(u.getUsername())) {
 				if (u.isNotificar_correo()) {
 					Thread thread = new Thread() {
 						public void run() {
@@ -197,10 +214,12 @@ public class UserService {
 					};
 					thread.start();
 				}
-			} else {
+			} else if (acservice.enNotificacion(u.getUsername())){
+				if(!acservice.enChat(u.getUsername())) notificacion.setEstado(EstadosNotificacion.ENTREGADA);
 				messagingTemplate.convertAndSendToUser(u.getUsername(), "/queue/messages",
 						new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
 			}
+			nrepo.save(notificacion);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {// Si falla el acceso a la base de datos o tarda
 																		// mucho
 			// TODO: handle exception
@@ -232,7 +251,7 @@ public class UserService {
 								e.printStackTrace();
 							}
 						}
-					} else {
+					} else if (acservice.enNotificacion(username)){
 						messagingTemplate.convertAndSendToUser(u.get().getUsername(), "/queue/messages",
 								new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
 					}
@@ -274,42 +293,7 @@ public class UserService {
 		mailSender.send(message);
 	}
 
-	public List<MentorDTO> getMentorBusqueda(List<Mentor> mentores) {
-		return mentores.stream().map(this::convertMentortoMentorBusqueda).collect(Collectors.toList());
-	}
-
-	private MentorDTO convertMentortoMentorBusqueda(Mentor m) {
-		MentorDTO user = new MentorDTO();
-		user = maper.map(m, MentorDTO.class);
-		return user;
-	}
-
-	public UsuarioDTO getPerfilMentor(Mentor mentor) {
-		UsuarioDTO user = new UsuarioDTO();
-		user = maper.map(mentor, UsuarioDTO.class);
-		if (user.getFnacimiento() != null) {
-			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
-					.toLocalDate();
-			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
-		}
-
-		// System.out.println(user.toString());
-		return user;
-	}
-
-	public UsuarioDTO getPerfilMentorizado(Mentorizado mentorizado) {
-		UsuarioDTO user = new UsuarioDTO();
-		user = maper.map(mentorizado, UsuarioDTO.class);
-		if (user.getFnacimiento() != null) {
-			LocalDate fnac = Instant.ofEpochMilli(user.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
-					.toLocalDate();
-			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
-		}
-
-		// System.out.println(user.toString());
-		return user;
-	}
-
+	
 	public void limpiarUsuario(UserAux user) throws JDBCConnectionException, QueryTimeoutException {
 		if (user.getMentor()) {
 			mrepo.limpiarUsuario(user.getCorreo());
@@ -348,43 +332,13 @@ public class UserService {
 			}
 			modelo.addObject("letrasBB", i.isLetrasBB());
 			modelo.addObject("letrasBlancas", i.isLetrasBlancas());
-			try {
-				File file = ResourceUtils.getFile("classpath:static/images/usuarios/instituciones/" + i.getNombre());
-				if (file.exists() && file.isDirectory() && file.list().length == 1) {
-					File image = file.listFiles()[0];
-					Optional<String> extension = getExtensionByStringHandling(image.getName());
-					if (extension.isPresent()) {
-						if (extension.get().equals("png") || extension.get().equals("jpg")
-								|| extension.get().equals("PNG")) {
-							String path = "/images/usuarios/instituciones/" + i.getNombre() + "/" + image.getName();
-							System.out.println(path);
-							modelo.addObject("logo", path);
-						} else {
-							System.out.println("Fallo al leer la extension");
-						}
-					} else {
-						System.out.println("Fallo al leer la extension");
-					}
-				} else {
-					System.out.println(
-							"El fichero no existe, no es un directorio o no tiene ficheros dentro (o tiene mas de 1)");
-				}
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
-				System.out.println("El directorio de la institucion no existe");
-				System.out.println(e.getMessage());
+			if(i.getUsuario().getFoto() != null) {
+				modelo.addObject("logo", "/images/usuarios/instituciones/" + i.getUsuario().getUsername() + "/" + i.getUsuario().getFoto());
 			}
 		} else {
 			modelo.addObject("letrasBB", false);
 			modelo.addObject("letrasBlancas", false);
 		}
-	}
-
-	// https://www.baeldung.com/java-file-extension#:~:text=java%E2%80%9C.,returns%20extension%20of%20the%20filename.
-	public Optional<String> getExtensionByStringHandling(String filename) {
-		return Optional.ofNullable(filename).filter(f -> f.contains("."))
-				.map(f -> f.substring(filename.lastIndexOf(".") + 1));
 	}
 
 }

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.tfg.mentoring.model.SalaChat;
-import com.tfg.mentoring.model.SalaChatId;
+import com.tfg.mentoring.model.Ids.SalaChatId;
 
 public interface SalaChatRepo extends JpaRepository<SalaChat, SalaChatId>{
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Rest client</title>
+<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.conversejs.org/9.0.0/dist/converse.min.css">
+<script src="https://cdn.conversejs.org/9.0.0/dist/converse.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+<h1>Hello to the rest client who consume plugins</h1>
+
+<script>
+    converse.initialize({
+        bosh_service_url: 'http://localhost:5280/http-bind/',
+    keepalive: true,
+    message_carbons: true,
+    play_sounds: true,
+    roster_groups: true,
+    show_controlbox_by_default: true,
+    xhr_user_search: false
+    });
+</script>
+</body>
+</html> 

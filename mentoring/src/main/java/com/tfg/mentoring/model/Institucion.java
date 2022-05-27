@@ -62,7 +62,6 @@ public class Institucion implements Serializable{
 	private List<Extension> extensiones = new ArrayList<>();
 	
 	
-	
 	public Institucion() {
 		super();
 	}
@@ -75,6 +74,7 @@ public class Institucion implements Serializable{
 		this.webpage = null;
 		this.direccion = null;
 		this.visibilidad = false;
+		
 	}
 
 	public Institucion(Usuario usuario, String nombre, String color, String webpage, String direccion,
@@ -181,6 +181,8 @@ public class Institucion implements Serializable{
 				+ webpage + ", direccion=" + direccion + ", visibilidad=" + visibilidad + ", extensiones=" + extensiones
 				+ "]";
 	}
+
+	
 
 	
 	

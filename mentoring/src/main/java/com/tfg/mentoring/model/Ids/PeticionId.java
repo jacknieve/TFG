@@ -1,4 +1,4 @@
-package com.tfg.mentoring.model;
+package com.tfg.mentoring.model.Ids;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -51,4 +51,11 @@ public class PeticionId implements Serializable{
 	public int hashCode() {
 		return Objects.hash(mentor, mentorizado);
 	}
+
+	@Override
+	public String toString() {
+		return "PeticionId [mentor=" + mentor + ", mentorizado=" + mentorizado + ", creadaEn=" + creadaEn + "]";
+	}
+	
+	
 }

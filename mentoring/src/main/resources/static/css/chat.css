@@ -5,6 +5,7 @@
 	margin-left: 2%;*/
 	margin: 8%;
 	width: 80%;
+	max-height: 100px;
 }
 
 .fotoPerfilChatTarget{
@@ -14,11 +15,29 @@
 	margin-left: 2%;*/
 	margin-top: 14%;
 	width: 100%;
+	max-height: 100px;
+	object-fit: fill;
+}
+
+.fotoPerfilChatLista{
+	border: 5px solid #1C6EA4;
+	border-radius: 80px;
+	/*margin-top: 0.5%;
+	margin-left: 2%;*/
+	margin-top: 14%;
+	width: 100%;
+	max-height: 65px;
+	min-height: 65px;
 }
 
 .nombrePerfilChatTarget{
 	font-size:calc(8px + 0.5vw);
 	font-weight: bold;
+	display : flex;
+  	align-items : center;
+}
+
+.objetoCentrado{
 	display : flex;
   	align-items : center;
 }
@@ -79,7 +98,7 @@
 
 
 .cabeceraChats{
-	/*height: 120px;*/
+	/*max-height: 120px;*/
 	border-bottom: 1px solid black;
 }
 

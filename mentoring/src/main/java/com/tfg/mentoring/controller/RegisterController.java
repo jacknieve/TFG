@@ -1,5 +1,6 @@
 package com.tfg.mentoring.controller;
 
+import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
+import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.enums.Roles;
 import com.tfg.mentoring.model.auxiliar.requests.UserAux;
@@ -50,7 +52,6 @@ public class RegisterController {
 	 * }
 	 */
 
-
 	@ModelAttribute("useraux")
 	public UserAux useraux() {
 		return new UserAux();
@@ -58,13 +59,13 @@ public class RegisterController {
 
 	// Probar a pasar en el prototipo argumentos a un metodo como este
 	@GetMapping("/registration/{mentor}")
-	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor, @AuthenticationPrincipal UserAuth us) {
+	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor,
+			@AuthenticationPrincipal UserAuth us) {
 		if (us == null) {
 			// Usuario user = new Usuario();
-			if (mentor == null) {//aqui por null en los parametros
+			if (mentor == null) {// aqui por null en los parametros
 				ModelAndView model = new ModelAndView("error_page");
-				model.addObject("mensaje",
-						"Los parámetros de la dirección no son correctos.");
+				model.addObject("mensaje", "Los parámetros de la dirección no son correctos.");
 				return model;
 			}
 			UserAux useraux = new UserAux();
@@ -82,7 +83,7 @@ public class RegisterController {
 			model.addObject("useraux", useraux);
 			uservice.addListasModeloSinAreas(model);
 			return model;
-		} else {//Aqui porque ya se habia logeado
+		} else {// Aqui porque ya se habia logeado
 			if (us.getUsername() == null) {
 				ModelAndView model = new ModelAndView("error_page");
 				model.addObject("mensaje",
@@ -92,17 +93,17 @@ public class RegisterController {
 				return model;
 			}
 			if (us.getRol() == Roles.MENTOR) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentor");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentor");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else if (us.getRol() == Roles.MENTORIZADO) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentorizado");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentorizado");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else {
 				System.out.println("Otro rol");
 				ModelAndView model = new ModelAndView("error_page");
@@ -114,7 +115,8 @@ public class RegisterController {
 	}
 
 	@PostMapping("/register/cambio")
-	public ModelAndView cambioRolRegistro(@ModelAttribute("useraux") UserAux useraux, @AuthenticationPrincipal UserAuth us) {
+	public ModelAndView cambioRolRegistro(@ModelAttribute("useraux") UserAux useraux,
+			@AuthenticationPrincipal UserAuth us) {
 		System.out.println("cambio");
 		if (us == null) {
 			if (useraux != null) {
@@ -131,7 +133,7 @@ public class RegisterController {
 				model.addObject("useraux", useraux);
 				uservice.addListasModeloSinAreas(model);
 				return model;
-			} else {//Aqui por que el cuerpo estaba a null
+			} else {// Aqui por que el cuerpo estaba a null
 				ModelAndView model = new ModelAndView("error_page");
 				model.addObject("mensaje",
 						"Se ha producido un error al realizar la petición al servidor, por favor, si recibe este mensaje, "
@@ -139,7 +141,7 @@ public class RegisterController {
 				model.addObject("hora", new Date());
 				return model;
 			}
-		} else {//Aqui por que ya se habia logeado
+		} else {// Aqui por que ya se habia logeado
 			if (us.getUsername() == null) {
 				ModelAndView model = new ModelAndView("error_page");
 				model.addObject("mensaje",
@@ -149,17 +151,17 @@ public class RegisterController {
 				return model;
 			}
 			if (us.getRol() == Roles.MENTOR) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentor");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentor");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else if (us.getRol() == Roles.MENTORIZADO) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentorizado");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentorizado");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else {
 				System.out.println("Otro rol");
 				ModelAndView model = new ModelAndView("error_page");
@@ -174,7 +176,7 @@ public class RegisterController {
 	public ModelAndView registerUserAccount(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result,
 			HttpServletRequest request, @AuthenticationPrincipal UserAuth us) {
 		System.out.println("registro");
-		if(useraux == null) { //Peticion nula
+		if (useraux == null) { // Peticion nula
 			ModelAndView model = new ModelAndView("error_page");
 			model.addObject("mensaje",
 					"Se ha producido un error al realizar la petición al servidor, por favor, si recibe este mensaje, "
@@ -192,35 +194,56 @@ public class RegisterController {
 			}
 			try {
 				uservice.register(useraux, getSiteURL(request));
-			} catch (MessagingException | UnsupportedEncodingException | JDBCConnectionException
-					| QueryTimeoutException e) {
+			} catch (MessagingException | UnsupportedEncodingException | JDBCConnectionException | QueryTimeoutException e) {
 				System.out.println(e.getMessage());
 				System.out.println(e);
 				try {
 					uservice.limpiarUsuario(useraux);
-					} catch (JDBCConnectionException | QueryTimeoutException ex) {
-						System.out.println(e.getMessage());
-						System.out.println("No hay sido posible limpiar al usuario");
-					}
-				return prepareModelToError(useraux, "Se ha producido un problema al intentar enviar el correo, por favor, intente registrarse más tarde");
-			} catch (ExcepcionDB e) {
-				System.out.println(e.getMessage());
-				System.out.println(e);
-				return prepareModelToError(useraux, "El correo indicado ya está registrado");
-			} catch (Exception e) {//Otra excepción
-				System.out.println(e.getMessage());
-				System.out.println(e);
-				try {
-				uservice.limpiarUsuario(useraux);
 				} catch (JDBCConnectionException | QueryTimeoutException ex) {
 					System.out.println(e.getMessage());
 					System.out.println("No hay sido posible limpiar al usuario");
 				}
-				return prepareModelToError(useraux, "Se ha producido un error inesperado, por favor, si lee este mensaje, contacte con nosotros y "+
-						"detallenos el contexto en el que ha ocurrido el error y sea lo más preciso posible con la hora del suceso.");
+				return prepareModelToError(useraux,
+						"Se ha producido un problema al intentar enviar el correo, por favor, intente registrarse más tarde");
+			} catch (ExcepcionRecursos e) {
+				System.out.println(e.getMessage());
+				System.out.println(e);
+				try {
+					uservice.limpiarUsuario(useraux);
+				} catch (JDBCConnectionException | QueryTimeoutException ex) {
+					System.out.println(e.getMessage());
+					System.out.println("No hay sido posible limpiar al usuario");
+				}
+				return prepareModelToError(useraux, e.getMessage());
+			} catch (SecurityException | FileNotFoundException e) {
+				System.out.println(e.getMessage());
+				System.out.println(e);
+				try {
+					uservice.limpiarUsuario(useraux);
+				} catch (JDBCConnectionException | QueryTimeoutException ex) {
+					System.out.println(e.getMessage());
+					System.out.println("No hay sido posible limpiar al usuario");
+				}
+				return prepareModelToError(useraux, "No ha sido posible crear los directorios del usuario");
+			} catch (ExcepcionDB e) {
+				System.out.println(e.getMessage());
+				System.out.println(e);
+				return prepareModelToError(useraux, "El correo indicado ya está registrado");
+			} catch (Exception e) {// Otra excepción
+				System.out.println(e.getMessage());
+				System.out.println(e);
+				try {
+					uservice.limpiarUsuario(useraux);
+				} catch (JDBCConnectionException | QueryTimeoutException ex) {
+					System.out.println(e.getMessage());
+					System.out.println("No hay sido posible limpiar al usuario");
+				}
+				return prepareModelToError(useraux,
+						"Se ha producido un error inesperado, por favor, si lee este mensaje, contacte con nosotros y "
+								+ "detallenos el contexto en el que ha ocurrido el error y sea lo más preciso posible con la hora del suceso.");
 			}
 			return new ModelAndView("register_success");
-		} else { //Por estar ya logeado
+		} else { // Por estar ya logeado
 			if (us.getUsername() == null) {
 				ModelAndView model = new ModelAndView("error_page");
 				model.addObject("mensaje",
@@ -230,17 +253,17 @@ public class RegisterController {
 				return model;
 			}
 			if (us.getRol() == Roles.MENTOR) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentor");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentor");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else if (us.getRol() == Roles.MENTORIZADO) {
-						ModelAndView modelo = new ModelAndView("error_page_loged");
-						modelo.addObject("rol", "Mentorizado");
-						modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
-						modelo.addObject("hora", new Date());
-						return modelo;
+				ModelAndView modelo = new ModelAndView("error_page_loged");
+				modelo.addObject("rol", "Mentorizado");
+				modelo.addObject("mensaje", "Ya te has iniciado sesión, no puedes acceder aquí.");
+				modelo.addObject("hora", new Date());
+				return modelo;
 			} else {
 				System.out.println("Otro rol");
 				ModelAndView model = new ModelAndView("error_page");
@@ -250,7 +273,7 @@ public class RegisterController {
 			}
 		}
 	}
-	
+
 	private ModelAndView prepareModelToError(UserAux useraux, String error) {
 		ModelAndView model = new ModelAndView("registro");
 		model.addObject("useraux", useraux);
@@ -261,24 +284,25 @@ public class RegisterController {
 
 	@GetMapping("/verify")
 	public ModelAndView verificarUsuario(@Param("code") String code) {
-		if(code == null) {//Por atributo vacio
+		if (code == null) {// Por atributo vacio
 			return new ModelAndView("error_page");
 		}
 		System.out.println(code);
 		try {
-		if (uservice.verify(code)) {
-			return new ModelAndView("verify_success");
-		} else {
-			return new ModelAndView("verify_fail");
-		}
-		}catch (JDBCConnectionException | QueryTimeoutException e) {
-			//Error al acceder, que lo vuelva a intentar
+			if (uservice.verify(code)) {
+				return new ModelAndView("verify_success");
+			} else {
+				return new ModelAndView("verify_fail");
+			}
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
+			// Error al acceder, que lo vuelva a intentar
 			ModelAndView model = new ModelAndView("error_page");
-			model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
+			model.addObject("mensaje",
+					"No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
 			model.addObject("hora", new Date());
 			return model;
 		} catch (Exception e) {
-			//Otro error, inesperado
+			// Otro error, inesperado
 			ModelAndView model = new ModelAndView("error_page");
 			model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
 					+ e.getClass().getCanonicalName() + ", por favor, si recibe este mensaje, "

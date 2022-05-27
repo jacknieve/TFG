@@ -36,6 +36,7 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	@Query(nativeQuery = true, value="UPDATE mentores SET feliminacion = current_timestamp WHERE usuario_mentor = ?1 ")
 	void borrarMentor(String username);
 	
+	
 	@Transactional
 	@Modifying
 	@Query(nativeQuery = true, value="DELETE FROM mentores WHERE usuario_mentor = ?1")

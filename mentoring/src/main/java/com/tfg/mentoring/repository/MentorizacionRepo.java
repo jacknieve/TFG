@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.tfg.mentoring.model.Mentorizacion;
-import com.tfg.mentoring.model.MentorizacionId;
+import com.tfg.mentoring.model.Ids.MentorizacionId;
 
 public interface MentorizacionRepo extends JpaRepository<Mentorizacion, MentorizacionId>{
 

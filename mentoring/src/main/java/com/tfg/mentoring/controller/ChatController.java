@@ -43,6 +43,7 @@ import com.tfg.mentoring.service.ActiveUsersService;
 import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 
+
 @Controller
 public class ChatController {
 
@@ -59,6 +60,7 @@ public class ChatController {
 	private MentorizadoRepo menrepo;
 	@Autowired
 	private MentorRepo mrepo;
+	
 
 	@MessageMapping("/send")
 	public void procesarMensaje(@Payload MensajeReenvio mensaje) {
@@ -116,6 +118,9 @@ public class ChatController {
 		}
 
 	}
+	
+	//Icono usuario
+	//https://www.flaticon.es/icono-gratis/usuario_1077063?term=usuario&page=1&position=10&page=1&position=10&related_id=1077063&origin=tag
 
 	// Obtener ventana de chat
 	@GetMapping("/chat")
@@ -131,7 +136,12 @@ public class ChatController {
 					Mentor m = mentor.get();
 					uservice.addInstitucionUtils(modelo, m.getInstitucion());
 					modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
-					// Aqui faltaria el path de la foto de perfil
+					if(m.getUsuario().getFoto() != null) {
+						modelo.addObject("foto", "/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
+					}
+					else {
+						modelo.addObject("foto", "/images/usuario.png");
+					}
 					return modelo;
 				} else {
 					System.out.println("No existe");
@@ -151,6 +161,12 @@ public class ChatController {
 					ModelAndView modelo = new ModelAndView("chat");
 					uservice.addInstitucionUtils(modelo, m.getInstitucion());
 					modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
+					if(m.getUsuario().getFoto() != null) {
+						modelo.addObject("foto", "/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
+					}
+					else {
+						modelo.addObject("foto", "/images/usuario.png");
+					}
 					return modelo;
 				} else {
 					System.out.println("No existe");
@@ -169,16 +185,12 @@ public class ChatController {
 				return model;
 			}
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
-			System.out.println(e.getMessage());
-			System.out.println(e.getLocalizedMessage());
 			System.out.println(e.toString());
 			ModelAndView model = new ModelAndView("error_page");
 			model.addObject("mensaje", "No ha sido posible acceder al repositorio de la aplicación, por favor, inténtelo más tarde");
 			model.addObject("hora", new Date());
 			return model;
 		}catch (Exception e) {
-			System.out.println(e.getMessage());
-			System.out.println(e.getLocalizedMessage());
 			System.out.println(e.toString());
 			ModelAndView model = new ModelAndView("error_page");
 			model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
@@ -204,10 +216,19 @@ public class ChatController {
 				}
 				List<Long> conNuevos = new ArrayList<>();
 				conNuevos = salaChats.getSalasConMensajesNuevos(u.getUsername(), true);
+				System.out.println(conNuevos.toString());
 				for (SalaChat s : salas) {
-					String nombre = s.getMentorizado().getNombre() + " " + s.getMentorizado().getPapellido() + " "
-							+ s.getMentorizado().getSapellido();
-					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), s.getMentorizado().getCorreo(), nombre, false);
+					Mentorizado m = s.getMentorizado();
+					String nombre = m.getNombre() + " " + m.getPapellido() + " "
+							+ m.getSapellido();
+					String foto;
+					if(m.getUsuario().getFoto() != null) {
+						foto = "/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+					}
+					else {
+						foto = "/images/usuario.png";
+					}
+					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
 					if (conNuevos.contains(s.getId_sala())) {
 						sala.setNuevos(true);
 					}
@@ -231,10 +252,19 @@ public class ChatController {
 				}
 				List<Long> conNuevos = new ArrayList<>();
 				conNuevos = salaChats.getSalasConMensajesNuevos(u.getUsername(), false);
+				System.out.println(conNuevos.toString());
 				for (SalaChat s : salas) {
-					String nombre = s.getMentor().getNombre() + " " + s.getMentor().getPapellido() + " "
-							+ s.getMentor().getSapellido();
-					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), s.getMentor().getCorreo(), nombre, false);
+					Mentor m = s.getMentor();
+					String nombre = m.getNombre() + " " + m.getPapellido() + " "
+							+ m.getSapellido();
+					String foto;
+					if(m.getUsuario().getFoto() != null) {
+						foto = "/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+					}
+					else {
+						foto = "/images/usuario.png";
+					}
+					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
 					if (conNuevos.contains(s.getId_sala())) {
 						sala.setNuevos(true);
 					}

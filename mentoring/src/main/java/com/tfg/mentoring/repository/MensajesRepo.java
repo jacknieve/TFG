@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.tfg.mentoring.model.MensajeChat;
-import com.tfg.mentoring.model.MensajeChatId;
+import com.tfg.mentoring.model.Ids.MensajeChatId;
 
 public interface MensajesRepo extends JpaRepository<MensajeChat, MensajeChatId>{
 

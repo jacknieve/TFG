@@ -1,4 +1,4 @@
-package com.tfg.mentoring.model;
+package com.tfg.mentoring.model.Ids;
 
 import java.io.Serializable;
 import java.util.Date;

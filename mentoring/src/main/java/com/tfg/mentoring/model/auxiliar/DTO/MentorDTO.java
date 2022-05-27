@@ -12,10 +12,11 @@ public class MentorDTO {
 	private int horaspormes;
 	private String institucionNombre;
 	private boolean verificado;
+	String foto;
 	
 
 	public MentorDTO(String correo, String nombre, String papellido, String sapellido, String nivelEstudios,
-			int horaspormes, String entidad, String institucionNombre, boolean verificado) {
+			int horaspormes, String entidad, String institucionNombre, boolean verificado, String foto) {
 		super();
 		this.correo = correo;
 		this.nombre = nombre;
@@ -25,6 +26,7 @@ public class MentorDTO {
 		this.horaspormes = horaspormes;
 		this.entidad=entidad;
 		this.verificado=verificado;
+		this.foto=foto;
 	}
 
 	public MentorDTO() {
@@ -109,13 +111,26 @@ public class MentorDTO {
 	public void setVerificado(boolean verificado) {
 		this.verificado = verificado;
 	}
+	
+	
+
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
 
 	@Override
 	public String toString() {
-		return "MentorBusqueda [correo=" + correo + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
+		return "MentorDTO [correo=" + correo + ", nombre=" + nombre + ", papellido=" + papellido + ", sapellido="
 				+ sapellido + ", nivelEstudios=" + nivelEstudios + ", entidad=" + entidad + ", horaspormes="
-				+ horaspormes + ", institucionNombre=" + institucionNombre + ", verificado=" + verificado + "]";
+				+ horaspormes + ", institucionNombre=" + institucionNombre + ", verificado=" + verificado + ", foto="
+				+ foto + "]";
 	}
+
+	
 
 	
 

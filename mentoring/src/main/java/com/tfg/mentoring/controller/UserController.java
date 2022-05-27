@@ -39,8 +39,8 @@ import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.UserAuthDTO;
-import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
 import com.tfg.mentoring.model.auxiliar.enums.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.enums.Roles;
 import com.tfg.mentoring.model.auxiliar.requests.IdNotificacion;
@@ -52,6 +52,7 @@ import com.tfg.mentoring.repository.NotificacionRepo;
 import com.tfg.mentoring.repository.PeticionRepo;
 import com.tfg.mentoring.repository.UsuarioRepo;
 import com.tfg.mentoring.service.ActiveUsersService;
+import com.tfg.mentoring.service.MapeadoService;
 import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 import com.tfg.mentoring.service.util.ListLoad;
@@ -82,6 +83,8 @@ public class UserController {
 	private SalaChatServicio schats;
 	@Autowired
 	private ActiveUsersService acservice;
+	@Autowired
+	private MapeadoService mservice;
 	
 	@Autowired
 	private ListLoad listas;
@@ -169,8 +172,6 @@ public class UserController {
 				model.addObject("hora", new Date());
 				return model;
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				System.out.println(e.getLocalizedMessage());
 				System.out.println(e.toString());
 				ModelAndView model = new ModelAndView("error_page");
 				model.addObject("mensaje", "Se ha producido un error inesperado en el servidor, del tipo: "
@@ -191,16 +192,15 @@ public class UserController {
 
 	// Obtener la informacion del perfil del usuario
 	@GetMapping("/info")
-	public ResponseEntity<UsuarioDTO> getInfoPerfil(@AuthenticationPrincipal UserAuth us) {
+	public ResponseEntity<PerfilDTO> getInfoPerfil(@AuthenticationPrincipal UserAuth us) {
 		try {
 			if (us.getRol() == Roles.MENTOR) {
 				Optional<Mentor> m = mrepo.findById(us.getUsername());
 				if (m.isPresent()) {
 					System.out.println(m.get().toString());
 					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					UsuarioDTO up = uservice.getPerfilMentor(m.get());
-					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());// Esto se podria meter en el
-																						// mapeo cambiandole el nombre
+					PerfilDTO up = mservice.getPerfilMentor(m.get());
+					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
 					up.setMentor(true);
 					System.out.println(up.toString());
 					return new ResponseEntity<>(up, HttpStatus.OK);
@@ -212,7 +212,7 @@ public class UserController {
 				Optional<Mentorizado> m = menrepo.findById(us.getUsername());
 				if (m.isPresent()) {
 					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					UsuarioDTO up = uservice.getPerfilMentorizado(m.get());
+					PerfilDTO up = mservice.getPerfilMentorizado(m.get());
 					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
 					up.setMentor(false);
 					up.setHoraspormes(4);// Aqui le ponemos este valor para que no se nos queje al intentar modificar la
@@ -240,7 +240,7 @@ public class UserController {
 
 	// Actualizar la informacion del perfil del usuario
 	@PostMapping("/setinfo")
-	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody UsuarioDTO up, @AuthenticationPrincipal UserAuth us) {
+	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody PerfilDTO up, @AuthenticationPrincipal UserAuth us) {
 		if (up == null || us.getUsername() == null || up.getNombre() == null) {
 			System.out.println("El usuario o la informacion estaban a null");
 			// Esto no deberia pasar nunca si se llama desde la aplicacion
@@ -261,8 +261,6 @@ public class UserController {
 						men.setHoraspormes(up.getHoraspormes());
 						men.setLinkedin(up.getLinkedin());
 						men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
-						// men.setNivelEstudios(up.getNivelEstudios());
-						// men.setPuesto(up.getPuesto());
 						men.setEntidad(up.getEntidad());
 						men.setTelefono(up.getTelefono());
 						if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
@@ -300,7 +298,6 @@ public class UserController {
 						men.setFnacimiento(up.getFnacimiento());
 						men.setLinkedin(up.getLinkedin());
 						men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
-						// men.setNivelEstudios(up.getNivelEstudios());
 						men.setTelefono(up.getTelefono());
 						if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
 							List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
@@ -345,7 +342,7 @@ public class UserController {
 			System.out.println("El mentorizado estaba null");
 			// Esto no deberia pasar nunca si se llama desde la aplicacion
 			return new ResponseEntity<>(
-					new MensajeError("Se ha producido un problema al intentar realizar la peticion "
+					new MensajeError("Fallo en la peticion","Se ha producido un problema al intentar realizar la peticion "
 							+ "al servidor o al acceder a su información si recibe este mensaje,"
 							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 					HttpStatus.BAD_REQUEST);
@@ -360,19 +357,19 @@ public class UserController {
 					// TODO: handle exception
 					System.out.println(e.getMessage());
 					return new ResponseEntity<>(
-							new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "
+							new MensajeError("Fallo en el repositorio","Se ha producido un problema al intentar actualizar el repositorio, "
 									+ "por favor, vuelva a intentarlo más tarde."),
 							HttpStatus.SERVICE_UNAVAILABLE);
 				} catch (Exception e) { // Otro fallo
 					System.out.println(e.getMessage());
-					return new ResponseEntity<>(new MensajeError(
+					return new ResponseEntity<>(new MensajeError("Error interno",
 							"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
 									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 							HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(new MensajeError(
+				return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
 						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
 								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 						HttpStatus.BAD_REQUEST);
@@ -386,19 +383,19 @@ public class UserController {
 					// TODO: handle exception
 					System.out.println(e.getMessage());
 					return new ResponseEntity<>(
-							new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "
+							new MensajeError("Fallo en el repositorio","Se ha producido un problema al intentar actualizar el repositorio, "
 									+ "por favor, vuelva a intentarlo más tarde."),
 							HttpStatus.SERVICE_UNAVAILABLE);
 				} catch (Exception e) { // Otro fallo
 					System.out.println(e.getMessage());
-					return new ResponseEntity<>(new MensajeError(
+					return new ResponseEntity<>(new MensajeError("Error interno",
 							"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
 									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 							HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 				return new ResponseEntity<>(null, HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>(new MensajeError(
+				return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
 						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
 								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 						HttpStatus.BAD_REQUEST);
@@ -406,7 +403,7 @@ public class UserController {
 		} else {
 			// Esto, en principio, no deberia pasar, puesto que solo puede acceder aqui los
 			// que tengan de rol mentor o mentorizado
-			return new ResponseEntity<>(new MensajeError("No tienes permiso para hacer esto"), HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(new MensajeError("Sin autorización","No tienes permiso para hacer esto"), HttpStatus.UNAUTHORIZED);
 		}
 	}
 
@@ -447,43 +444,12 @@ public class UserController {
 		}
 	}
 
-	// Obtener notificaciones nuevas
-	@GetMapping("/notificaciones/nuevas")
-	public ResponseEntity<List<NotificacionDTO>> getNewNotificaciones(@AuthenticationPrincipal UserAuth us) {
-		try {
-			List<NotificacionDTO> nUser = new ArrayList<NotificacionDTO>();
-			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
-			Notificaciones = notrepo.getNews(us.getUsername());
-			if (Notificaciones.isEmpty()) {
-				System.out.println("Sin nuevas");
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			for (Notificacion n : Notificaciones) {
-				nUser.add(new NotificacionDTO(n));
-				if (n.getEstado() == EstadosNotificacion.ENTREGADA) {
-					n.setEstado(EstadosNotificacion.LEIDA);
-				}
-			}
-			notrepo.saveAll(Notificaciones);
-			return new ResponseEntity<>(nUser, HttpStatus.OK);
-		} catch (JDBCConnectionException | QueryTimeoutException e) {// Fallo al acceder a la base de datos o demasiado
-																		// tiempo
-			// Estas dos excepciones de momento las vamos a meter en el mismo saco, pero se
-			// podrian separar, ya que la segunda es recuperable
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
-		} catch (Exception e) { // Otro fallo
-			System.out.println(e.getMessage());
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	// Borrar una notificacion
 	@PostMapping("/notificaciones/delete")
 	public ResponseEntity<MensajeError> borrarNotificacion(@RequestBody IdNotificacion id) {
 		System.out.println("Borrando");
 		if (id == null) {
-			return new ResponseEntity<>(new MensajeError("No se ha seleccionado ninguna notificacion."),
+			return new ResponseEntity<>(new MensajeError("Fallo en la peticion","No se ha seleccionado ninguna notificacion."),
 					HttpStatus.BAD_REQUEST);
 		}
 		try {
@@ -491,12 +457,12 @@ public class UserController {
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(
-					new MensajeError("Se ha producido un problema al intentar actualizar el repositorio, "
+					new MensajeError("Fallo en el repositorio","Se ha producido un problema al intentar actualizar el repositorio, "
 							+ "por favor, vuelva a intentarlo más tarde."),
 					HttpStatus.SERVICE_UNAVAILABLE);
 		} catch (Exception e) { // Otro fallo
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(new MensajeError(
+			return new ResponseEntity<>(new MensajeError("Error interno",
 					"Se ha producido un error interno en el servidor, por favor, si recibe este mensaje, "
 							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "+new Date()),
 					HttpStatus.INTERNAL_SERVER_ERROR);

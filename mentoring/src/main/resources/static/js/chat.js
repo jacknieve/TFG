@@ -5,7 +5,7 @@ appChat.config(function($httpProvider) {
 	$httpProvider.defaults.useXDomain = true;
 });
 
-appChat.controller("chatController", function($scope, $http, $location, $notification) {
+appChat.controller("chatController", function($scope, $http, $notification) {
 	$scope.mostrarChat = false;
 	$scope.sinMensajes = false;
 	$scope.sinSalas = false;
@@ -43,12 +43,12 @@ appChat.controller("chatController", function($scope, $http, $location, $notific
 
 					const queryString = window.location.search;
 					const urlParams = new URLSearchParams(queryString);
-					const mentorParam = urlParams.get('s');
-					console.log(mentorParam);
-					const sala = $scope.salas.find(element => element.id == mentorParam);
-					console.log(sala);
-					if (sala != null) {
-						$scope.abrirChat(sala);
+					const salaParam = urlParams.get('s');
+					console.log(salaParam);
+					//const sala = $scope.salas.find(element => element.id == salaParam);
+					//console.log(sala);
+					if (mapaSalas.has(salaParam)) {
+						$scope.abrirChat(mapaSalas.get(salaParam));
 					}
 
 				} else if (response.status == 204) {
@@ -68,7 +68,7 @@ appChat.controller("chatController", function($scope, $http, $location, $notific
 				console.log(response)
 				//Aqui falta gestionar errores
 				if (response.status == 503) {
-					$notification.error("Fallo al acceder al servidor", "Se ha producido un fallo al intentar acceder al repositorio que contiene sus contactos, por favor" +
+					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene sus contactos, por favor" +
 						"vuelva a intentarlo más tarde", null, false);
 				}
 				else if (response.status == 500) {
@@ -86,7 +86,7 @@ appChat.controller("chatController", function($scope, $http, $location, $notific
 						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
 				}
 				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
-				errorSound();
+				//errorSound();
 				$scope.cargando = false;
 				$scope.errorContactos = true;
 			}
@@ -106,7 +106,7 @@ appChat.controller("chatController", function($scope, $http, $location, $notific
 				else {
 					//console.log(mapaSalas);
 					//console.log($scope.salaActual);
-					if (mapaSalas.contains(mensaje.cuerpo.sala)) {
+					if (mapaSalas.has(mensaje.cuerpo.sala)) {
 						mapaSalas.get(mensaje.cuerpo.sala).nuevos = true;
 					}
 				}
@@ -206,7 +206,7 @@ appChat.controller("chatController", function($scope, $http, $location, $notific
 					console.log("Fallo al acceder")
 					console.log(response)
 					if (response.status == 503) {
-						$notification.error("Fallo al acceder al servidor", "Se ha producido un fallo al intentar acceder al repositorio que contiene los mensajes de este chat, por favor" +
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene los mensajes de este chat, por favor" +
 							"vuelva a intentarlo más tarde", null, false);
 					}
 					else if (response.status == 500) {

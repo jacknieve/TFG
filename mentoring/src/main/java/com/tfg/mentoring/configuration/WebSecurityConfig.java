@@ -59,8 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**","/images/**", "/cierre", "/info",
 						"/verify_success", "/verify_fail", "/register_success", "/error_page", "/vs", "/vf", "/rs", "/perror", "/perrorl").permitAll()
-				.antMatchers("/principalMentor", "/mentor/**").hasAuthority("MENTOR")
-				.antMatchers("/principalMentorizado", "/mentorizado/**").hasAuthority("MENTORIZADO")
+				.antMatchers("/principalMentor", "/mentor/**", "/file/download/mentorizado/**").hasAuthority("MENTOR")
+				.antMatchers("/principalMentorizado", "/mentorizado/**", "/file/download/mentor/**").hasAuthority("MENTORIZADO")
 				.antMatchers("/user/**").hasAnyAuthority("MENTOR","MENTORIZADO")
 				.anyRequest().authenticated()
 				.and()

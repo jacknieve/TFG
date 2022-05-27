@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
 import com.tfg.mentoring.model.Mentor;
@@ -165,14 +166,37 @@ public class InitialController {
 		}
 	}
 
-	/*@GetMapping("/perror")
+	@GetMapping("/perror")
 	public ModelAndView perror() {
+		/*try {
+			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentores/").getAbsolutePath()+"/jacknieve@gmail.com/";
+			File kk = new File(path);
+			kk.mkdir();
+			path = ResourceUtils.getFile("classpath:static/images/usuarios/mentorizados/").getAbsolutePath()+"/solowowglez@gmail.com/";
+			kk = new File(path);
+			kk.mkdir();
+			path = ResourceUtils.getFile("classpath:static/images/usuarios/mentorizados/").getAbsolutePath()+"/jonhelcapo2@gmail.com/";
+			kk = new File(path);
+			kk.mkdir();
+			path = ResourceUtils.getFile("classpath:static/images/usuarios/mentorizados/").getAbsolutePath()+"/siemprehistoria@gmail.com/";
+			kk = new File(path);
+			kk.mkdir();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} */
 		ModelAndView model = new ModelAndView("error_page");
 		model.addObject("mensaje", "No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
 				+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
 		model.addObject("hora", new Date());
 		return model;
-	}*/
+	}
+	
+	@GetMapping("/redirect")
+	public RedirectView pruebaRedireccion() {
+		//return new RedirectView("/user/perfil", true);
+		return new RedirectView("/file/download/mentorizado/solowowglez@gmail.com/foto2.jpeg", true);
+	}
 
 	@GetMapping("/perrorl")
 	public ModelAndView perrorl() {
@@ -182,6 +206,7 @@ public class InitialController {
 		model.addObject("hora", new Date());
 		return model;
 	}
+	
 	
 	@GetMapping("/cierre")
 	public void cierre() {

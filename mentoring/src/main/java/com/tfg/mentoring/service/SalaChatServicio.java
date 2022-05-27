@@ -93,8 +93,12 @@ public class SalaChatServicio {
 		srepo.save(sala);
 		if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
 			String nombre = mentor.getNombre() + " " + mentor.getPapellido() + " " + mentor.getSapellido();
+			String foto = "";
+			if(mentor.getUsuario().getFoto() != null) {
+				foto = "/images/usuarios/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto();
+			}
 			messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
-					AsuntoMensaje.CONTACTO, new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false)));
+					AsuntoMensaje.CONTACTO, new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false, foto)));
 		}
 
 	}
@@ -104,23 +108,37 @@ public class SalaChatServicio {
 		if (fueMentor) {
 			if (acservice.activo(mentorizado) && acservice.enChat(mentorizado)) {
 				messagingTemplate.convertAndSendToUser(mentorizado, "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor, null, true)));
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor, null, true, null)));
 			}
 		} else {
 			if (acservice.activo(mentor) && acservice.enChat(mentor)) {
 				messagingTemplate.convertAndSendToUser(mentor, "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentorizado, null, true)));
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentorizado, null, true, null)));
 			}
 		}
 	}
 
 	// Cerrar todos los chats de un mentor al este eliminar su cuenta
 	public void cerrarChatSalirMentor(String username) {
+		List<SalaChat> salas = srepo.findByMentor(username);
+		for(SalaChat s : salas) {
+			if (acservice.activo(s.getMentorizado().getCorreo()) && acservice.enChat(s.getMentorizado().getCorreo())) {
+				messagingTemplate.convertAndSendToUser(s.getMentorizado().getCorreo(), "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
+			}
+		}
 		srepo.salirTodosChatsMentor(username);
 	}
 
 	// Lo mismo que la anterior con mentorizado
 	public void cerrarChatSalirMentorizado(String username) {
+		List<SalaChat> salas = srepo.findByMentorizado(username);
+		for(SalaChat s : salas) {
+			if (acservice.activo(s.getMentor().getCorreo()) && acservice.enChat(s.getMentor().getCorreo())) {
+				messagingTemplate.convertAndSendToUser(s.getMentor().getCorreo(), "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
+			}
+		}
 		srepo.salirTodosChatsMentorizado(username);
 	}
 

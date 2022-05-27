@@ -6,26 +6,23 @@ import com.tfg.mentoring.model.auxiliar.enums.FasesMentorizacion;
 
 public class MentorizacionDTO {
 	private String correo;
-	private String foto;//Para la futura foto de perfil
 	private UsuarioDTO uperfil;
 	private FasesMentorizacion fase;
 	private Long fecha_fin;
 	private boolean verificado;
 	
-	public MentorizacionDTO(String correo, String foto, UsuarioDTO uperfil, FasesMentorizacion fase, Long fecha_fin, boolean verificado) {
+	public MentorizacionDTO(String correo, UsuarioDTO uperfil, FasesMentorizacion fase, Long fecha_fin, boolean verificado) {
 		super();
 		this.correo = correo;
-		this.foto = foto;
 		this.uperfil = uperfil;
 		this.fase = fase;
 		this.fecha_fin = fecha_fin;
 		this.verificado = verificado;
 	}
 	
-	public MentorizacionDTO(Mentorizacion m, UsuarioDTO up, String correo) {
+	public MentorizacionDTO(Mentorizacion m, UsuarioDTO up, String correo, boolean mentor) {
 		super();
 		this.correo = correo;
-		this.foto = null;
 		this.uperfil=up;
 		this.fase=m.getFase();
 		if(m.getFin() != null) {
@@ -33,7 +30,7 @@ public class MentorizacionDTO {
 		}
 		else {
 			this.fecha_fin=null;
-			if(up.isMentor()) {
+			if(mentor) {
 				this.verificado=up.isVerificado();
 			}
 			else this.verificado=false;
@@ -52,15 +49,6 @@ public class MentorizacionDTO {
 
 	public void setCorreo(String correo) {
 		this.correo = correo;
-	}
-
-
-	public String getFoto() {
-		return foto;
-	}
-
-	public void setFoto(String foto) {
-		this.foto = foto;
 	}
 
 	public UsuarioDTO getUperfil() {
@@ -102,7 +90,7 @@ public class MentorizacionDTO {
 
 	@Override
 	public String toString() {
-		return "MentorizacionUser [correo=" + correo + ", foto=" + foto + ", uperfil=" + uperfil + ", fase=" + fase
+		return "MentorizacionUser [correo=" + correo + ", uperfil=" + uperfil + ", fase=" + fase
 				+ ", fecha_fin=" + fecha_fin + ", verificado=" + verificado + "]";
 	}
 

@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
+import com.tfg.mentoring.model.Ids.SalaChatId;
+
 @Entity
 @Table(name = "salaschat")
 public class SalaChat implements Serializable{

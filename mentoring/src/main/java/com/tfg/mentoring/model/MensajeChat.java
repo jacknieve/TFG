@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.tfg.mentoring.model.Ids.MensajeChatId;
 import com.tfg.mentoring.model.auxiliar.enums.EstadoMensaje;
 
 @Entity
@@ -26,14 +27,8 @@ public class MensajeChat {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_sala", referencedColumnName = "id_sala", insertable = false, updatable = false)
 	private SalaChat sala;
-	//Faltaria, para cuando los ficheros, un booleano o un enum que indique si contiene texto o una imagen
+	//Faltaria, para cuando los ficheros, un booleano o un enum que indique si contiene texto o un fichero
 	
-	/*public MensajeChat(String contenido, long id, boolean deMentor) {
-		super();
-		this.contenido = contenido;
-		this.id = new MensajeChatId(id, deMentor); 
-		this.estado = EstadoMensaje.ENVIADO;
-	}*/
 	
 	public MensajeChat(String contenido, SalaChat s, boolean deMentor) {
 		super();
