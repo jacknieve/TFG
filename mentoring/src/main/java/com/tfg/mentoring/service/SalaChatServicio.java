@@ -162,5 +162,34 @@ public class SalaChatServicio {
 	private MensajeChatDTO convertMensajeChatToDTO(MensajeChat m) {
 		return new MensajeChatDTO(m);
 	}
+	
+	public boolean borrarFileChat(String username, long id, String filename, boolean mentor) throws JDBCConnectionException, QueryTimeoutException{
+		int n;
+		if(mentor) {
+			//Hago primero esta, porque en caso de que una de las dos falle, esta no provoca cambios en la DB
+			n = srepo.countFileChatMentor(username, filename);
+			
+		}
+		else {
+			n = srepo.countFileChatMentorizado(username, filename);
+		}
+		System.out.println(n);
+		mrepo.actualizarFileChat(filename + " (borrado)", true, id, mentor, false, filename);
+		
+		return n == 1;
+	}
+	
+	public void restoreFileChat(long id, String filename, boolean mentor){
+		try {
+		mrepo.actualizarFileChat(filename, false, id, mentor, true, filename + " (borrado)");
+		}
+		catch (JDBCConnectionException | QueryTimeoutException e) {
+			System.out.println(e.getMessage());
+			//Aqui habria que registrar esto de tener un log, porque es algo que se tendria que arrgelar una vez estuviese disponible
+			System.out.println("No ha sido posible restaurar el mensaje en la base de datos");
+		}
+		
+	}
+	
 
 }

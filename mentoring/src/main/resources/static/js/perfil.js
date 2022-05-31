@@ -50,16 +50,12 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 	$scope.foto = "/images/usuario.png";
 	$scope.ficheroSubir = null;
 	$scope.sinficherosperfil = false;
-	$scope.sinficheroschat = false;
 
 	$scope.getInfo = function() {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.get("/user/info").then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
-					console.log(response);
-					console.log(response.data);
 					$scope.usuario = response.data;
 					copiaDatos = Object.assign({}, response.data);
 					$scope.mydate = new Date(response.data.fnacimiento);
@@ -82,45 +78,45 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 					var socket = new SockJS('/websocket');
 					stompClient = Stomp.over(socket);
 					stompClient.connect({}, function(frame) {
-						console.log('Connected: ' + frame);
+						//console.log('Connected: ' + frame);
 						stompClient.subscribe("/usuario/" + response.data.correo + "/queue/messages", controladorMensajes);
 					});
 				}
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio para obtener su información, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener su información, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 400) {
-					$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para obtener su información," +
-						" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
-						+ new Date(), null, false);
-				}
-				else if (response.status == 401) {
-					$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
-				}
-				else if (response.status == 404) {
-					$notification.error("Sin chat", "No se ha encontrado la información de su cuenta" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 403) {
-					$notification.error("Usuario no encontrado", "Se ha producido un fallo al intentar acceder a la información de tu cuenta" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener su información" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para obtener su información," +
+							" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
+							+ new Date(), null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio para obtener su información, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener su información, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					case 401:
+						$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
+						break;
+					case 404:
+						$notification.error("Sin chat", "No se ha encontrado la información de su cuenta" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					case 403:
+						$notification.error("Usuario no encontrado", "Se ha producido un fallo al intentar acceder a la información de tu cuenta" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener su información" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.cargando = false;
 			}
@@ -134,8 +130,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 	var controladorMensajes = function(mensaje) {
 		var mensaje = JSON.parse(mensaje.body);
-		console.log(mensaje);
-		//$scope.mensajes.push(mensaje);
 		switch (mensaje.asunto) {
 			case "NOTIFICACION":
 				$notification.info(mensaje.cuerpo.titulo, "", null, false);
@@ -148,52 +142,48 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 	}
 
 	$scope.setInfo = function(usuario) {
-		console.log($scope)
 		if ($scope.form.$valid) {
 			$scope.cargando = true;
-			console.log("Consulta lanzada")
 			usuario.fnacimiento = $scope.mydate;
 			$http.post("/user/setinfo", usuario).then(
 				function sucessCallback(response) {
-					//console.log(response);
-					console.log(response);
 					areasNuevas.clear(); //Borramos las areas para no intentar solo eliminar del frontend un area
 					$notification.success("Información actualizada", "Tu información se ha actualizadp de forma exitosa", null, false);
 					$scope.cargando = false;
 				},
 				function errorCallback(response) {
-					console.log("Fallo al acceder")
-					console.log(response)
-					if (response.status == 503) {
-						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio para actualizar su información, por favor" +
-							"vuelva a intentarlo más tarde", null, false);
-					}
-					else if (response.status == 500) {
-						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar actualizar su información, si recibe este error, por favor, pongase en contacto con "
-							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-					}
-					else if (response.status == 400) {
-						$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para actualizar su información," +
-							" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
-							+ new Date(), null, false);
-					}
-					else if (response.status == 401) {
-						$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
-					}
-					else if (response.status == 404) {
-						$notification.error("Sin chat", "En el servidor no hay constancia de un chat abierto con este mentor" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-					}
-					else if (response.status == 403) {
-						$notification.error("Usuario no encontrado", "Se ha producido un fallo al intentar acceder a la información de tu cuenta para actualizarla" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-					}
-					else if (response.status == 0) {
-						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-					}
-					else {
-						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar actualizar su información" +
-							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+					switch (response.status) {
+						case 0:
+							$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+							break;
+						case 400:
+							$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para actualizar su información," +
+								" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
+								+ new Date(), null, false);
+							break;
+						case 503:
+							$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio para actualizar su información, por favor" +
+								"vuelva a intentarlo más tarde", null, false);
+							break;
+						case 500:
+							$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar actualizar su información, si recibe este error, por favor, pongase en contacto con "
+								+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+							break;
+						case 401:
+							$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
+							break;
+						case 403:
+							$notification.error("Usuario no encontrado", "Se ha producido un fallo al intentar acceder a la información de tu cuenta para actualizarla" +
+								", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+							break;
+						case 404:
+							$notification.error("Sin chat", "En el servidor no hay constancia de un chat abierto con este mentor" +
+								", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+							break;
+						default:
+							$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar actualizar su información" +
+								", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+							break;
 					}
 					$scope.cargando = false;
 					errorSound();
@@ -207,8 +197,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 	}
 
 	$scope.deshacer = function() {
-		console.log(copiaDatos);
-		console.log($scope.usuario);
 		$scope.usuario = Object.assign({}, copiaDatos);
 	}
 
@@ -236,11 +224,9 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 		$scope.cargando = true;
 		if (areasNuevas.has(area.area)) {
 			index = $scope.usuario.areas.indexOf(area);
-			console.log(index);
 			$scope.usuario.areas.splice(index, 1);
 			areasUsuario.delete(area.area);
 			areasNuevas.delete(area.area);
-			console.log("Borrado solo en el frontend");
 			if ($scope.usuario.areas.length == 0) {
 				$scope.sinareas = true;
 			}
@@ -250,7 +236,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 			$http.post("/user/areas/delete", area).then(
 				function sucessCallback(response) {
 					if (response.status == 200) {
-						console.log(response.data);
 						index = $scope.usuario.areas.indexOf(area.area);
 						$scope.usuario.areas.splice(index, 1);
 						areasUsuario.delete(area.area);
@@ -262,13 +247,18 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 				},
 				function errorCallback(response) {
-					console.log("Fallo al eliminar");
-					console.log(response);
-					if (response.status == 0) {
-						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-					}
-					else {
-						$notification.error(response.data.titulo, response.data.mensaje, null, false);
+					switch (response.status) {
+						case 0:
+							$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+								"por favor, disculpen las molestias", null, false);
+							break;
+						case 400:
+							$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+								" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+							break;
+						default:
+							$notification.error(response.data.titulo, response.data.mensaje, null, false);
+							break;
 					}
 					$scope.cargando = false;
 					errorSound();
@@ -310,8 +300,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 				errorSound();
 			}
 			else {
-
-				console.log($scope.imagenPerfil);
 				var config = {
 					transformRequest: angular.identity,
 					transformResponse: angular.identity,
@@ -329,21 +317,25 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 							var path = JSON.parse(response.data);
 							$scope.foto = "/images/usuario.png";
 							$scope.foto = path.titulo;
-							console.log($scope.foto)
 							$notification.success("Imagen subida con éxito", null, null, false);
 							$scope.cargando = false;
 						}
 
 					},
 					function errorCallback(response) {
-						console.log("Fallo al eliminar");
-						console.log(response);
 						var mensaje = JSON.parse(response.data);
-						if (response.status == 0) {
-							$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-						}
-						else {
-							$notification.error(mensaje.titulo, mensaje.mensaje, null, false);
+						switch (response.status) {
+							case 0:
+								$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+									"por favor, disculpen las molestias", null, false);
+								break;
+							case 400:
+								$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+									" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+								break;
+							default:
+								$notification.error(mensaje.titulo, mensaje.mensaje, null, false);
+								break;
 						}
 						$scope.cargando = false;
 						errorSound();
@@ -359,7 +351,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 	$scope.subirFichero = function() {
 		if ($scope.ficheroSubir != null) {
-			console.log($scope.ficheroSubir);
 			if ($scope.usuario.ficheros.indexOf($scope.ficheroSubir.name) == -1) {
 
 
@@ -370,7 +361,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 				}
 				else {
 
-					console.log($scope.ficheroSubir);
 					var config = {
 						transformRequest: angular.identity,
 						transformResponse: angular.identity,
@@ -387,8 +377,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 							if (response.status == 200) {
 								$scope.sinficherosperfil = false;
 								var name = JSON.parse(response.data);
-								//$scope.foto = path.titulo;
-								console.log(name);
 								$scope.usuario.ficheros.push(name.titulo);
 								$notification.success("Fichero subido con éxito", null, null, false);
 								$scope.cargando = false;
@@ -397,14 +385,19 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 						},
 						function errorCallback(response) {
-							console.log("Fallo al subir");
-							console.log(response);
 							var mensaje = JSON.parse(response.data);
-							if (response.status == 0) {
-								$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-							}
-							else {
-								$notification.error(mensaje.titulo, mensaje.mensaje, null, false);
+							switch (response.status) {
+								case 0:
+									$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+										"por favor, disculpen las molestias", null, false);
+									break;
+								case 400:
+									$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+										" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+									break;
+								default:
+									$notification.error(mensaje.titulo, mensaje.mensaje, null, false);
+									break;
 							}
 							$scope.cargando = false;
 							errorSound();
@@ -424,13 +417,8 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 	$scope.dowloadFile = function(file) {
 		$scope.cargando = true;
-		/*if($scope.usuario.mentor){
-			$window.location.href = "/file/download/mentor/"+$scope.usuario.correo+"/"+file;
-		}
-		else{
-			$window.location.href = "/file/download/mentorizado/"+$scope.usuario.correo+"/"+file;
-		}*/
-		$window.location.href = "/file/download/my/" + file;
+		path = "/file/download/my/perfil/" + file;
+		window.open(path, '_blank', '');
 
 		$scope.cargando = false;
 
@@ -441,7 +429,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 		$http.post("/file/deletefile", file).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
-					console.log(response.data);
 					index = $scope.usuario.ficheros.indexOf(file);
 					$scope.usuario.ficheros.splice(index, 1);
 					if ($scope.usuario.ficheros.length == 0) {
@@ -453,8 +440,6 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al eliminar");
-				console.log(response);
 				switch (response.status) {
 					case 0:
 						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
@@ -474,6 +459,7 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 		)
 
 	}
+
 
 
 });

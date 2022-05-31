@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+
 import com.tfg.mentoring.model.Ids.MentorizacionId;
 import com.tfg.mentoring.model.auxiliar.enums.FasesMentorizacion;
 
@@ -33,7 +34,7 @@ public class Mentorizacion {
 	private Date fin;
 	
 	@Column(name="calificacion")
-	private Long calificacion;
+	private Integer calificacion;
 	
 	@Column(name="comentario", length = 300)
 	private String comentario;
@@ -79,11 +80,11 @@ public class Mentorizacion {
 	
 	
 
-	public Long getCalificacion() {
+	public Integer getCalificacion() {
 		return calificacion;
 	}
 
-	public void setCalificacion(Long calificacion) {
+	public void setCalificacion(Integer calificacion) {
 		this.calificacion = calificacion;
 	}
 

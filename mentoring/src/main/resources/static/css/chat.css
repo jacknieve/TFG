@@ -203,6 +203,8 @@
 	width: 96%;
 	height: 60px;
 	margin-top: 5px;
+	display : flex;
+  	align-items : center;
 }
 
 .sendBotonSection{

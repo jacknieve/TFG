@@ -28,8 +28,11 @@ import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.exceptions.ExcepcionFichero;
 import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.Fichero;
+import com.tfg.mentoring.model.MensajeChat;
+import com.tfg.mentoring.model.SalaChat;
 import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.repository.FicheroRepo;
+import com.tfg.mentoring.repository.MensajesRepo;
 import com.tfg.mentoring.repository.UsuarioRepo;
 
 @Service
@@ -37,9 +40,13 @@ public class FileService {
 
 	@Autowired
 	private UsuarioRepo urepo;
+	
 
 	@Autowired
 	private FicheroRepo frepo;
+	
+	@Autowired
+	private MensajesRepo mrepo;
 
 	public String guardarImagen(MultipartFile imagen, String username, String rol)
 			throws IOException, ExcepcionFichero, SecurityException, JDBCConnectionException, QueryTimeoutException {
@@ -124,14 +131,14 @@ public class FileService {
 			throw new ExcepcionFichero("Nombre demasiado largo",
 					"El nombre del fichero excede la longitud máxima permitida de 250 caracteres.");
 		}
-		// https://www.baeldung.com/java-folder-size
-
+		
 		Path directorio = Paths.get(path);
+		// https://www.baeldung.com/java-folder-size
 		long size = Files.walk(directorio).filter(p -> p.toFile().isFile()).mapToLong(p -> p.toFile().length()).sum();
 		float tam = ((size + file.getSize()) / 1024) / 1024;
 		if (tam > 50.0) {// Si es mas que 10MB
 			throw new ExcepcionFichero("Cuota superada",
-					"Has superado la cuota de almacenamiento de 10MB, patra subir un nuevo archivo, debe eliminar otros.");
+					"Has superado la cuota de almacenamiento de 50MB, patra subir un nuevo archivo, debe eliminar otros.");
 		}
 		Optional<Usuario> u = urepo.findById(username);
 		String filePath = "";
@@ -139,9 +146,6 @@ public class FileService {
 			frepo.save(new Fichero(u.get(), nombre));
 			filePath = path + "" + nombre;
 		} else {
-			// Aqui poner otra excepcion (la excepcion de ficheros podria tener otro
-			// atributo donde meterle el titulo)
-			// Lo mismo en subir imagen
 			throw new ExcepcionDB("No se ha podido encontrar la información de perfil del usuario.");
 		}
 
@@ -150,8 +154,51 @@ public class FileService {
 		Files.write(pathFichero, bytes);
 		return nombre;
 	}
+	
+	public MensajeChat guardarFicheroSend(MultipartFile file, String username, String rol, SalaChat sala, boolean deMentor)
+			throws IOException, ExcepcionFichero, SecurityException, ExcepcionRecursos, ExcepcionDB, JDBCConnectionException, QueryTimeoutException{
+
+		String path = "recursos/user-files/" + rol + "/" + username + "/chat/";
+		File dir = new File(path);
+		if (!dir.exists()) {
+			throw new ExcepcionRecursos(
+					"No existe el directorio del usuario, por favor, si recibe este error, pongase en contacto con nosotros."
+							+ "Hora del suceso: " + new Date());
+		}
+		if (file.isEmpty()) {
+			throw new ExcepcionFichero("Fichero vacío", "El fichero facilitado estaba vacío.");
+		}
+		String nombre = file.getOriginalFilename();
+		if (nombre.length() > 250) {
+			throw new ExcepcionFichero("Nombre demasiado largo",
+					"El nombre del fichero excede la longitud máxima permitida de 250 caracteres.");
+		}
+		// https://www.baeldung.com/java-folder-size
+
+		Path directorio = Paths.get(path);
+		long size = Files.walk(directorio).filter(p -> p.toFile().isFile()).mapToLong(p -> p.toFile().length()).sum();
+		float tam = ((size + file.getSize()) / 1024) / 1024;
+		if (tam > 50.0) {// Si es mas que 10MB
+			throw new ExcepcionFichero("Cuota superada",
+					"Has superado la cuota de almacenamiento de 50MB, para subir un nuevo archivo, debe eliminar otros.");
+		}
+		MensajeChat msg = new MensajeChat(nombre, sala, deMentor, false);
+		mrepo.save(msg);
+		String filePath = path + "" + nombre;
+
+		byte[] bytes = file.getBytes();
+		Path pathFichero = Paths.get(filePath);
+		Files.write(pathFichero, bytes);
+		return msg;
+	}
 
 	public List<String> getFicherosUser(String username) {
+		List<String> files = new ArrayList<>();
+		files = frepo.findByUser(username).stream().map(Fichero::getNombre).collect(Collectors.toList());
+		return files;
+	}
+	
+	public List<String> getFicherosUserChat(String username) {
 		List<String> files = new ArrayList<>();
 		files = frepo.findByUser(username).stream().map(Fichero::getNombre).collect(Collectors.toList());
 		return files;
@@ -184,7 +231,26 @@ public class FileService {
 			}
 		}
 		else {
-			throw new ExcepcionRecursos("No ha sido posible acceder al directorio del usuario para borrar la imagen.");
+			throw new ExcepcionRecursos("No ha sido posible acceder al directorio del usuario para borrar el fichero.");
+		}
+	}
+	
+	public void borrarFileSend(String filename, String username, String rol) 
+			throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos, SecurityException, IOException{
+		String path = "recursos/user-files/" + rol + "/" + username + "/chat/";
+		File dir = new File(path);
+		if (dir.exists()) {
+			String filePath = path + "" + filename;
+			File f = new File(filePath);
+			if (f.exists()) {
+				f.delete();
+			}
+			else {
+				throw new ExcepcionRecursos("El fichero indicado no existe.");
+			}
+		}
+		else {
+			throw new ExcepcionRecursos("No ha sido posible acceder al directorio del usuario para borrar el fichero.");
 		}
 	}
 	
@@ -208,6 +274,7 @@ public class FileService {
 		}
 		catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
+			//Aqui habria que registrar esto de tener un log, porque es algo que se tendria que arrgelar una vez estuviese disponible
 			System.out.println("No ha sido posible limpiar el fichero en la base de datos");
 		}
 		catch (Exception e) {

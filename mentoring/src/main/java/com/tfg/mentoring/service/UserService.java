@@ -105,7 +105,7 @@ public class UserService {
 			}
 			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentores/").getAbsolutePath()+"/"+useraux.getCorreo()+"/";
 			File imagen = new File(path);
-			if(imagen.mkdir()) {
+			if(!imagen.mkdir()) {
 				throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el mentor");
 			}
 			sendVerificationEmail(user, mentor.getNombre(), siteURL);
@@ -125,9 +125,9 @@ public class UserService {
 			if(!filesUsers.mkdir() || !filesUsersPerfil.mkdir() || !filesUsersChat.mkdir()) {
 				throw new ExcepcionRecursos("No ha sido posible crear el directorio para el mentorizado");
 			}
-			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentores/").getAbsolutePath()+"/"+useraux.getCorreo()+"/";
+			String path = ResourceUtils.getFile("classpath:static/images/usuarios/mentorizados/").getAbsolutePath()+"/"+useraux.getCorreo()+"/";
 			File imagen = new File(path);
-			if(imagen.mkdir()) {
+			if(!imagen.mkdir()) {
 				throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el mentorizado");
 			}
 			sendVerificationEmail(user, mentorizado.getNombre(), siteURL);
@@ -184,7 +184,7 @@ public class UserService {
 						MotivosNotificacion.SISTEMA);
 			} else if (user.getRol() == Roles.MENTORIZADO) {
 				enviarNotificacion(user, "Bienvenido/a ",
-						"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide"
+						"Te damos la bienvenida a nuestra aplicación, esperemos que le sea de utilidad.\n Por favor, no olvide "
 								+ "rellenar los campos extra en su perfíl, como las áreas de conocimiento en las que quiere ser mentorizado, o su descripción.",
 						MotivosNotificacion.SISTEMA);
 			}
@@ -261,10 +261,7 @@ public class UserService {
 				System.out.println("Se ha intentado enviar una notificacion a un usuario que no existe");
 			}
 
-		} catch (JDBCConnectionException | QueryTimeoutException e) {// Si falla el acceso a la base de datos o
-																		// tarda
-																		// mucho
-			// TODO: handle exception
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());

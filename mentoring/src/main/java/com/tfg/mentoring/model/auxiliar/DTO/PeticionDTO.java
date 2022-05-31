@@ -12,9 +12,9 @@ public class PeticionDTO {
 	private String motivo;
 	private boolean nueva;
 	private String fechaenv;
-	private UsuarioDTO info;
+	private PeticionInfoDTO info;
 	
-	public PeticionDTO(String nombre, String motivo, boolean nueva, String fechaenv, UsuarioDTO info) {
+	public PeticionDTO(String nombre, String motivo, boolean nueva, String fechaenv, PeticionInfoDTO info) {
 		super();
 		this.nombre = nombre;
 		this.motivo = motivo;
@@ -23,7 +23,7 @@ public class PeticionDTO {
 		this.info = info;
 	}
 	
-	public PeticionDTO(Peticion p, UsuarioDTO info) {
+	public PeticionDTO(Peticion p, PeticionInfoDTO info) {
 		super();
 		Mentorizado m = p.getMentorizado();
 		this.nombre = m.getNombre()+" "+m.getPapellido()+" "+m.getSapellido();
@@ -75,11 +75,11 @@ public class PeticionDTO {
 	
 	
 
-	public UsuarioDTO getInfo() {
+	public PeticionInfoDTO getInfo() {
 		return info;
 	}
 
-	public void setInfo(UsuarioDTO info) {
+	public void setInfo(PeticionInfoDTO info) {
 		this.info = info;
 	}
 

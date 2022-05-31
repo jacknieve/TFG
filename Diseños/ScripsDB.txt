@@ -2,7 +2,7 @@
 insert into usuarios (enable, password, rol, unlocked, username, verification_code, notificar_correo)
  values (FALSE, 'nohay', 3, false, 'OtraInstitucion', null, false);
 insert into instituciones (color, direccion, nombre, visibilidad, webpage, usuario_username, colorbandas, letrasblancas, letrasblancasbandas)
- values (null, null, 'Otra', false, null, 'OtraInstitucion', null, false, false);
+ values ('#5AB9EA', null, 'Otra', false, null, 'OtraInstitucion', '#5AB9EA', false, false);
 
 INSERT INTO nivelestudios (nivelestudios) VALUES ('Basica'), ('Secundaria'), ('Tecnico'), ('Bachillerato'),
 ('Graduado'), ('Master'), ('Doctorado'), ('Otros');

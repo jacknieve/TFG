@@ -284,9 +284,9 @@
 							<hr>
 							<div class="row">
 								<div class="col-lg-6 areaConocimiento" ng-repeat="area in usuario.areas"
-									style="min-height: 40px;">{{area.area}} <button ng-click="borrarArea(area)"
-										ng-disabled="cargando" class="botonInterfaz"
-										style="width: 100px; margin-left: auto;">Borrar</button>
+									style="min-height: 40px;">{{area.area}} 
+										<button class="botonBorrarNotificacion" ng-click="borrarArea(area)"
+									ng-disabled="cargando" style="margin-left: auto;">X</button>
 								</div>
 								<div class="col-md-12" ng-show="sinareas">No tienes ninguna área de conocimiento
 									escogida
@@ -316,8 +316,8 @@
 										style="margin-left: auto;">
 										<img th:src="@{/images/download.png}" class="redoImage" alt="" />
 									</button>
-									<button ng-click="borrarFile(file)" ng-disabled="cargando" class="botonInterfaz"
-										style="width: 100px; margin-left: 10px;">Borrar
+									<button ng-click="borrarFile(file)" ng-disabled="cargando" class="redoBoton"
+										style="margin-left: 10px;"><img th:src="@{/images/trash.png}" class="redoImage" alt="" />
 									</button>
 									<!--https://icon-icons.com/es/icono/descarga-actualizaciones-aplicacion-flecha/2353-->
 
@@ -336,18 +336,6 @@
 								<div class="col-md-5">
 									<button class="float-right botonInterfaz" ng-click="subirFichero()"
 										ng-disabled="cargando">Subir</button>
-								</div>
-							</div>
-							<hr>
-							<h5>Ficheros enviados:</h5>
-							<hr>
-							<div class="row">
-								<div class="col-lg-6 areaConocimiento" ng-repeat="area in usuario.areas"
-									style="min-height: 35px; vertical-align: middle;">{{area.area}} <button
-										ng-click="borrarArea(area)" ng-disabled="cargando"
-										class="float-right botonInterfaz" style="width: 100px;">Borrar</button>
-								</div>
-								<div class="col-md-12" ng-show="sinareas">No tienes ningun fichero enviado
 								</div>
 							</div>
 							<hr>

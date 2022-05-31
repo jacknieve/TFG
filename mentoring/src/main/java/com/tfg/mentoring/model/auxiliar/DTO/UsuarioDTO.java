@@ -9,27 +9,26 @@ import com.tfg.mentoring.model.AreaConocimiento;
 //Clase que contiene los datos que se le devolverán a un usuario al acceder a su perfil
 public class UsuarioDTO {
 
-	private String nombre;//
-	private String papellido;//
-	private String sapellido;//
-	private String nivelEstudiosNivelestudios;//Este nonbre es tan raro y largo para el mapeo
-	private String telefono;//
-	private String descripcion;//
-	private String linkedin;
-	private int horaspormes;//-
-	private List<AreaConocimiento> areas = new ArrayList<>();
-	private String entidad;//-
-	private String institucionNombre;
-	private int edad;
-	private boolean verificado;
-	private String foto;
-	private String correo; //Esto no va a ser necesario
+	private String nombre;// pu
+	private String papellido;// pu
+	private String sapellido;// pu
+	private String nivelEstudiosNivelestudios;//Este nonbre es tan raro y largo para el mapeo //pe
+	private String telefono;// pe
+	private String descripcion;// pe
+	private String linkedin;// pe
+	private int horaspormes;//
+	private List<AreaConocimiento> areas = new ArrayList<>();// pe pu
+	private String entidad;// pu
+	private String institucionNombre;// pe
+	private int edad;// pe
+	private boolean verificado;//
+	private String foto;//
+	//private String correo; //Esto no va a ser necesario // pe
 	private List<String> ficheros = new ArrayList<>();
 
 	public UsuarioDTO(String nombre, String papellido, String sapellido, String nivelEstudiosNivelestudios,
 			String telefono, String descripcion, String linkedin, int horaspormes,
-			String entidad, String institucionNombre, boolean verificado,
-			String correo) {
+			String entidad, String institucionNombre, boolean verificado) {
 		super();
 		this.nombre = nombre;
 		this.papellido = papellido;
@@ -43,7 +42,7 @@ public class UsuarioDTO {
 		this.institucionNombre = institucionNombre;
 		this.verificado=verificado;
 		this.foto = "";
-		this.correo = correo;
+		//this.correo = correo;
 	}
 	
 
@@ -177,14 +176,14 @@ public class UsuarioDTO {
 
 	
 
-	public String getCorreo() {
+	/*public String getCorreo() {
 		return correo;
 	}
 
 
 	public void setCorreo(String correo) {
 		this.correo = correo;
-	}
+	}*/
 
 	
 
@@ -198,7 +197,7 @@ public class UsuarioDTO {
 	}
 
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "UsuarioDTO [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
 				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
@@ -206,6 +205,16 @@ public class UsuarioDTO {
 				+ ", areas=" + areas + ", entidad=" + entidad + ", institucionNombre="
 				+ institucionNombre + " edad=" + edad
 				+ ", verificado=" + verificado + ", foto=" + foto + ", correo=" + correo + ", ficheros=" + ficheros
+				+ "]";
+	}*/
+	@Override
+	public String toString() {
+		return "UsuarioDTO [nombre=" + nombre + ", papellido=" + papellido + ", sapellido=" + sapellido
+				+ ", nivelEstudiosNivelestudios=" + nivelEstudiosNivelestudios + ", telefono=" + telefono
+				+ ", descripcion=" + descripcion + ", linkedin=" + linkedin + ", horaspormes=" + horaspormes
+				+ ", areas=" + areas + ", entidad=" + entidad + ", institucionNombre="
+				+ institucionNombre + " edad=" + edad
+				+ ", verificado=" + verificado + ", foto=" + foto + ", ficheros=" + ficheros
 				+ "]";
 	}
 

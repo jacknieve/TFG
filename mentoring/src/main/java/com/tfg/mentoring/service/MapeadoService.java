@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorInfoDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.PeticionInfoDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
 
 @Service
@@ -26,6 +28,7 @@ public class MapeadoService {
 	
 	@Autowired
 	private FileService fservice;
+	
 	
 	
 	public PerfilDTO getPerfilMentor(Mentor mentor) {
@@ -113,10 +116,21 @@ public class MapeadoService {
 
 		return user;
 	}
+	
+	public MentorInfoDTO getMentorInfoBusqueda(Mentor mentor) {
+		MentorInfoDTO user = new MentorInfoDTO(mentor.getLinkedin(), 0, mentor.getDescripcion(), mentor.getAreas());
+		if (mentor.getFnacimiento() != null) {
+			LocalDate fnac = Instant.ofEpochMilli(mentor.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
+					.toLocalDate();
+			user.setEdad(Period.between(fnac, LocalDate.now()).getYears());
+		}
 
-	public UsuarioDTO getMentorizadoInfo(Mentorizado mentorizado) {
-		UsuarioDTO user = new UsuarioDTO();
-		user = maper.map(mentorizado, UsuarioDTO.class);
+		return user;
+	}
+
+	public PeticionInfoDTO getMentorizadoInfo(Mentorizado mentorizado) {
+		PeticionInfoDTO user = new PeticionInfoDTO();
+		user = maper.map(mentorizado, PeticionInfoDTO.class);
 		if (mentorizado.getFnacimiento() != null) {
 			LocalDate fnac = Instant.ofEpochMilli(mentorizado.getFnacimiento().getTime()).atZone(ZoneId.systemDefault())
 					.toLocalDate();

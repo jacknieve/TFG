@@ -66,18 +66,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 //System.out.println(accessor.toString());
                 if(StompCommand.CONNECT.equals(accessor.getCommand())){
-                    System.out.println("Connect ");
+                    //System.out.println("Connect ");
                     //System.out.println(accessor.getUser().getName());
                     acservice.entrarNotificacion(accessor.getUser().getName());
                 } 
                 else if(StompCommand.SUBSCRIBE.equals(accessor.getCommand())){
-                    System.out.println("Subscribe ");
+                    //System.out.println("Subscribe ");
                 } 
                 else if(StompCommand.SEND.equals(accessor.getCommand())){
-                    System.out.println("Send message " );
+                    //System.out.println("Send message ");
                 } 
                 else if(StompCommand.DISCONNECT.equals(accessor.getCommand())){
-                    System.out.println("Exit ");
+                    //System.out.println("Exit ");
                     acservice.salirNotificacion(accessor.getUser().getName());
                 } 
                 else {

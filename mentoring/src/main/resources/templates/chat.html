@@ -42,16 +42,19 @@
 						</div>
 					</div>
 					<div class="col-8" th:style="'background-color: '+@{${colorB}}+';'">
-						<div class="row" style="height: 100%;" ng-show="mostrarChat" th:style="${letrasBB ? 'color: white' : 'color: black'}">
+						<div class="row" style="height: 100%;" ng-show="mostrarChat"
+							th:style="${letrasBB ? 'color: white' : 'color: black'}">
 							<div class="col-sm-2 col-5 objetoCentrado">
-								<img ng-src="{{salaActual.foto}}" class="fotoPerfilChatTarget img-responsive" alt="" /><!---->
+								<img ng-src="{{salaActual.foto}}" class="fotoPerfilChatTarget img-responsive" alt="" />
+								<!---->
 							</div>
 							<div class="col-sm-9 col-7 offset-sm-1 nombrePerfilChatTarget">
 								{{salaActual.nombreOtro}}
 							</div>
-							
+
 						</div>
-						<div class="avisoPerfilChatTarget" ng-hide="mostrarChat" th:style="${letrasBB ? 'color: white' : 'color: black'}">
+						<div class="avisoPerfilChatTarget" ng-hide="mostrarChat"
+							th:style="${letrasBB ? 'color: white' : 'color: black'}">
 							Seleccione un chat para empezar a chatear
 						</div>
 					</div>
@@ -61,7 +64,8 @@
 			<div class="col-lg-12 cuerpoChats">
 				<div class="row" style="height: 100%;">
 
-					<div class="col-4" th:style="'background-color: '+@{${colorB}}+'; border-right: 1px solid black; overflow-y: scroll;'">
+					<div class="col-4"
+						th:style="'background-color: '+@{${colorB}}+'; border-right: 1px solid black; overflow-y: scroll;'">
 						<div class="row" th:style="${letrasBB ? 'color: white' : 'color: black'}">
 							<div class="col-lg-12 volverSeccion">
 								<div class="row" style="width: 100%; margin: 0px;">
@@ -72,7 +76,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-12" style="border-bottom: 1px solid black;" ng-repeat="sala in salas" ng-class="{ 'seccionDesabilitada': cargando}">
+							<div class="col-lg-12" style="border-bottom: 1px solid black;" ng-repeat="sala in salas"
+								ng-class="{ 'seccionDesabilitada': cargando}">
 								<!--Aqui lo repetible-->
 								<div class="row contactoChat" ng-click="abrirChat(sala)"
 									ng-class="{ 'salaDesabilitada': sala.abierta}">
@@ -91,14 +96,14 @@
 								</div>
 							</div>
 							<div class="col-lg-12" ng-show="sinSalas">
-							<div class="avisoListaContactos">
-								No tienes ningun contacto
-							</div>
+								<div class="avisoListaContactos">
+									No tienes ningun contacto
+								</div>
 							</div>
 							<div class="col-lg-12" ng-show="errorContactos" style="color: red; text-align: justify;">
-							<div class="avisoListaContactos">
-								Se ha producido un error al intentar acceder a sus contactos
-							</div>
+								<div class="avisoListaContactos">
+									Se ha producido un error al intentar acceder a sus contactos
+								</div>
 							</div>
 
 						</div>
@@ -108,26 +113,57 @@
 							<div class="col-lg-12 zonaMensajes">
 								<div class="row">
 									<div class="col-lg-12" ng-repeat="m in mensajes">
-										<div ng-class="posicionMensaje(m)">{{m.contenido}}</div>
+										<div ng-class="posicionMensaje(m)">
+											{{m.contenido}}
+											<button ng-hide="m.deTexto" ng-click="dowloadFile(m)" ng-disabled="cargando"
+												class="redoBoton" style="margin-left: auto;">
+												<img th:src="@{/images/download.png}" class="redoImage" alt="" />
+											</button>
+											<!--https://www.flaticon.com/free-icon/trash_3096673?term=trash&page=1&position=1&page=1&position=1&related_id=3096673&origin=tag-->
+											<button ng-hide="m.deTexto || !esMioMensaje(m)" ng-click="borrarFile(m)" ng-disabled="cargando"
+												class="redoBoton" style="margin-left: auto;">
+												<img th:src="@{/images/trash.png}" class="redoImage" alt="" />
+											</button>
+										</div>
 									</div>
 									<div class="col-lg-12" ng-show="salaActual.cerrada">
-                                        Este chat se ha cerrado, ya no podrá enviar ni recibir más mensajes
-                                    </div>
-                                    <div class="col-lg-12" ng-show="errorMensajes" style="color: red; text-align: justify;">
-                                    	<div class="avisoListaContactos">
-                                        	Se ha producido un error al intentar acceder a los mensajes de este chat
-                                        </div>
-                                    </div>
+										Este chat se ha cerrado, ya no podrá enviar ni recibir más mensajes
+									</div>
+									<div class="col-lg-12" ng-show="errorMensajes"
+										style="color: red; text-align: justify;">
+										<div class="avisoListaContactos">
+											Se ha producido un error al intentar acceder a los mensajes de este chat
+										</div>
+									</div>
 								</div>
 							</div>
-							<div class="col-lg-12" ng-class="{ 'seccionDesabilitada': cargando}">
+							<div class="col-lg-12" ng-class="{ 'salaDesabilitada': cargando || lostconetion}">
 								<div class="row" ng-class="{ 'salaDesabilitada': !mostrarChat || salaActual.cerrada}">
-									<div class="col-10 col-md-11" style="padding-right: 0px; margin-right: 0px;">
-										<textarea ng-model="cuerpoMensaje" maxlength="300"
-											class="textareaMensaje"></textarea>
+									<div class="col-8 col-sm-8 col-md-9 col-lg-10"
+										style="padding-right: 0px; margin-right: 0px;">
+										<textarea ng-model="cuerpoMensaje" maxlength="300" class="textareaMensaje"
+											ng-hide="enEnvioFile"></textarea>
+										<form ng-show="enEnvioFile" class="textareaMensaje">
+											<label for="files" class="botonSubirFichero"
+												style="margin-top: 10px;">Seleccione un fichero</label>
+											<input id="files" style="display:none;" type="file"
+												file-model="ficheroEnviar">
+											<span style="margin-left: 15px;">{{ficheroEnviar.name}}</span>
+										</form>
 									</div>
-									<div class="col-2 col-md-1 sendBotonSection">
-										<button ng-click="enviarMensaje()" ng-disabled="cargando" class="sendBoton">
+									<div class="col-4 col-sm-4 col-md-3 col-lg-2 sendBotonSection">
+
+										<button ng-click="cambiarEnviar()" ng-disabled="cargando" class="sendBoton">
+											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
+											<img src="images/file.png" class="sendImage" alt="" />
+										</button>
+										<button ng-click="enviarMensaje()" ng-disabled="cargando" class="sendBoton"
+											ng-hide="enEnvioFile">
+											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
+											<img src="images/enviar.png" class="sendImage" alt="" />
+										</button>
+										<button ng-click="enviarFichero()" ng-disabled="cargando" class="sendBoton"
+											ng-show="enEnvioFile">
 											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
 											<img src="images/enviar.png" class="sendImage" alt="" />
 										</button>

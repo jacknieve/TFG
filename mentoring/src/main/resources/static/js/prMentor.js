@@ -14,23 +14,19 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 
 	var inciarObtenerMentorizaciones = function() {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.get("/mentor/mentorizaciones/").then(
 			function sucessCallback(response) {
 				lastload = Date.now();
 				$scope.errorBusqueda = false;
 				if (response.status == 200) {
-					console.log(response.data);
-					console.log(response);
 					$scope.mentorizaciones = response.data;
-					console.log(typeof ($scope.mentorizaciones[0].fase));
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.mentorizaciones[i].expandido = false;
 						$scope.mentorizaciones[i].aceptarcerrar = false;
-						if($scope.mentorizaciones[i].uperfil.ficheros.length == 0){
+						if ($scope.mentorizaciones[i].uperfil.ficheros.length == 0) {
 							$scope.mentorizaciones[i].sinficheros = true;
 						}
-						else{
+						else {
 							$scope.mentorizaciones[i].sinficheros = false;
 						}
 					}
@@ -44,22 +40,23 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones,, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las mentorizaciones" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones,, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las mentorizaciones, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las mentorizaciones" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.cargando = false;
 				$scope.errorBusqueda = true;
@@ -84,6 +81,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 				inciarObtenerMentorizaciones();
 			}
 			else {
+				actualizar();
 				$scope.id = setInterval(() => {
 					actualizar();
 				}, 60000);
@@ -98,7 +96,6 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 					lastload = Date.now();
 					$scope.errorActualizar = false;
 					$scope.sinresultados = false;
-					console.log(response.data);
 					for (var i = 0; i < response.data.length; i++) {
 						var todelete = [];
 						if (response.data[i].uperfil == null) {
@@ -108,10 +105,10 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 						else {
 							response.data[i].expandido = false;
 							response.data[i].aceptarcerrar = false;
-							if(response.data[i].uperfil.ficheros.length == 0){
+							if (response.data[i].uperfil.ficheros.length == 0) {
 								response.data[i].sinficheros = true;
 							}
-							else{
+							else {
 								response.data[i].sinficheros = false;
 							}
 							$scope.mentorizaciones.push(response.data[i]);
@@ -130,27 +127,27 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones para acceder a las nuevas, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 400) {
-					$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para traer las posibles nuevas mentorizaciones," +
-						" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
-						+ new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar traer las posibles nuevas mentorizaciones" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para traer las posibles nuevas mentorizaciones," +
+							" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
+							+ new Date(), null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las mentorizaciones para acceder a las nuevas, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar traer las posibles nuevas mentorizaciones, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar traer las posibles nuevas mentorizaciones" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
@@ -190,32 +187,33 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 
 	$scope.cerrarMentorizacion = function(mentorizacion) {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.post("/mentor/mentorizaciones/cerrar", mentorizacion.correo).then(
 			function sucessCallback(response) {
-				console.log(response.data);
 				index = $scope.mentorizaciones.indexOf(mentorizacion);
 				$scope.mentorizaciones.splice(index, 1);
 				if ($scope.mentorizaciones.length == 0) {
 					$scope.sinresultados = true;
 				}
 				$rootScope.popUpAbierto = false;
-				//alert("La mentorizacion se ha cerrado con exito");
-				//mentorizacion.aceptarcerrar=false;
-				//$rootScope.popUpAbierto = false;
 				$notification.success("Mentorización cerrada", "La mentorización se ha cerrado de forma exitosa", null, false);
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+							"por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+							" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+						break;
+					default:
+						$notification.error(response.data.titulo, response.data.mensaje, null, false);
+						break;
 				}
-				else $notification.error(response.data.titulo, response.data.mensaje, null, false);
 				$scope.cargando = false;
 				errorSound();
-				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 			}
 		)
 
@@ -224,22 +222,26 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 
 	$scope.aceptarCambioFase = function(mentorizacion) {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.post("/mentor/mentorizaciones/cambiarfase", { correo: mentorizacion.correo, fase: mentorizacion.fase }).then(
 			function sucessCallback(response) {
-				console.log(response.data);
-				//alert("La fase se ha cambiado con exito");
 				$scope.cargando = false;
 				$notification.success("Fase cambiada", "La fase actual se ha cambiado de forma exitosa", null, false);
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+							"por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+							" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+						break;
+					default:
+						$notification.error(response.data.titulo, response.data.mensaje, null, false);
+						break;
 				}
-				else $notification.error(response.data.titulo, response.data.mensaje, null, false);
 				$scope.cargando = false;
 				errorSound();
 			}
@@ -255,43 +257,40 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 
 	$scope.redirijirChat = function(mentorizado) {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.post("/chat/idchat", mentorizado).then(
 			function sucessCallback(response) {
-				console.log(response.data);
-				//alert("La fase se ha cambiado con exito");
 				$window.location.href = '/chat?s=' + response.data;
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene el chat abierto con este mentorizado, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener el chat abierto con este mentorizado, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 400) {
-					$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para obtener el chat abierto con este mentorizado," +
-						" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
-						+ new Date(), null, false);
-				}
-				else if (response.status == 401) {
-					$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
-				}
-				else if (response.status == 404) {
-					$notification.error("Sin chat", "En el servidor no hay constancia de un chat abierto con este mentorizado" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener el chat abierto con este mentorizado" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para obtener el chat abierto con este mentorizado," +
+							" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
+							+ new Date(), null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene el chat abierto con este mentorizado, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener el chat abierto con este mentorizado, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					case 401:
+						$notification.error("Sin autorización", "No tienes permiso para realizar esta acción.", null, false);
+						break;
+					case 404:
+						$notification.error("Sin chat", "En el servidor no hay constancia de un chat abierto con este mentorizado" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener el chat abierto con este mentorizado" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.cargando = false;
 				errorSound();
@@ -299,11 +298,12 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 		)
 
 	}
-	
+
 	$scope.dowloadFile = function(file, mentorizado) {
 		$scope.cargando = true;
-		
-		$window.location.href = "/file/download/mentorizado/" + mentorizado + "/" + file;
+
+		path = "/file/download/mentorizado/" + mentorizado + "/perfil/" + file;
+		window.open(path, '_blank', '');
 
 		$scope.cargando = false;
 
@@ -324,11 +324,9 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 
 	var inciarObtenerPeticiones = function() {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.get("/mentor/peticiones/").then(
 			function sucessCallback(response) {
 				$scope.errorBusqueda = false;
-				console.log(response.data);
 				$scope.peticiones = response.data;
 				if (response.data.length > 0) {
 					$scope.sinresultados = false;
@@ -346,27 +344,26 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las solicitudes" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las solicitudes" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.errorBusqueda = true;
 				$scope.cargando = false;
 				errorSound();
-				//Aqui tambien faltaria algo como para mostrar error y activar un boton de recargar
 			}
 		)
 	}
@@ -385,6 +382,7 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 				inciarObtenerPeticiones();
 			}
 			else {
+				actualizar();
 				$scope.id = setInterval(() => {
 					actualizar();
 				}, 60000);
@@ -393,12 +391,10 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 	}
 
 	var actualizar = function() {
-		console.log("actualizando peticiones");
 		$http.get("/mentor/peticiones/actualizar").then(
 			function sucessCallback(response) {
 				$scope.errorActualizar = false;
 				if (response.status == 200) {
-					console.log(response.data);
 					$scope.sinresultados = false;
 					for (var i = 0; i < response.data.length; i++) {
 						response.data[i].expandido = false;
@@ -411,22 +407,22 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 503) {
-					$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes para obtener las nuevas, por favor" +
-						"vuelva a intentarlo más tarde", null, false);
-				}
-				else if (response.status == 500) {
-					$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes nuevas, si recibe este error, por favor, pongase en contacto con "
-						+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las solicitudes nuevas" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las solicitudes para obtener las nuevas, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las solicitudes nuevas, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las solicitudes nuevas" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.errorActualizar = true;
 				$scope.detenActualizacion();
@@ -437,7 +433,6 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 	$scope.detenActualizacion = function() {
 		if ($scope.id) {
 			clearInterval(this.id);
-			console.log("Intervalo detenido")
 		}
 	}
 
@@ -451,10 +446,8 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 
 	$scope.aceptarPeticion = function(peticion) {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.post("/mentor/peticiones/aceptar", peticion.info.correo).then(
 			function sucessCallback(response) {
-				console.log(response);
 				if (response.status == 200) {
 					index = $scope.peticiones.indexOf(peticion);
 					$scope.peticiones.splice(index, 1);
@@ -465,12 +458,19 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+							"por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+							" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+						break;
+					default:
+						$notification.error(response.data.titulo, response.data.mensaje, null, false);
+						break;
 				}
-				else $notification.error(response.data.titulo, response.data.mensaje, null, false);
 				errorSound();
 				$scope.cargando = false;
 			}
@@ -480,10 +480,8 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 
 	$scope.rechazarPeticion = function(peticion) {
 		$scope.cargando = true;
-		console.log("Consulta lanzada")
 		$http.post("/mentor/peticiones/rechazar", peticion.info.correo).then(
 			function sucessCallback(response) {
-				console.log(response);
 				if (response.status == 200) {
 					index = $scope.peticiones.indexOf(peticion);
 					$scope.peticiones.splice(index, 1);
@@ -495,13 +493,20 @@ appConsumer.controller("peticionController", function($scope, $http, $notificati
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
 				peticion.error = true;
-				if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, " +
+							"por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
+						$notification.error("Fallo en la peticion", "La petición relizada al servidor no era correcta, posiblemente debido a" +
+							" que alguno de los campos estaba vacío o tenía un valor incorrecto.", null, false);
+						break;
+					default:
+						$notification.error(response.data.titulo, response.data.mensaje, null, false);
+						break;
 				}
-				else $notification.error(response.data.titulo, response.data.mensaje, null, false);
 				errorSound();
 				$scope.cargando = false;
 			}

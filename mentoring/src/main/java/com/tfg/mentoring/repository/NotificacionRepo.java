@@ -17,6 +17,7 @@ public interface NotificacionRepo extends JpaRepository<Notificacion, String>{
 	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado <> 2 ORDER BY fechaenv DESC")
 	List<Notificacion> getNotificaciosUser(String user);
 	
+	@Transactional
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE notificaciones SET estado = 1 WHERE id_user = ?1 AND estado = 0")
 	void actualizaEstadoNotificaciosUser(String user);

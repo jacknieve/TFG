@@ -1,26 +1,28 @@
 Mas cosas que hacer:
 -Empezar informe
 -Seguir diseño
--Probar con ngResource, a ver si así funciona bien cors
 
 ->Cosas que comentar en reunion<-
+
+-> En el diagrama de contexto, deberia poner Mentores y mentorizados o su navegador?
+
 Cosas que añadir en el diseño:
+-Diagrama de contexto
+-Diagrama del sistema
 -Diagrama de clases
 -Diagrama de secuencia para casos de uso presentados
--Diagrama de arquitectura
--Diagrama del sistema
--Endpoints del rest y que hacen
--Patrones utilizados
+-Patrones de diseño utilizados
 -Diseño grafico
+
+-Endpoints del rest y que hacen
+
 ->Pruebas
 ->Completar lo que falta de los primeros puntos
 ->Integracion (igual nos vale con la maquina virtual)
-->Ficheros
 
 ->Redistribuir logica y comentar (tambien meter interfaces, y quizas cambiar algunos nombres de las clases auxiliares)
-->Tambien intentar cambiar la comprobacion de rol a una previa y guardar si es mentor o no en un booleano, pero esto solo en los que solo pueden acceder mentorores y mentorizados, por ejemplo, en principal, tambien podrian las instituciones
 ->Quitar souts innecesarios
-->Añadir como supuestos: Los usuarios salen de la ventana del chat con el botón de la interfaz, los usuarios no se redirigen en la aplicación utilizando el path http, solo tienen una ventana abierta y su cuenta solo esta siendo utilizada en una maquina a la vez, los usuarios salen del chat antes de salir de la aplicación y que solo la aplicación manipula sus ficheros, nadie más.
+->Importante, los mentores no salen en la busqueda si no hay seleccionado ningun área
 
 
 
@@ -31,46 +33,26 @@ Cosas que añadir en el diseño:
 ->Instituciones
 
 -><-
-->Ver si podemos comprobar con el websockets si un usuario esta o no conectado, o si hay alguien escuchando una cola
 
----->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar, sobre todo si voy a meter algo fuera del alcance
+---->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar
+
 -Orden de cosas-
-(tengo que volver a probar el registro de ambos roles, para verificar que funciona bien)
 (Tambien una pequeña interfaz kk para añadir instituciones con la autentificacion de un admin)
 
-Cambiar los if else de los errores por switchs
-Al borrar un fichero hay que eliminarlo tambien de la base de datos
-En el chat, los mensajes del tipo fichero llevan en el contenido el nombre del fichero, con eso, mas el username que sabemos de la sala y si es o no mentor el usuario, podremos descargar los ficheros
-Al borrar un fichero del chat, tambien hay que borrar su mensaje o modificarlo
-Cambiar el DTO que pasamos en perfil para que incluya ficheros y ficheros enviados
-Hacer un UsuarioMinDTO para busqueda, peticion y puntuar
-Quitar las comprobaciones de null en los metodos post en el cuerpo, ya se encarga spring, y en los frontend que reciban mensaje de error como respuesta de estos metodos, tratar el 400 como tratamos al 1 (pero solo en el caso de que no contenga un mensaje de error)
 
-Enviar fichero por chat <--
-Borrar ficheros <--
-Cambiar todos los if else de rol por switch
+->Cambiar Long de puntuacion a Integer (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto <---
 
-Añadir errores a los metodos de los ficheros <------
 
---Para notificaciones : https://parzibyte.me/blog/2018/12/18/notificaciones-angularjs-angular-ui-notification/
-<-Pero esto despues del chat, sobre todo lo de cambiar el acierto y el error en principal.
 
-->Añadir lo del timeout
 
-->Cambiar Long de puntuacion a Integer (pero controlar la comprobacion que se hace al recuperar las mentorizaciones sin puntuar, que se mira si es nulo), tambien las horas por mes a int corto
 
 contigopripo@gmail.com
 
 (Cosas futuro)
-->Lo de las consultas multiples en sql es transaction y comit, a ver si hay algo similar????
 ->Podriamos poner en el futuro de al borrar un usuario, eliminar algunos datos a null o pasarlo a otra tabla de usuarios borrados
 ->Añadir tambien en un futuro lo de recuperar una cuenta
-->Añadir notificaciones para los usuarios 
 ->Añadir un script periodico para realizar limpieza de la base de datos
-->Añadir algun atributo a la notificacion que sea del estilo el tipo, para que a un usuario no le lleguen muchas
-->Añadir al nivel de estudios un entero para indicar una jerarquia y hacer busquedas por estudios minimos?
 ->Añadir log de los eventos para quitar todos los souts de las excepciones
-->Criterio de ordenación en la búsqueda???
 ->OpenSSL?
 ->Se les podria indicar en el perfil a los usuarios la cuota de almacenamiento que le queda?
 
@@ -85,7 +67,6 @@ contigopripo@gmail.com
 ->Quizas habria que cambiar todas las veces que importamos js desde url a desde fichero, por si no hay conexion
 ->Redistribuir logica a servicios, y  si podemos, las cosas que mapeamos, mapearlas ya de la salida de la base de datos como en todos los ejemplos.
 https://auth0.com/blog/how-to-automatically-map-jpa-entities-into-dtos-in-spring-boot-using-mapstruct/
-->Comprobar en el nombre que no contenga caracteres no validos para los nombres de ficheros
 
 
 
@@ -110,23 +91,6 @@ https://o7planning.org/11673/spring-boot-file-upload-with-angularjs
 
 
 -------------------
-Desde el mentorizado/mentor se le puede dar a abrir chat, y te redirige a una ventana con el chat (solo el chat, la unica forma de volver, un enlace que cierra la conexion abierta y devuelve al usuario a su pagina principal. Si ha entrado desde un perfil, se abrirá directamente el chat con ese perfil, si no, aparecera donde estarían los mensajes un aviso de que escoja el chat que desea abrir. Desde ese momento o cuando abra un chat, se suscribe a la cola de la sala de chat correspondiente, y se le indica al servidor que no reciba notificaciones por que ya esta online, al cerrar el chat o al cambiar de chat, se desconecta de la cola, e
-indica al sevidor que deja de recibir mensajes en esa sala, por lo que si recibe uno nuevo, que se lo notifique, para notificar, es decir
-para no perder tiempo, podemos hacer un threat que se encargue de comprobar si el receptor debe ser notificado o no (aqui se podria hacer una lista en memoria de los que estan conectados y a que sala, para ver rapidamente. 
-Tambien se poria abrir un segundo canal para notificaciones al usuario, el cliente se conectaria a esta cola al abrir la ventana de chats, y recibira notificaciones cuando recibiese un mensaje en un chat no abierto, o, para simplicar, de cualquier chat (se podria probar a rechazar desde el cliente los recibidos del chat abierto, comparando en js el canal del mensaje en la notificiacion con el canal abierto. Esta cola de notificaciones usaría el id del usuario, por lo que sería necesario añadir un nuevo campo id, o ver si se puede poner el correo en el path de la cola.
-Tambien ver si hay alguna forma de indicarle al sevidor cuando se cierra la ventana, podemos probar con el ondestroy a hacer que el servidor imprima algo -> Esto no funciona
-
-->Quizas modificiar notificacion para que tambien tenga motivo o algo asi, para modificar la notificacion en caso de recibir varios mensajes y no volver a notificar al usuario por correo
-->Una llamada para abrir el chat, que traiga la sala del chat correspondiente
-->Al enviar un mensaje, si el usuario esta conectado al chat, guardarlo ya como entregado
-->Al traer las mentorizaciones o al abrir su perfil, tambien traer el número de mensajes sin leer? (esto lo podemos dejar como mejora si nos da tiempo)
-->Añadir tipo al mensaje para que pueda ser una imagen
-->Para lo de mandar ficheros, añadir un nuevo boton que permita abrir el archivo (esto deberia bloquear el textarea, puesto que este mensaje va a llevar de cuerpo el path cuando se entregue. Este mensaje mejor se enviaría por http al servidor, pero el servidor se lo enviaría una vez listo al receptor como un mensaje (por lo tanto, aqui necesitariamos que el metodo de enviar comprobase si debe enviarlo al websockect o invocar un http). El servidor comprobaría el fichero y lo guardaría en el path del usuario, crearia el mensaje, lo guardaria en la DB y se lo reenviaría al cliente, a continuación, devolvería al emisor un mensaje para que lo pusiese en el chat. El mensaje, tanto para el emisor, como para el receptor, sería un mensaje con el cuerpo el nombre del fichero y un enlace o boton al método de descarga (o visualizacion) del fichero. El usuario, en su perfil, podría ver tanto los ficheros que tiene colgados en este como los que ha enviado.
-->Para los errores del chat, probar mejor las notificaciones esas chulas que vimos a ver que tal quedan
-
-
-
-
 
 
 
@@ -155,6 +119,9 @@ Resultado
 
 
 
+
+Sockjs:
+https://unpocodejava.com/2018/02/11/que-es-sockjs-y-por-que-usarlo-en-lugar-de-usar-el-api-de-websockets-directamente/
 
 
 

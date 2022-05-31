@@ -27,14 +27,16 @@ public class MensajeChat {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_sala", referencedColumnName = "id_sala", insertable = false, updatable = false)
 	private SalaChat sala;
-	//Faltaria, para cuando los ficheros, un booleano o un enum que indique si contiene texto o un fichero
+	@Column(name="detexto")
+	private boolean deTexto;//Indica si el mensaje contiene texto (true) o un fichero (false)
 	
 	
-	public MensajeChat(String contenido, SalaChat s, boolean deMentor) {
+	public MensajeChat(String contenido, SalaChat s, boolean deMentor, boolean deTexto) {
 		super();
 		this.contenido = contenido;
 		this.id = new MensajeChatId(s.getId_sala(), deMentor); 
 		this.estado = EstadoMensaje.ENVIADO;
+		this.deTexto = deTexto;
 	}
 
 	public MensajeChat() {
@@ -68,16 +70,25 @@ public class MensajeChat {
 	public SalaChat getSala() {
 		return sala;
 	}
+	
+	
+
+	public boolean isDeTexto() {
+		return deTexto;
+	}
+
+	public void setDeTexto(boolean deTexto) {
+		this.deTexto = deTexto;
+	}
 
 	@Override
 	public String toString() {
-		return "MensajeChat [id=" + id + ", contenido=" + contenido + ", estado=" + estado + ", sala=" + sala + "]";
+		return "MensajeChat [id=" + id + ", contenido=" + contenido + ", estado=" + estado + ", sala=" + sala
+				+ ", deTexto=" + deTexto + "]";
 	}
 
-	/*@Override
-	public String toString() {
-		return "MensajeChat [id=" + id + ", contenido=" + contenido + ", estado=" + estado + "]";
-	}*/
+	
+
 	
 	
 

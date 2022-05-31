@@ -22,11 +22,6 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	
 	Optional<Mentor> findByUsuarioUsernameAndUsuarioEnable(String username, boolean enable);
 	
-	
-	//Prototipo de busqueda, me trae todo por culpa de las areas
-	//Se podria probar a añadir un area por defecto que tenga todos, asi no hay que hacer la comprobacion de null, y quizas funcionaria
-	/*@Query(nativeQuery = true, value="SELECT DISTINCT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND (:i is null or m.institucion = cast(:i AS text)) AND m.horaspormes >=:h AND (:a is null or a.area =cast(:a AS text))")
-	List<Mentor> buscarPrototipo(@Param("i") String institucion, @Param("h") float horas, @Param("a") String area);*/
 
 	@Query(nativeQuery = true, value="SELECT DISTINCT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND (:i is null or m.institucion = cast(:i AS text)) AND m.horaspormes >=:h AND m.usuario_mentor = a.correo AND (:a is null or a.area =cast(:a AS text))")
 	List<Mentor> buscarPrototipo(@Param("i") String institucion, @Param("h") float horas, @Param("a") String area);

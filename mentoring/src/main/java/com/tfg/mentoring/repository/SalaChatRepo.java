@@ -31,11 +31,17 @@ public interface SalaChatRepo extends JpaRepository<SalaChat, SalaChatId>{
 	@Query(nativeQuery = true, value="SELECT * FROM salaschat WHERE mentorizado_usuario_username = ?1 AND fecha_cierre is null")
 	List<SalaChat> findByMentorizado(String mentorizado);
 	
-	@Query(nativeQuery = true, value="SELECT DISTINCT s.id_sala FROM salaschat s, mensajes m WHERE s.mentor_usuario_mentor = ?1 AND s.fecha_cierre is null AND s.id_sala = m.id_sala AND m.estado = 0 AND m.dementor = false")
+	@Query(nativeQuery = true, value="SELECT DISTINCT s.id_sala FROM salaschat s, mensajes m WHERE s.mentor_usuario_mentor = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.estado = 0 AND m.dementor = false")
 	List<Long> nuevosMentor(String mentor);
 	
-	@Query(nativeQuery = true, value="SELECT DISTINCT s.id_sala FROM salaschat s, mensajes m WHERE s.mentorizado_usuario_username = ?1 AND s.fecha_cierre is null AND s.id_sala = m.id_sala AND m.estado = 0 AND m.dementor = true")
+	@Query(nativeQuery = true, value="SELECT DISTINCT s.id_sala FROM salaschat s, mensajes m WHERE s.mentorizado_usuario_username = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.estado = 0 AND m.dementor = true")
 	List<Long> nuevosMentorizado(String mentorizado);
+	
+	@Query(nativeQuery = true, value="SELECT COUNT(DISTINCT m.id_sala) FROM salaschat s, mensajes m WHERE s.mentor_usuario_mentor = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.detexto = false AND m.dementor = true AND m.contenido = ?2")
+	int countFileChatMentor(String mentor, String filename);
+	
+	@Query(nativeQuery = true, value="SELECT COUNT(DISTINCT m.id_sala) FROM salaschat s, mensajes m WHERE s.mentorizado_usuario_username = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.detexto = false AND m.dementor = false AND m.contenido = ?2")
+	int countFileChatMentorizado(String mentorizado, String filename);
 	
 	
 	@Transactional

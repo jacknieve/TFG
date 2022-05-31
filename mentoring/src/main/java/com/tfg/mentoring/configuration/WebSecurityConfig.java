@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and()
 			.authorizeRequests()
 				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**","/images/**", "/cierre", "/info",
-						"/verify_success", "/verify_fail", "/register_success", "/error_page", "/vs", "/vf", "/rs", "/perror", "/perrorl").permitAll()
+						"/verify_success", "/verify_fail", "/register_success", "/error_page", "/error").permitAll()
 				.antMatchers("/principalMentor", "/mentor/**", "/file/download/mentorizado/**").hasAuthority("MENTOR")
 				.antMatchers("/principalMentorizado", "/mentorizado/**", "/file/download/mentor/**").hasAuthority("MENTORIZADO")
 				.antMatchers("/user/**").hasAnyAuthority("MENTOR","MENTORIZADO")

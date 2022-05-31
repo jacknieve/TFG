@@ -2,8 +2,8 @@ var appConsumer = angular.module('appConsumer', ['ngAnimate', 'notifications']);
 var snd_error = new Audio("../sounds/beep-5.wav");
 
 function errorSound() {
-		snd_error.play();
-	}
+	snd_error.play();
+}
 
 appConsumer.config(function($httpProvider) {
 	//Enable cross domain calls
@@ -29,22 +29,21 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 	var obtenerMiInfo = function() {
 		$http.get("/user/miinfo").then(
 			function sucessCallback(response) {
-				console.log(response.data);
 				miUsername = response.data.username;
 				$scope.iniciaNotificaciones();
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				if (response.status == 401) {
-					$notification.error("Sin autorización", "No tienes permiso para obtener la información de tu cuenta en esta pantalla", null, false);
-				}
-				else if (response.status == 0) {
-					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-				}
-				else {
-					$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener la información de tu cuenta para relaizar las acciones del chat" +
-						", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 401:
+						$notification.error("Sin autorización", "No tienes permiso para obtener la información de tu cuenta en esta pantalla", null, false);
+						break;
+					default:
+						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener la información de tu cuenta para relaizar las acciones del chat" +
+							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
 				}
 				$scope.enfallo = true;
 			}
@@ -53,12 +52,10 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 
 	$scope.iniciaNotificaciones = function() {
 		$scope.cargando = false;
-		console.log("Consulta lanzada")
 		$http.get("/user/notificaciones").then(
 			function sucessCallback(response) {
 				$scope.enfallo = false;
 				if (response.status == 200) {
-					console.log(response.data);
 					$scope.notificaciones = response.data;
 					$scope.cargando = false;
 				}
@@ -69,35 +66,35 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 				var socket = new SockJS('/websocket');
 				stompClient = Stomp.over(socket);
 				stompClient.connect({}, function(frame) {
-					console.log('Connected: ' + frame);
+					//console.log('Connected: ' + frame);
 					stompClient.subscribe("/usuario/" + miUsername + "/queue/messages", controladorMensajes);
 				});
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {
-				console.log("Fallo al acceder")
-				console.log(response)
-				$scope.enfallo = true;
-				if (response.status == 503) {
-						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las notificaciones, por favor" +
-							"vuelva a intentarlo más tarde", null, false);
-					}
-					else if (response.status == 500) {
-						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las notificaciones, si recibe este error, por favor, pongase en contacto con "
-							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-					}
-					else if (response.status == 400) {
+				switch (response.status) {
+					case 0:
+						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
+						break;
+					case 400:
 						$notification.error("Fallo en la solicitud", "Se ha producido un fallo en la petición al servidor para obtener las notificaciones," +
 							" si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: "
 							+ new Date(), null, false);
-					}
-					else if (response.status == 0) {
-						$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
-					}
-					else {
+						break;
+					case 503:
+						$notification.error("Fallo en el repositorio", "Se ha producido un fallo al intentar acceder al repositorio que contiene las notificaciones, por favor" +
+							"vuelva a intentarlo más tarde", null, false);
+						break;
+					case 500:
+						$notification.error("Error interno", "Se ha producido un fallo interno en el servidor al intentar obtener las notificaciones, si recibe este error, por favor, pongase en contacto con "
+							+ "nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
+						break;
+					default:
 						$notification.error("Otro error", "Se ha producido un fallo no previsto con codigo de error " + response.status + " al intentar obtener las notificaciones" +
 							", si recibe este error, por favor, pongase en contacto con nosotros y explique en que contexto se generó el error. Hora del suceso: " + new Date(), null, false);
-					}
+						break;
+				}
+				$scope.enfallo = true;
 				$scope.cargando = false;
 			}
 		)
@@ -123,7 +120,6 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 		$http.post("/user/notificaciones/delete", notificacion.id).then(
 			function sucessCallback(response) {
 				if (response.status == 200) {
-					console.log(response.data);
 					index = $scope.notificaciones.indexOf(notificacion);
 					$scope.notificaciones.splice(index, 1);
 					if ($scope.notificaciones.length == 0) {
@@ -134,8 +130,6 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 
 			},
 			function errorCallback(response) {
-				console.log("Fallo al eliminar");
-				console.log(response);
 				$scope.enfallo = true;
 				if (response.status == 0) {
 					$notification.error("Servidor no disponible", "En estos momentos el servidor se encuentra fuera de servicio, por favor, disculpen las molestias", null, false);
@@ -149,8 +143,6 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 
 	var controladorMensajes = function(mensaje) {
 		var mensaje = JSON.parse(mensaje.body);
-		console.log(mensaje);
-		//$scope.mensajes.push(mensaje);
 		switch (mensaje.asunto) {
 			case "NOTIFICACION":
 				$scope.notificaciones.unshift(mensaje.cuerpo);
