@@ -22,8 +22,6 @@ public interface SalaChatRepo extends JpaRepository<SalaChat, SalaChatId>{
 	@Query(nativeQuery = true, value="SELECT id_sala FROM salaschat WHERE mentor_usuario_mentor = ?1 AND mentorizado_usuario_username = ?2 AND fecha_cierre is null")
 	Optional<Long> getIdByMentorAndMentorizado(String mentor, String mentorizado);
 	
-	/*@Query(nativeQuery = true, value="SELECT fecha_inicio FROM salaschat WHERE mentor_usuario_mentor = ?1 AND mentorizado_usuario_username = ?2 AND fecha_cierre is null")
-	Optional<Timestamp> obtenerInicioUltimo(String mentor, String mentorizado);*/
 	
 	@Query(nativeQuery = true, value="SELECT * FROM salaschat WHERE mentor_usuario_mentor = ?1 AND fecha_cierre is null")
 	List<SalaChat> findByMentor(String mentor);
@@ -37,11 +35,11 @@ public interface SalaChatRepo extends JpaRepository<SalaChat, SalaChatId>{
 	@Query(nativeQuery = true, value="SELECT DISTINCT s.id_sala FROM salaschat s, mensajes m WHERE s.mentorizado_usuario_username = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.estado = 0 AND m.dementor = true")
 	List<Long> nuevosMentorizado(String mentorizado);
 	
-	@Query(nativeQuery = true, value="SELECT COUNT(DISTINCT m.id_sala) FROM salaschat s, mensajes m WHERE s.mentor_usuario_mentor = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.detexto = false AND m.dementor = true AND m.contenido = ?2")
-	int countFileChatMentor(String mentor, String filename);
+	@Query(nativeQuery = true, value="SELECT COUNT(*) FROM salaschat WHERE id_sala = ?1 AND mentor_usuario_mentor = ?2 AND fecha_cierre is null")
+	Integer existeSalaMentor(long sala, String mentor);
 	
-	@Query(nativeQuery = true, value="SELECT COUNT(DISTINCT m.id_sala) FROM salaschat s, mensajes m WHERE s.mentorizado_usuario_username = ?1 AND s.fecha_cierre is null AND m.id_sala = s.id_sala AND m.detexto = false AND m.dementor = false AND m.contenido = ?2")
-	int countFileChatMentorizado(String mentorizado, String filename);
+	@Query(nativeQuery = true, value="SELECT COUNT(*) FROM salaschat WHERE id_sala = ?1 AND mentorizado_usuario_username = ?2 AND fecha_cierre is null")
+	Integer existeSalaMentorizado(long sala, String mentorizado);
 	
 	
 	@Transactional

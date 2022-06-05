@@ -23,13 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizacion;
 import com.tfg.mentoring.model.Mentorizado;
-import com.tfg.mentoring.model.Peticion;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorInfoDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorizacionDTO;
-import com.tfg.mentoring.model.auxiliar.enums.EstadosPeticion;
 import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 import com.tfg.mentoring.model.auxiliar.requests.CamposBusqueda;
 import com.tfg.mentoring.model.auxiliar.requests.EnvioPeticion;
@@ -37,7 +35,6 @@ import com.tfg.mentoring.model.auxiliar.requests.MentorizacionCerrar;
 import com.tfg.mentoring.repository.MentorRepo;
 import com.tfg.mentoring.repository.MentorizacionRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
-import com.tfg.mentoring.repository.PeticionRepo;
 import com.tfg.mentoring.service.MapeadoService;
 import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
@@ -52,8 +49,6 @@ public class MentorizadoController {
 	private MentorRepo mrepo;
 	@Autowired
 	private MentorizacionRepo mentorizacionrepo;
-	@Autowired
-	private PeticionRepo prepo;
 
 	@Autowired
 	private UserService uservice;
@@ -67,14 +62,8 @@ public class MentorizadoController {
 		if (campos.getHoras() < 4 || campos.getHoras() > 80) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		List<Mentor> mentores = new ArrayList<Mentor>();
-		if (campos.getArea() == null || campos.getArea().equals("sin"))
-			campos.setArea(null);
-		if (campos.getInstitucion() == null || campos.getInstitucion().equals("sin"))
-			campos.setInstitucion(null);
 		try {
-			mentores = mrepo.buscarPrototipo(campos.getInstitucion(), campos.getHoras(), campos.getArea());
-			List<MentorDTO> resultado = mservice.getMentorBusqueda(mentores);
+			List<MentorDTO> resultado = uservice.buscarMentores(campos);
 			if (resultado.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
@@ -92,7 +81,7 @@ public class MentorizadoController {
 	public ResponseEntity<MentorInfoDTO> getPerfilBusqueda(@AuthenticationPrincipal UserAuth us,
 			@RequestBody String mentor) {
 		try {
-			Optional<Mentor> m = mrepo.findByUsuarioUsernameAndUsuarioEnable(mentor, true);
+			Optional<Mentor> m = uservice.getMentorPerfil(mentor);
 			if (m.isPresent()) {
 				// MentorInfoDTO up = mservice.getMentorInfoBusqueda(m.get());
 				return new ResponseEntity<>(mservice.getMentorInfoBusqueda(m.get()), HttpStatus.OK);
@@ -118,59 +107,34 @@ public class MentorizadoController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			Optional<Mentor> m = mrepo.findById(peticion.getMentor());
-			Optional<Mentorizado> men = menrepo.findById(us.getUsername());
-			if (m.isPresent() && men.isPresent()) {
-				// Primero comprobar si ya existe una mentorizacion y si ya existe una peticion
-				List<Mentorizacion> mentorizacion = mentorizacionrepo.comprobarSiHayMentorizacion(peticion.getMentor(),
-						us.getUsername());
-				if (mentorizacion.isEmpty()) {// Comprobamos que no haya ya una mentorizacion abierta entre ambas partes
-					List<Peticion> peticiones = prepo.comprobarPeticion(peticion.getMentor(), us.getUsername());
-					if (peticiones.isEmpty()) {// Comprobamos si no existe ya una peticion pendiente
-						Peticion p = new Peticion(m.get(), men.get(), peticion.getMotivo());
-						// String nombre =prepo.save(p).getMentorizado().getNombre();
-						Peticion resultado = prepo.save(p);
-						if (resultado.getMentor().getUsuario().isEnabled()) {
-							// Solo vamos a enviar notificacion si es la primera vez
-							uservice.enviarNotificacion(m.get().getUsuario(), "Nueva peticion",
-									"El usuario " + men.get().getNombre()
-											+ " te ha enviado una petición de mentorizacion.",
-									MotivosNotificacion.PETICION);
-							return new ResponseEntity<>(
-									new MensajeError("La solicitud ha sido enviada de forma exitosa", null),
-									HttpStatus.OK);
-						} else {
-							System.out.println("No se envia notificacion porque el usuario esta disabled");
-							return new ResponseEntity<>(new MensajeError("Usuario eliminado",
-									"El usuario al que le querias enviar la solicitud acaba de eliminar su cuenta"),
-									HttpStatus.NOT_FOUND);
-						}
-					} else {// Si ya la hay, la actualizamos
-						System.out.println("Se va a actualizar la peticion");
-						Peticion p = peticiones.get(0);// En teoria, solo podria haber como mucho una peticion pendiente
-														// entre ambas partes
-						p.setEstado(EstadosPeticion.ENVIADA);
-						p.setMotivo(peticion.getMotivo());
-						prepo.save(p);
-						return new ResponseEntity<>(
-								new MensajeError("El contenido de la solicitud se ha actualizado.", null),
-								HttpStatus.OK);
-					}
-				} else {
-					System.out.println("Ya hay una mentorizacion abierta");
-					return new ResponseEntity<>(
-							new MensajeError("Mentorización ya establecida",
-									"Ya has establecido una relación de mentorización con ese mentor "),
-							HttpStatus.CONFLICT);
-				}
-			} else {
+			int resultado = uservice.enviarSolicitud(peticion, us.getUsername());
+			switch (resultado) {
+			case 0:
+				return new ResponseEntity<>(new MensajeError("La solicitud ha sido enviada de forma exitosa", null),
+						HttpStatus.OK);
+			case 1:
+				return new ResponseEntity<>(new MensajeError("El contenido de la solicitud se ha actualizado.", null),
+						HttpStatus.OK);
+			case 2:
+				System.out.println("Ya hay una mentorizacion abierta");
+				return new ResponseEntity<>(
+						new MensajeError("Mentorización ya establecida",
+								"Ya has establecido una relación de mentorización con ese mentor "),
+						HttpStatus.CONFLICT);
+			case 3:
+				System.out.println("No se envia notificacion porque el usuario esta disabled");
+				return new ResponseEntity<>(
+						new MensajeError("Usuario eliminado",
+								"El usuario al que le querias enviar la solicitud acaba de eliminar su cuenta"),
+						HttpStatus.NOT_FOUND);
+			default:
 				System.out.println("Fallo al acceder a los usuarios");
 				return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
 						"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
 								+ "la del mentor, por favor,  si recibe este mensaje,"
 								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
 								+ new Date()),
-						HttpStatus.BAD_REQUEST);
+						HttpStatus.NOT_FOUND);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {

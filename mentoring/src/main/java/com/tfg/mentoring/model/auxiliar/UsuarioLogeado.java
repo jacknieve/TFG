@@ -36,7 +36,7 @@ public class UsuarioLogeado implements HttpSessionBindingListener {
 		Map<String,InfoUsuarioActivo> users = usuariosActivos.getUsers();
 		UsuarioLogeado user = (UsuarioLogeado) event.getValue();
 		if (users.containsKey(user.getUsername())) {
-			System.out.println("Quitado usuario");
+			System.out.println("Quitado usuario : " + user.getUsername());
 			users.remove(user.getUsername());
 		}
 	}

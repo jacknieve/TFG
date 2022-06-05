@@ -21,4 +21,9 @@ public interface FicheroRepo extends JpaRepository<Fichero, FicheroId>{
 	@Query(nativeQuery = true, value="DELETE FROM ficheros WHERE user_username = ?1 AND nombre = ?2")
 	void limpiarFichero(String username, String filename);
 	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery = true, value="DELETE FROM ficheros WHERE user_username = ?1")
+	void limpiarDeUsuario(String username);
+	
 }

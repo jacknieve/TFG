@@ -27,10 +27,12 @@ import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.exceptions.ExcepcionFalloAccesoFile;
 import com.tfg.mentoring.exceptions.ExcepcionFichero;
 import com.tfg.mentoring.exceptions.ExcepcionFileNotFound;
+import com.tfg.mentoring.exceptions.ExcepcionNoAutorizado;
 import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.service.FileService;
+import com.tfg.mentoring.service.SalaChatServicio;
 
 @RestController
 @RequestMapping("/file")
@@ -38,6 +40,8 @@ public class FileController {
 
 	@Autowired
 	private FileService fservice;
+	@Autowired
+	private SalaChatServicio sservice;
 
 	@PostMapping("/fotoperfil")
 	public ResponseEntity<MensajeError> setFotoPerfil(@RequestParam("imagen") MultipartFile image,
@@ -59,7 +63,8 @@ public class FileController {
 				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),
 						HttpStatus.UNAUTHORIZED);
 			}
-			//System.out.println("Foto de perfil subida: " + path + " por " + u.getUsername());
+			// System.out.println("Foto de perfil subida: " + path + " por " +
+			// u.getUsername());
 			return new ResponseEntity<>(new MensajeError(path, ""), HttpStatus.OK);
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -71,8 +76,10 @@ public class FileController {
 		} catch (IOException | SecurityException e) {
 			fservice.clearImage(u.getUsername());
 			e.printStackTrace();
-			return new ResponseEntity<>(new MensajeError("Fallo al almacenar la imagen",
-					"Se ha producido un fallo al tratar de almacenar la imagen."), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+					new MensajeError("Fallo al almacenar la imagen",
+							"Se ha producido un fallo al tratar de almacenar la imagen."),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ExcepcionFichero e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError(e.getTitulo(), e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
@@ -107,7 +114,7 @@ public class FileController {
 				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),
 						HttpStatus.UNAUTHORIZED);
 			}
-			//System.out.println("Fichero subido: " + nombre + " por " + u.getUsername());
+			// System.out.println("Fichero subido: " + nombre + " por " + u.getUsername());
 			return new ResponseEntity<>(new MensajeError(nombre, ""), HttpStatus.OK);
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -119,8 +126,10 @@ public class FileController {
 		} catch (IOException | SecurityException e) {
 			e.printStackTrace();
 			fservice.clearFile(u.getUsername(), file.getOriginalFilename());
-			return new ResponseEntity<>(new MensajeError("Fallo al almacenar el fichero",
-					"Se ha producido un fallo al tratar de almacenar el fichero."), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+					new MensajeError("Fallo al almacenar el fichero",
+							"Se ha producido un fallo al tratar de almacenar el fichero."),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ExcepcionFichero e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError(e.getTitulo(), e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
@@ -143,16 +152,14 @@ public class FileController {
 	}
 
 	// https://o7planning.org/11673/spring-boot-file-upload-with-angularjs
-	@GetMapping("/download/mentor/{username}/{where}/{filename}")
-	public ResponseEntity<Resource> descargarFicheroMentor(@PathVariable("username") String username, @PathVariable("where") String where,
-			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u) 
-					throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
+	@GetMapping("/download/mentor/{username}/{filename}")
+	public ResponseEntity<Resource> descargarFicheroMentor(@PathVariable("username") String username,
+			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u)
+			throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
 		try {
-			if(!where.equals("chat") && !where.equals("perfil")) {
-				throw new NotFoundException();
-			}
-			Resource recurso = fservice.getFile("recursos/user-files/mentores/" + username + "/" + where + "/" + filename);
-			//System.out.println("Fichero descargado: " + filename + " por " + u.getUsername() + " de " + username);
+			Resource recurso = fservice.getFile("recursos/user-files/mentores/" + username + "/perfil/" + filename);
+			// System.out.println("Fichero descargado: " + filename + " por " +
+			// u.getUsername() + " de " + username);
 			return ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(recurso);
 		} catch (ExcepcionRecursos e) {
@@ -164,17 +171,14 @@ public class FileController {
 		}
 	}
 
-
-	@GetMapping("/download/mentorizado/{username}/{where}/{filename}")
-	public ResponseEntity<Resource> descargarFicheroMentorizadoChat(@PathVariable("username") String username, @PathVariable("where") String where,
-			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u) 
-					throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException  {
+	@GetMapping("/download/mentorizado/{username}/{filename}")
+	public ResponseEntity<Resource> descargarFicheroMentorizado(@PathVariable("username") String username,
+			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u)
+			throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
 		try {
-			if(!where.equals("chat") && !where.equals("perfil")) {
-				throw new NotFoundException();
-			}
-			Resource recurso = fservice.getFile("recursos/user-files/mentorizados/" + username + "/" + where + "/" + filename);
-			//System.out.println("Fichero descargado: " + filename + " por " + u.getUsername() + " de " + username);
+			Resource recurso = fservice.getFile("recursos/user-files/mentorizados/" + username + "/perfil/" + filename);
+			// System.out.println("Fichero descargado: " + filename + " por " +
+			// u.getUsername() + " de " + username);
 			return ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(recurso);
 		} catch (ExcepcionRecursos e) {
@@ -186,27 +190,61 @@ public class FileController {
 		}
 	}
 
-	@GetMapping("/download/my/{where}/{filename}")
-	public ResponseEntity<Resource> descargarMiFichero(@PathVariable("filename") String filename, @PathVariable("where") String where,
-			@AuthenticationPrincipal UserAuth u) throws ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
+	@GetMapping("/download/{quien}/chat/{sala}/{filename}")
+	public ResponseEntity<Resource> descargarFicheroChat(@PathVariable("quien") String quien,@PathVariable("sala") String sala,
+			 @PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u) throws MalformedURLException, ExcepcionFileNotFound,
+			ExcepcionFalloAccesoFile, NotFoundException, ExcepcionNoAutorizado {
 		try {
-			System.out.println(filename + " " + where );
-			if(!where.equals("chat") && !where.equals("perfil")) {
+			if (!quien.equals("mentor") && !quien.equals("mentorizado")) {
 				throw new NotFoundException();
 			}
+
+			long id = Long.parseLong(sala);
+			if (sservice.comprobarSalaUsuario(id, u.getUsername(), quien)) {
+
+				Resource recurso = fservice
+						.getFile("recursos/user-files/salaschat/" + id + "/" + quien + "/" + filename);
+				return ResponseEntity.ok()
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+						.body(recurso);
+			} else {
+				throw new ExcepcionNoAutorizado(
+						"No tienes permiso para descargar ese fichero, no es de un chat en el que participes");
+			}
+		} catch (ExcepcionRecursos e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFileNotFound(filename);
+		} catch (NumberFormatException e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFileNotFound(filename);
+		} catch (ExcepcionNoAutorizado e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFalloAccesoFile(filename);
+		}
+	}
+
+	@GetMapping("/download/my/{filename}")
+	public ResponseEntity<Resource> descargarMiFichero(@PathVariable("filename") String filename,
+			@AuthenticationPrincipal UserAuth u)
+			throws ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
+		try {
 			Resource recurso;
 			switch (u.getRol()) {
 			case MENTOR:
-				recurso = fservice.getFile("recursos/user-files/mentores/" + u.getUsername() + "/" + where + "/" + filename);
+				recurso = fservice.getFile("recursos/user-files/mentores/" + u.getUsername() + "/perfil/" + filename);
 				break;
 			case MENTORIZADO:
 				recurso = fservice
-						.getFile("recursos/user-files/mentorizados/" + u.getUsername() + "/" + where + "/" + filename);
+						.getFile("recursos/user-files/mentorizados/" + u.getUsername() + "/perfil/" + filename);
 				break;// Aqui se podria añadir tambien a institucion
 			default:
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
-			//System.out.println("Fichero propio descargado: " + filename + " por " + u.getUsername());
+			// System.out.println("Fichero propio descargado: " + filename + " por " +
+			// u.getUsername());
 			return ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(recurso);
 		} catch (ExcepcionRecursos e) {
@@ -217,7 +255,55 @@ public class FileController {
 			throw new ExcepcionFalloAccesoFile(filename);
 		}
 	}
-	
+
+	@GetMapping("/download/chat/my/{sala}/{filename}")
+	public ResponseEntity<Resource> descargarMiFicheroChat(@PathVariable("sala") String sala, @PathVariable("filename") String filename,
+			@AuthenticationPrincipal UserAuth u)
+			throws ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException, ExcepcionNoAutorizado {
+		try {
+			Resource recurso;
+			long id = Long.parseLong(sala);
+			
+			switch (u.getRol()) {
+			case MENTOR:
+				if (sservice.comprobarSalaUsuario(id, u.getUsername(), "mentorizado")) {//Si mentorizado esta aqui a proposito
+				recurso = fservice.getFile("recursos/user-files/salaschat/" + id + "/mentor/" + filename);
+				}
+				else {
+					throw new ExcepcionNoAutorizado(
+							"No tienes permiso para descargar ese fichero, no es tuyo");
+				}
+				break;
+			case MENTORIZADO:
+				if (sservice.comprobarSalaUsuario(id, u.getUsername(), "mentor")) {
+					recurso = fservice.getFile("recursos/user-files/salaschat/" + id + "/mentorizado/" + filename);
+					}
+					else {
+						throw new ExcepcionNoAutorizado(
+								"No tienes permido para descargar ese fichero, no es tuyo");
+					}
+				break;
+			default:
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+			// System.out.println("Fichero propio descargado: " + filename + " por " +
+			// u.getUsername());
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(recurso);
+		} catch (ExcepcionRecursos e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFileNotFound(filename);
+		} catch (NumberFormatException e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFileNotFound(filename);
+		} catch (ExcepcionNoAutorizado e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw new ExcepcionFalloAccesoFile(filename);
+		}
+	}
 
 	@PostMapping("/deletefile")
 	public ResponseEntity<MensajeError> borrarFichero(@AuthenticationPrincipal UserAuth us,
@@ -239,7 +325,8 @@ public class FileController {
 				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),
 						HttpStatus.UNAUTHORIZED);
 			}
-			//System.out.println("Fichero borrado: " + filename + " por " + us.getUsername());
+			// System.out.println("Fichero borrado: " + filename + " por " +
+			// us.getUsername());
 			return new ResponseEntity<>(new MensajeError(nombre, ""), HttpStatus.OK);
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -251,11 +338,14 @@ public class FileController {
 		} catch (IOException | SecurityException e) {
 			e.printStackTrace();
 			fservice.restoreFile(us.getUsername(), filename);
-			return new ResponseEntity<>(new MensajeError("Fallo al borrar el fichero",
-					"Se ha producido un fallo al tratar de borrar el fichero."), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(
+					new MensajeError("Fallo al borrar el fichero",
+							"Se ha producido un fallo al tratar de borrar el fichero."),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (ExcepcionRecursos e) {
 			System.out.println(e.getMessage());
-			return new ResponseEntity<>(new MensajeError("Error de recurso", e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>(new MensajeError("Error de recurso", e.getMessage()),
+					HttpStatus.NOT_ACCEPTABLE);
 		} catch (Exception e) { // Otro fallo
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Error interno",

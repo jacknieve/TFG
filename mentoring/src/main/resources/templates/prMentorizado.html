@@ -151,7 +151,7 @@
 												<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
 													{{mentorizacion.uperfil.papellido}}
 													{{mentorizacion.uperfil.sapellido}}</h3>
-												<div class="col-md-5"><strong>Edad:</strong>
+												<div class="col-md-5" ng-show="mentorizacion.uperfil.edad > 0"><strong>Edad:</strong>
 													{{mentorizacion.uperfil.edad}}
 												</div>
 												<div class="col-md-7" ng-show="mentor.entidad != ''">
@@ -424,7 +424,7 @@
 													<strong>Participa en el programa de:</strong>
 													{{mentor.institucionNombre}}
 												</div>
-												<div class="col-md-5" ng-show="mentor.expandido"> <strong>Edad:</strong>
+												<div class="col-md-5" ng-show="mentor.expandido && mentor.info.edad > 0"> <strong>Edad:</strong>
 													{{mentor.info.edad}}</div>
 												<div class="col-md-7" ng-show="mentor.entidad != ''">
 													<strong>Entidad:</strong> {{mentor.entidad}}
@@ -548,7 +548,7 @@
 												<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
 													{{mentorizacion.uperfil.papellido}}
 													{{mentorizacion.uperfil.sapellido}}</h3>
-												<div class="col-md-5"><strong>Edad:</strong>
+												<div class="col-md-5" ng-show="mentorizacion.uperfil.edad > 0"><strong>Edad:</strong>
 													{{mentorizacion.uperfil.edad}}
 												</div>
 												<div class="col-md-7"

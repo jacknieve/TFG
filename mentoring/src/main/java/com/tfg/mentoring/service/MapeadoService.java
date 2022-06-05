@@ -148,10 +148,10 @@ public class MapeadoService {
 	}
 	
 	public List<MentorDTO> getMentorBusqueda(List<Mentor> mentores) {
-		return mentores.stream().map(this::convertMentortoMentorBusqueda).collect(Collectors.toList());
+		return mentores.stream().map(this::convertMentortoDTO).collect(Collectors.toList());
 	}
 
-	private MentorDTO convertMentortoMentorBusqueda(Mentor m) {
+	private MentorDTO convertMentortoDTO(Mentor m) {
 		MentorDTO user = new MentorDTO();
 		user = maper.map(m, MentorDTO.class);
 		if(m.getUsuario().getFoto() == null) {

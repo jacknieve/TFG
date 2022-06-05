@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.tfg.mentoring.exceptions.ExcepcionFalloAccesoFile;
 import com.tfg.mentoring.exceptions.ExcepcionFileNotFound;
+import com.tfg.mentoring.exceptions.ExcepcionNoAutorizado;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 
@@ -38,6 +39,27 @@ public class ManejadorExcepciones extends ResponseEntityExceptionHandler {
 			@AuthenticationPrincipal UserAuth u) {
 		ModelAndView model = new ModelAndView("error_page_loged");
 		model.addObject("mensaje", "El fichero requerido no existe o ya no se encuentra disponible");
+		switch (u.getRol()) {
+		case MENTOR:
+			model.addObject("rol", "Mentor");
+			break;
+		case MENTORIZADO:
+			model.addObject("rol", "Mentorizado");
+			break;
+		default:
+			model.addObject("rol", "Otro");
+		}
+		model.addObject("hora", new Date());
+		return model;
+	}
+	
+	@ExceptionHandler(ExcepcionNoAutorizado.class)
+	@ResponseBody
+	public ModelAndView manejadorExcepcionNoAutorizado(HttpServletRequest request, Throwable ex,
+			@AuthenticationPrincipal UserAuth u) {
+		ModelAndView model = new ModelAndView("error_page_loged");
+		model.addObject("mensaje", "No tienes permiso para realizar esta acción, el recurso al que quieres acceder no te "
+				+ "pertenece o no estas autorizado para acceder a él.");
 		switch (u.getRol()) {
 		case MENTOR:
 			model.addObject("rol", "Mentor");

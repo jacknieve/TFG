@@ -86,6 +86,17 @@ public class MentoringApplication {
 					System.exit(-1);
 				}
 			}
+			folder = new File("recursos/user-files/salaschat/");
+			if(!folder.exists()) {
+				if(folder.mkdir()) {
+					System.out.println("Creado fichero");
+					System.out.println(folder.getAbsolutePath());
+				}
+				else {
+					System.out.println("No se ha podido crear el directorio de ficheros de las salas del chat");
+					System.exit(-1);
+				}
+			}
 		} catch (SecurityException | NullPointerException e) {
 			System.out.println(e.getMessage());
 			System.exit(-1);

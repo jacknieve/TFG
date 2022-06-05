@@ -34,6 +34,9 @@ Cosas que añadir en el diseño:
 
 -><-
 
+Probar ahora el registro, una vez redistribuida la logica
+
+
 ---->>>Algun dia tengo que ponerme a repasar todos los comentarios del codigo y a añadir o quitar
 
 -Orden de cosas-
@@ -92,7 +95,8 @@ https://o7planning.org/11673/spring-boot-file-upload-with-angularjs
 
 -------------------
 
-
+-->Areas de conocimiento:
+https://opendata.unex.es/dataset/areas-conocimiento-uex/resource/f8f52e0e-74e0-45cc-804c-19ba1612272f?inner_span=True
 
 
 --Video streaming
@@ -123,7 +127,8 @@ Resultado
 Sockjs:
 https://unpocodejava.com/2018/02/11/que-es-sockjs-y-por-que-usarlo-en-lugar-de-usar-el-api-de-websockets-directamente/
 
-
+Diagrama de secuencia:
+https://app.diagrams.net/
 
 
 

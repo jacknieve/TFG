@@ -350,16 +350,16 @@ appChat.controller("chatController", function($scope, $http, $notification) {
 		$scope.cargando = true;
 		var path = "";
 		if (soyMentor == file.deMentor) {
-			path = "/file/download/my/chat/" + file.contenido;
+			path = "/file/download/chat/my/" + $scope.salaActual.id + "/" + file.contenido;
 			window.open(path, '_blank', '');
 		}
 		else if (soyMentor) {
-			path = "/file/download/mentorizado/" + $scope.salaActual.otroUsuario + "/chat/" + file.contenido;
+			path = "/file/download/mentorizado/chat/" + $scope.salaActual.id + "/" + file.contenido;
 			//https://stackoverflow.com/questions/29747136/download-a-file-using-angular-js-and-a-spring-based-restful-web-service
 			window.open(path, '_blank', '');
 		}
 		else {
-			path = "/file/download/mentor/" + $scope.salaActual.otroUsuario + "/chat/" + file.contenido;
+			path = "/file/download/mentor/chat/" + $scope.salaActual.id + "/" + file.contenido;
 			window.open(path, '_blank', '');
 		}
 

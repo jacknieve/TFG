@@ -99,7 +99,7 @@ public class MentorController {
 			List<PeticionDTO> pUser = new ArrayList<PeticionDTO>();
 			peticiones = prepo.getNews(us.getUsername());
 			if (peticiones.isEmpty()) {
-				System.out.println("Sin nuevas peticiones");
+				//System.out.println("Sin nuevas peticiones");
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			for (Peticion p : peticiones) {

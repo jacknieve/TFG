@@ -24,7 +24,7 @@ public interface MentorRepo extends JpaRepository<Mentor, String>{
 	
 
 	@Query(nativeQuery = true, value="SELECT DISTINCT m.* FROM usuarios u, mentores m, area_mentor a WHERE m.usuario_mentor = u.username AND u.enable = true AND u.unlocked = true AND (:i is null or m.institucion = cast(:i AS text)) AND m.horaspormes >=:h AND m.usuario_mentor = a.correo AND (:a is null or a.area =cast(:a AS text))")
-	List<Mentor> buscarPrototipo(@Param("i") String institucion, @Param("h") float horas, @Param("a") String area);
+	List<Mentor> buscarMentores(@Param("i") String institucion, @Param("h") float horas, @Param("a") String area);
 	
 	@Transactional
 	@Modifying

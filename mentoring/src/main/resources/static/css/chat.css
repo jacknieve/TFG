@@ -181,7 +181,8 @@
 	min-width: 20%;
 	max-width: 80%;
 	min-height: 30px;
-	background-color: #8DFFC7;
+	background-color: #B4DBC0;
+	
 	border: 1px solid black;
 	border-radius: 10px;
 	float: right;
@@ -192,7 +193,7 @@
 	min-width: 20%;
 	max-width: 80%;
 	min-height: 30px;
-	background-color: #E7717D;
+	background-color: #CAEBF2;
 	border: 1px solid black;
 	border-radius: 10px;
 	float: left;

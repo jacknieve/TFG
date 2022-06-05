@@ -1,5 +1,6 @@
 package com.tfg.mentoring.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.MensajeChat;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
@@ -34,13 +36,15 @@ public class SalaChatServicio {
 
 	@Autowired
 	private ActiveUsersService acservice;
+	@Autowired
+	private FileService fservice;
 
 	// Esto habria que ponerlo en otro sitio
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 
 	// Aqui el deMentor se refiere a si el otro usuario es mentor
-	public SalaChat getSalaUsuarios(String emisor, String receptor, boolean deMentor) {
+	public SalaChat getSalaUsuarios(String emisor, String receptor, boolean deMentor) throws JDBCConnectionException, QueryTimeoutException {
 
 		Optional<SalaChat> sala;
 		if (deMentor) {
@@ -57,7 +61,7 @@ public class SalaChatServicio {
 
 	}
 	
-	public Long getIdSalaUsuarios(String mentor, String mentorizado) {
+	public Long getIdSalaUsuarios(String mentor, String mentorizado) throws JDBCConnectionException, QueryTimeoutException{
 
 		Optional<Long> sala = srepo.getIdByMentorAndMentorizado(mentor, mentorizado);
 		if (sala.isPresent()) {
@@ -79,7 +83,7 @@ public class SalaChatServicio {
 
 	}
 
-	public List<Long> getSalasConMensajesNuevos(String username, boolean mentor) {
+	public List<Long> getSalasConMensajesNuevos(String username, boolean mentor) throws JDBCConnectionException, QueryTimeoutException{
 
 		if (mentor) {
 			return srepo.nuevosMentor(username);
@@ -88,7 +92,7 @@ public class SalaChatServicio {
 		}
 	}
 
-	public void abrirChat(Mentor mentor, Mentorizado mentorizado) {
+	public void abrirChat(Mentor mentor, Mentorizado mentorizado) throws JDBCConnectionException, QueryTimeoutException{
 		SalaChat sala = new SalaChat(mentor, mentorizado);
 		srepo.save(sala);
 		if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
@@ -100,11 +104,15 @@ public class SalaChatServicio {
 			messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
 					AsuntoMensaje.CONTACTO, new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false, foto)));
 		}
+		
 
 	}
 
-	public void cerrarChat(String mentor, String mentorizado, boolean fueMentor) {
-		srepo.salirChat(mentor, mentorizado);
+	public void cerrarChat(String mentor, String mentorizado, boolean fueMentor) throws JDBCConnectionException, QueryTimeoutException {
+		Optional<Long> id = srepo.getIdByMentorAndMentorizado(mentor, mentorizado);
+		
+		if(id.isPresent()) {
+			srepo.salirChat(mentor, mentorizado);
 		if (fueMentor) {
 			if (acservice.activo(mentorizado) && acservice.enChat(mentorizado)) {
 				messagingTemplate.convertAndSendToUser(mentorizado, "/queue/messages",
@@ -116,38 +124,69 @@ public class SalaChatServicio {
 						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentorizado, null, true, null)));
 			}
 		}
+		try {
+			fservice.limpiarFilesSala(id.get());
+		} catch (IOException e) {//Aqui el usuario no puede hacer nada, se tendría que registrar para que lo resolviese el administrador
+			System.out.println("No ha sido posible limpiar el directorio de la sala "+id.get()+".");
+		} catch (ExcepcionRecursos e) {
+			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Se ha producido un error al intentar limpiar el directorio de la sala de chat " + id.get() + ".");
+			System.out.println(e.getMessage());
+		}
+		}
 	}
 
 	// Cerrar todos los chats de un mentor al este eliminar su cuenta
-	public void cerrarChatSalirMentor(String username) {
+	public void cerrarChatSalirMentor(String username) throws JDBCConnectionException, QueryTimeoutException {
 		List<SalaChat> salas = srepo.findByMentor(username);
 		for(SalaChat s : salas) {
 			if (acservice.activo(s.getMentorizado().getCorreo()) && acservice.enChat(s.getMentorizado().getCorreo())) {
 				messagingTemplate.convertAndSendToUser(s.getMentorizado().getCorreo(), "/queue/messages",
 						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
 			}
+			try {
+				fservice.limpiarFilesSala(s.getId_sala());
+			} catch (IOException e) {//Aqui el usuario no puede hacer nada, se tendría que registrar para que lo resolviese el administrador
+				System.out.println("No ha sido posible limpiar el directorio de la sala "+s.getId_sala()+".");
+			} catch (ExcepcionRecursos e) {
+				System.out.println(e.getMessage());
+			} catch (Exception e) {
+				System.out.println("Se ha producido un error al intentar limpiar el directorio de la sala de chat " + s.getId_sala() + ".");
+				System.out.println(e.getMessage());
+			}
 		}
 		srepo.salirTodosChatsMentor(username);
 	}
 
 	// Lo mismo que la anterior con mentorizado
-	public void cerrarChatSalirMentorizado(String username) {
+	public void cerrarChatSalirMentorizado(String username) throws JDBCConnectionException, QueryTimeoutException{
 		List<SalaChat> salas = srepo.findByMentorizado(username);
 		for(SalaChat s : salas) {
 			if (acservice.activo(s.getMentor().getCorreo()) && acservice.enChat(s.getMentor().getCorreo())) {
 				messagingTemplate.convertAndSendToUser(s.getMentor().getCorreo(), "/queue/messages",
 						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
 			}
+			try {
+				fservice.limpiarFilesSala(s.getId_sala());
+			} catch (IOException e) {//Aqui el usuario no puede hacer nada, se tendría que registrar para que lo resolviese el administrador
+				System.out.println("No ha sido posible limpiar el directorio de la sala "+s.getId_sala()+".");
+			} catch (ExcepcionRecursos e) {
+				System.out.println(e.getMessage());
+			} catch (Exception e) {
+				System.out.println("Se ha producido un error al intentar limpiar el directorio de la sala de chat " + s.getId_sala() + ".");
+				System.out.println(e.getMessage());
+			}
 		}
 		srepo.salirTodosChatsMentorizado(username);
 	}
 
 	// Guardar un nuevo mensaje de una sala de chat
-	public void saveMensaje(MensajeChat mensaje) {
+	public void saveMensaje(MensajeChat mensaje) throws JDBCConnectionException, QueryTimeoutException {
 		mrepo.save(mensaje);
 	}
 
-	public List<MensajeChatDTO> getMensajes(long id, boolean mentor) {
+	public List<MensajeChatDTO> getMensajes(long id, boolean mentor) throws JDBCConnectionException, QueryTimeoutException {
 		List<MensajeChatDTO> resultado = new ArrayList<>();
 		if (mentor) {
 			resultado = mrepo.findBySala(id).stream().map(this::convertMensajeChatToDTO).collect(Collectors.toList());
@@ -163,20 +202,8 @@ public class SalaChatServicio {
 		return new MensajeChatDTO(m);
 	}
 	
-	public boolean borrarFileChat(String username, long id, String filename, boolean mentor) throws JDBCConnectionException, QueryTimeoutException{
-		int n;
-		if(mentor) {
-			//Hago primero esta, porque en caso de que una de las dos falle, esta no provoca cambios en la DB
-			n = srepo.countFileChatMentor(username, filename);
-			
-		}
-		else {
-			n = srepo.countFileChatMentorizado(username, filename);
-		}
-		System.out.println(n);
+	public void borrarFileChat(String username, long id, String filename, boolean mentor) throws JDBCConnectionException, QueryTimeoutException{
 		mrepo.actualizarFileChat(filename + " (borrado)", true, id, mentor, false, filename);
-		
-		return n == 1;
 	}
 	
 	public void restoreFileChat(long id, String filename, boolean mentor){
@@ -188,6 +215,18 @@ public class SalaChatServicio {
 			//Aqui habria que registrar esto de tener un log, porque es algo que se tendria que arrgelar una vez estuviese disponible
 			System.out.println("No ha sido posible restaurar el mensaje en la base de datos");
 		}
+		
+	}
+	
+	public boolean comprobarSalaUsuario(long id, String username, String rol) throws JDBCConnectionException, QueryTimeoutException {
+		int n;
+		if(rol.equals("mentor")) {
+			n = srepo.existeSalaMentorizado(id, username);
+		}
+		else {
+			n = srepo.existeSalaMentor(id, username);
+		}
+		return n == 1;
 		
 	}
 	

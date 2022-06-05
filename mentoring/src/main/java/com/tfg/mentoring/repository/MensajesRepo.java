@@ -19,12 +19,6 @@ public interface MensajesRepo extends JpaRepository<MensajeChat, MensajeChatId>{
 	@Query(nativeQuery = true, value="UPDATE mensajes SET estado = 1 WHERE id_sala = ?1 AND dementor = ?2 AND estado = 0")
 	void actualizarEstadoMensajes(long id, boolean deMentor);
 	
-	/*@Query(nativeQuery = true, value="SELECT DISTINCT id_mentorizado FROM mensajes WHERE id_mentor = ?1 AND estado = 0 AND dementor = false")
-	List<String> nuevosMentor(String mentor);
-	
-	@Query(nativeQuery = true, value="SELECT DISTINCT id_mentor FROM mensajes WHERE id_mentorizado = ?1 AND estado = 0 AND dementor = true")
-	List<String> nuevosMentorizado(String mentorizado);*/
-	
 	@Query(nativeQuery = true, value="SELECT * FROM mensajes WHERE id_sala = ?1 ORDER BY fecha_envio")
 	List<MensajeChat> findBySala(long id);
 	
@@ -32,6 +26,8 @@ public interface MensajesRepo extends JpaRepository<MensajeChat, MensajeChatId>{
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE mensajes SET contenido = ?1, detexto = ?2 WHERE id_sala = ?3 AND dementor = ?4 AND detexto = ?5 AND contenido = ?6")
 	void actualizarFileChat(String contenido, boolean detexto, long id, boolean mentor, boolean eraDeTexto, String contenidoOld);
+	
+	
 	
 	/*@Transactional
 	@Modifying

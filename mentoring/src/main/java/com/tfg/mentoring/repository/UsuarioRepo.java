@@ -33,6 +33,11 @@ public interface UsuarioRepo extends JpaRepository<Usuario, String>{
 	@Transactional
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE usuarios SET foto = null WHERE username = ?1")
+	void borrarFoto(String username);
+	
+	@Transactional
+	@Modifying
+	@Query(nativeQuery = true, value="UPDATE usuarios SET foto = null WHERE username = ?1")
 	void clearFoto(String username);
 	
 	@Transactional

@@ -50,6 +50,7 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 	$scope.foto = "/images/usuario.png";
 	$scope.ficheroSubir = null;
 	$scope.sinficherosperfil = false;
+	$scope.mydate = null;
 
 	$scope.getInfo = function() {
 		$scope.cargando = true;
@@ -58,7 +59,9 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 				if (response.status == 200) {
 					$scope.usuario = response.data;
 					copiaDatos = Object.assign({}, response.data);
-					$scope.mydate = new Date(response.data.fnacimiento);
+					if(response.data.fnacimiento != null){
+						$scope.mydate = new Date(response.data.fnacimiento);
+					}
 					//Aqui pasamos las areas a un mapa, para acceder directamente al añadir o borrar
 					if (response.data.foto != "") {
 						$scope.foto = response.data.foto;
@@ -417,7 +420,7 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 
 	$scope.dowloadFile = function(file) {
 		$scope.cargando = true;
-		path = "/file/download/my/perfil/" + file;
+		path = "/file/download/my/" + file;
 		window.open(path, '_blank', '');
 
 		$scope.cargando = false;

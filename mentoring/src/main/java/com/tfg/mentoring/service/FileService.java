@@ -40,13 +40,33 @@ public class FileService {
 
 	@Autowired
 	private UsuarioRepo urepo;
-	
-
 	@Autowired
 	private FicheroRepo frepo;
-	
 	@Autowired
 	private MensajesRepo mrepo;
+
+	public void crearDirectoriosUsuario(String username, String rol) throws FileNotFoundException, ExcepcionRecursos {
+		File filesUsers = new File("recursos/user-files/" + rol + "/" + username + "/");
+		File filesUsersPerfil = new File("recursos/user-files/" + rol + "/" + username + "/perfil/");
+		if (!filesUsers.mkdir() || !filesUsersPerfil.mkdir()) {
+			throw new ExcepcionRecursos("No ha sido posible crear el directorio para el usuario");
+		}
+		String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/").getAbsolutePath() + "/"
+				+ username + "/";
+		File imagen = new File(path);
+		if (!imagen.mkdir()) {
+			throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el usuario");
+		}
+	}
+
+	public void crearDirectoriosChat(long id) throws ExcepcionRecursos, SecurityException {
+		File salaChat = new File("recursos/user-files/salaschat/" + id + "/");
+		File salaCahtMentor = new File("recursos/user-files/salaschat/" + id + "/mentor/");
+		File salaCahtMentorizado = new File("recursos/user-files/salaschat/" + id + "/mentorizado/");
+		if (!salaChat.mkdir() || !salaCahtMentor.mkdir() || !salaCahtMentorizado.mkdir()) {
+			throw new ExcepcionRecursos("No ha sido posible crear los directorios para la sala de chat");
+		}
+	}
 
 	public String guardarImagen(MultipartFile imagen, String username, String rol)
 			throws IOException, ExcepcionFichero, SecurityException, JDBCConnectionException, QueryTimeoutException {
@@ -113,8 +133,8 @@ public class FileService {
 
 	}
 
-	public String guardarFichero(MultipartFile file, String username, String rol)
-			throws IOException, ExcepcionFichero, SecurityException, ExcepcionRecursos, ExcepcionDB, JDBCConnectionException, QueryTimeoutException{
+	public String guardarFichero(MultipartFile file, String username, String rol) throws IOException, ExcepcionFichero,
+			SecurityException, ExcepcionRecursos, ExcepcionDB, JDBCConnectionException, QueryTimeoutException {
 
 		String path = "recursos/user-files/" + rol + "/" + username + "/perfil/";
 		File dir = new File(path);
@@ -131,7 +151,7 @@ public class FileService {
 			throw new ExcepcionFichero("Nombre demasiado largo",
 					"El nombre del fichero excede la longitud máxima permitida de 250 caracteres.");
 		}
-		
+
 		Path directorio = Paths.get(path);
 		// https://www.baeldung.com/java-folder-size
 		long size = Files.walk(directorio).filter(p -> p.toFile().isFile()).mapToLong(p -> p.toFile().length()).sum();
@@ -154,15 +174,16 @@ public class FileService {
 		Files.write(pathFichero, bytes);
 		return nombre;
 	}
-	
-	public MensajeChat guardarFicheroSend(MultipartFile file, String username, String rol, SalaChat sala, boolean deMentor)
-			throws IOException, ExcepcionFichero, SecurityException, ExcepcionRecursos, ExcepcionDB, JDBCConnectionException, QueryTimeoutException{
 
-		String path = "recursos/user-files/" + rol + "/" + username + "/chat/";
+	public MensajeChat guardarFicheroSend(MultipartFile file, String rol, SalaChat sala, boolean deMentor)
+			throws IOException, ExcepcionFichero, SecurityException, ExcepcionRecursos, ExcepcionDB,
+			JDBCConnectionException, QueryTimeoutException {
+
+		String path = "recursos/user-files/salaschat/" + sala.getId_sala() + "/" + rol + "/";
 		File dir = new File(path);
 		if (!dir.exists()) {
 			throw new ExcepcionRecursos(
-					"No existe el directorio del usuario, por favor, si recibe este error, pongase en contacto con nosotros."
+					"No existe el directorio del usuario en el chat, por favor, si recibe este error, pongase en contacto con nosotros."
 							+ "Hora del suceso: " + new Date());
 		}
 		if (file.isEmpty()) {
@@ -178,9 +199,9 @@ public class FileService {
 		Path directorio = Paths.get(path);
 		long size = Files.walk(directorio).filter(p -> p.toFile().isFile()).mapToLong(p -> p.toFile().length()).sum();
 		float tam = ((size + file.getSize()) / 1024) / 1024;
-		if (tam > 50.0) {// Si es mas que 10MB
+		if (tam > 30.0) {
 			throw new ExcepcionFichero("Cuota superada",
-					"Has superado la cuota de almacenamiento de 50MB, para subir un nuevo archivo, debe eliminar otros.");
+					"Has superado la cuota de almacenamiento de 30MB en el chat, para enviar un nuevo archivo, debe eliminar otros.");
 		}
 		MensajeChat msg = new MensajeChat(nombre, sala, deMentor, false);
 		mrepo.save(msg);
@@ -197,7 +218,7 @@ public class FileService {
 		files = frepo.findByUser(username).stream().map(Fichero::getNombre).collect(Collectors.toList());
 		return files;
 	}
-	
+
 	public List<String> getFicherosUserChat(String username) {
 		List<String> files = new ArrayList<>();
 		files = frepo.findByUser(username).stream().map(Fichero::getNombre).collect(Collectors.toList());
@@ -205,18 +226,18 @@ public class FileService {
 	}
 
 	public void borrarImage(String filename, String username, String rol) throws FileNotFoundException {
-			String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/")
-					.getAbsolutePath();
-			String filePath = path + "/" + filename;
-			File f = new File(filePath);
-			if (f.exists()) {
-				f.delete();
-			}
-		
+		String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/")
+				.getAbsolutePath();
+		String filePath = path + "/" + filename;
+		File f = new File(filePath);
+		if (f.exists()) {
+			f.delete();
+		}
+
 	}
 
-	public void borrarFile(String filename, String username, String rol) 
-			throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos, SecurityException, IOException{
+	public void borrarFile(String filename, String username, String rol)
+			throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos, SecurityException, IOException {
 		String path = "recursos/user-files/" + rol + "/" + username + "/perfil/";
 		File dir = new File(path);
 		if (dir.exists()) {
@@ -225,88 +246,124 @@ public class FileService {
 			if (f.exists()) {
 				frepo.limpiarFichero(username, filename);
 				f.delete();
-			}
-			else {
+			} else {
 				throw new ExcepcionRecursos("El fichero indicado no existe.");
 			}
-		}
-		else {
+		} else {
 			throw new ExcepcionRecursos("No ha sido posible acceder al directorio del usuario para borrar el fichero.");
 		}
 	}
-	
-	public void borrarFileSend(String filename, String username, String rol) 
-			throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos, SecurityException, IOException{
-		String path = "recursos/user-files/" + rol + "/" + username + "/chat/";
+
+	public void borrarFileSend(String filename, long id, String rol)
+			throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos, SecurityException, IOException {
+		String path = "recursos/user-files/salaschat/" + id + "/" + rol + "/";
 		File dir = new File(path);
 		if (dir.exists()) {
 			String filePath = path + "" + filename;
 			File f = new File(filePath);
 			if (f.exists()) {
 				f.delete();
-			}
-			else {
+			} else {
 				throw new ExcepcionRecursos("El fichero indicado no existe.");
 			}
-		}
-		else {
+		} else {
 			throw new ExcepcionRecursos("No ha sido posible acceder al directorio del usuario para borrar el fichero.");
 		}
 	}
-	
-	public void clearImage(String username){
+
+	public void clearImage(String username) {
 		try {
 			urepo.clearFoto(username);
-		}
-		catch (JDBCConnectionException | QueryTimeoutException e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			System.out.println("No ha sido posible limpiar la imagen en la base de datos");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("No ha sido posible limpiar la imagen en la base de datos");
 		}
 	}
-	
+
 	public void clearFile(String username, String filename) {
 		try {
 			frepo.limpiarFichero(username, filename);
-		}
-		catch (JDBCConnectionException | QueryTimeoutException e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
-			//Aqui habria que registrar esto de tener un log, porque es algo que se tendria que arrgelar una vez estuviese disponible
+			// Aqui habria que registrar esto de tener un log, porque es algo que se tendria
+			// que arrgelar una vez estuviese disponible
 			System.out.println("No ha sido posible limpiar el fichero en la base de datos");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("No ha sido posible limpiar el fichero en la base de datos");
 		}
 	}
-	
+
 	public void restoreFile(String username, String filename) {
 		try {
 			Optional<Usuario> u = urepo.findById(username);
 			if (u.isPresent()) {
 				frepo.save(new Fichero(u.get(), filename));
 			} else {
-				System.out.println("No ha sido posible restaurar el fichero en la base de datos, debido a que no se ha encontrado el usuario");
+				System.out.println(
+						"No ha sido posible restaurar el fichero en la base de datos, debido a que no se ha encontrado el usuario");
 			}
-		}
-		catch (JDBCConnectionException | QueryTimeoutException e) {
+		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			System.out.println("No ha sido posible restaurar el fichero en la base de datos");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			System.out.println("No ha sido posible restaurar el fichero en la base de datos");
 		}
 	}
-	
+
 	public Resource getFile(String path) throws ExcepcionRecursos, MalformedURLException {
 		File file = new File(path);
 		if (!file.exists()) {
 			throw new ExcepcionRecursos("El fichero no existe");
 		}
 		return new UrlResource(file.toURI());
+	}
+
+	public void limpiarFilesSala(long sala) throws IOException, ExcepcionRecursos {
+		File dirChat = new File("recursos/user-files/salaschat/" + sala + "/");
+		if (dirChat.exists()) {
+			FileUtils.cleanDirectory(dirChat);
+			dirChat.delete();
+		} else {
+			throw new ExcepcionRecursos("No ha sido posible limpiar los ficheros del chat " + sala + ".");
+		}
+	}
+
+	public void borrarTodosUsuario(String username, String rol){
+		try {
+			frepo.limpiarDeUsuario(username);
+			urepo.borrarFoto(username);
+
+			File dir = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/");
+			if (dir.exists()) {
+				FileUtils.cleanDirectory(dir);
+			} else {
+				System.out.println("No ha sido posible acceder al directorio de la imagen de perfil del usuario "
+						+ username + " para borrarla.");
+			}
+			String path = "recursos/user-files/" + rol + "/" + username + "/";
+			File dirPerfil = new File(path + "perfil/");
+			if (dirPerfil.exists()) {
+				FileUtils.cleanDirectory(dirPerfil);
+			} else {
+				System.out.println("No ha sido posible acceder al directorio de perfil del usuario " + username
+						+ "para borrar el fichero.");
+			}
+		} catch (JDBCConnectionException | QueryTimeoutException e) {//Esto se registraría para que fuese solucionado por el administrador
+			System.out
+					.println("No ha sido posible acceder al repositorio para poder borrar los ficheros de " + username + ".");
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			System.out
+					.println("Se ha producido un error al tratar de borrar los ficheros del usuario " + username + ".");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			System.out
+					.println("Se ha producido un error al tratar de borrar los ficheros del usuario " + username + ".");
+		}
 	}
 }

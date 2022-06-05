@@ -144,7 +144,7 @@
 										<h3 class="col-lg-12">{{mentorizacion.uperfil.nombre}}
 											{{mentorizacion.uperfil.papellido}}
 											{{mentorizacion.uperfil.sapellido}}</h3>
-										<div class="col-md-5"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}
+										<div class="col-md-5" ng-show="mentorizacion.uperfil.edad > 0"><strong>Edad:</strong> {{mentorizacion.uperfil.edad}}
 										</div>
 										<div class="col-md-7"
 											ng-show="mentorizacion.uperfil.institucionNombre != 'Otra'">
@@ -369,7 +369,7 @@
 							</div>
 							<div class="row subSeccion" ng-show="peticion.expandido">
 								<div class="col-md-6 subSeccionIzquierda">
-									<strong>Edad:</strong> {{peticion.info.edad}} <br>
+									<span ng-show="peticion.info.edad > 0"><strong>Edad:</strong> {{peticion.info.edad}} <br></span>
 									<strong>Institución:</strong> {{peticion.info.institucionNombre}}<br>
 									<span ng-hide="peticion.info.linkedin == ''"><strong>Linkedin:</strong>
 										{{peticion.info.linkedin}}<br></span>

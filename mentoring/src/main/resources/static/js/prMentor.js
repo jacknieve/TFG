@@ -302,7 +302,7 @@ appConsumer.controller("mentorMentorizacionController", function($scope, $http, 
 	$scope.dowloadFile = function(file, mentorizado) {
 		$scope.cargando = true;
 
-		path = "/file/download/mentorizado/" + mentorizado + "/perfil/" + file;
+		path = "/file/download/mentorizado/" + mentorizado + "/" + file;
 		window.open(path, '_blank', '');
 
 		$scope.cargando = false;

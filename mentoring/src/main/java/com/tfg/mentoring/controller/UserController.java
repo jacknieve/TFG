@@ -43,14 +43,10 @@ import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.UserAuthDTO;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
-import com.tfg.mentoring.repository.MentorizacionRepo;
 import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.repository.NotificacionRepo;
-import com.tfg.mentoring.repository.PeticionRepo;
-import com.tfg.mentoring.repository.UsuarioRepo;
 import com.tfg.mentoring.service.ActiveUsersService;
 import com.tfg.mentoring.service.MapeadoService;
-import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 import com.tfg.mentoring.service.util.ListLoad;
 
@@ -63,20 +59,12 @@ public class UserController {
 	@Autowired
 	private MentorRepo mrepo;
 	@Autowired
-	private UsuarioRepo urepo;
-	@Autowired
 	private NotificacionRepo notrepo;
 	@Autowired
 	private InstitucionRepo irepo;
-	@Autowired
-	private MentorizacionRepo mentorizacionrepo;
-	@Autowired
-	private PeticionRepo prepo;
 
 	@Autowired
 	private UserService uservice;
-	@Autowired
-	private SalaChatServicio schats;
 	@Autowired
 	private ActiveUsersService acservice;
 	@Autowired
@@ -455,53 +443,24 @@ public class UserController {
 			if (uservice.comprobarPassword(password, us)) {
 				String username = us.getUsername();
 				String rol = "";
-				Usuario u;
 				ModelAndView modelo;
+				Optional<ModelAndView> errorBorrar;
 				try {
 					switch (us.getRol()) {
 					case MENTOR:
 						rol = "Mentor";
-						u = urepo.findByUsername(username);
-						if (u == null) {
-							modelo = new ModelAndView("error_page_loged");
-							modelo.addObject("mensaje",
-									"Se ha producido un fallo al intentar acceder a su cuenta, por favor, si recibe este mensaje,"
-											+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-							modelo.addObject("rol", rol);
-							modelo.addObject("hora", new Date());
-							return modelo;
+						errorBorrar = uservice.borrarMentor(username);
+						if(errorBorrar.isPresent()) {//En caso de que haya un modelo es que se produjo un error porque no se encontró al usuario
+							return errorBorrar.get();
 						}
-						prepo.borrarPeticionesMentor(username);
-						schats.cerrarChatSalirMentor(username);
-						mentorizacionrepo.borrarMentorizacionesMentor(username);
-						mrepo.borrarMentor(username);
-						urepo.borrarUsuario(username);// Esto lo ultimo, para que, en el peor de los casos, un usuario
-						// pueda volver a logearse para intentar volver a borrar de nuevo su cuenta
-						uservice.notificarPorCorreo(u, "Cuenta de mentoring eliminada",
-								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"
-										+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
-										+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
+						break;
 					case MENTORIZADO:
 						rol = "Mentorizado";
-						u = urepo.findByUsername(username);
-						if (u == null) {
-							modelo = new ModelAndView("error_page_loged");
-							modelo.addObject("mensaje",
-									"Se ha producido un fallo al intentar acceder a su cuenta, por favor, si recibe este mensaje,"
-											+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-							modelo.addObject("rol", rol);
-							modelo.addObject("hora", new Date());
-							return modelo;
+						errorBorrar = uservice.borrarMentorizado(username);
+						if(errorBorrar.isPresent()) {
+							return errorBorrar.get();
 						}
-						prepo.borrarPeticionesMentorizado(username);
-						schats.cerrarChatSalirMentorizado(username);
-						mentorizacionrepo.borrarMentorizacionesMentorizado(username);
-						menrepo.borrarMentorizado(username);
-						urepo.borrarUsuario(username);
-						uservice.notificarPorCorreo(u, "Cuenta de mentoring eliminada",
-								"Le notificamos que su cuenta de usuario ha sido eliminada de forma exitosa. Recuerde que no puede<br>"
-										+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
-										+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
+						break;
 					default:
 						System.out.println("Otro rol");
 						modelo = new ModelAndView("error_page");

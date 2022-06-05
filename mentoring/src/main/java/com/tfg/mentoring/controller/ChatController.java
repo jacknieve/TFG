@@ -350,7 +350,7 @@ public class ChatController {
 									+ "Hora del suceso: " + new Date()),
 							HttpStatus.NOT_FOUND);
 				}
-				msg = fservice.guardarFicheroSend(file, u.getUsername(), "mentores", sala, true);
+				msg = fservice.guardarFicheroSend(file, "mentor", sala, true);
 				break;
 			case MENTORIZADO:
 				sala = salaChats.getSalaUsuarios(receptor, u.getUsername(), true);
@@ -361,7 +361,7 @@ public class ChatController {
 									+ "Hora del suceso: " + new Date()),
 							HttpStatus.NOT_FOUND);
 				}
-				msg = fservice.guardarFicheroSend(file, u.getUsername(), "mentorizados", sala, false);
+				msg = fservice.guardarFicheroSend(file, "mentorizado", sala, false);
 				break;
 			default:
 				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),
@@ -426,17 +426,14 @@ public class ChatController {
 	public ResponseEntity<MensajeError> borrarFichero(@RequestParam("file") String file,
 			@RequestParam("sala") long sala, @AuthenticationPrincipal UserAuth u) {
 		try {
-			boolean borrar;
 			switch (u.getRol()) {
 			case MENTOR:
-				borrar = salaChats.borrarFileChat(u.getUsername(), sala, file, true);
-				if (borrar)
-					fservice.borrarFileSend(file, u.getUsername(), "mentores");
+					salaChats.borrarFileChat(u.getUsername(), sala, file, true);
+					fservice.borrarFileSend(file, sala, "mentor");
 				break;
 			case MENTORIZADO:
-				borrar = salaChats.borrarFileChat(u.getUsername(), sala, file, false);
-				if (borrar)
-					fservice.borrarFileSend(file, u.getUsername(), "mentorizados");
+					salaChats.borrarFileChat(u.getUsername(), sala, file, false);
+					fservice.borrarFileSend(file, sala, "mentorizado");
 				break;
 			default:
 				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),

@@ -44,12 +44,12 @@ public class RegisterController {
 		return new UserAux();
 	}
 
-	@GetMapping("/registration/{mentor}")
-	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("mentor") String mentor,
+	@GetMapping("/registration/{rol}")
+	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("rol") String rol,
 			@AuthenticationPrincipal UserAuth us) {
 		ModelAndView modelo;
 		if (us == null) {
-			if (mentor == null) {
+			if (rol == null) {
 				modelo = new ModelAndView("error_page");
 				modelo.addObject("mensaje", "Los parámetros de la dirección no son correctos.");
 				return modelo;
@@ -57,7 +57,7 @@ public class RegisterController {
 			UserAux useraux = new UserAux();
 			useraux.setHoraspormes(4);
 			modelo = new ModelAndView("registro");
-			if (mentor.equals("mentor")) {
+			if (rol.equals("mentor")) {
 				useraux.setMentor(true);
 				useraux.setMensajeCambio("Prefiero registrarme como mentorizado");
 			} else {
