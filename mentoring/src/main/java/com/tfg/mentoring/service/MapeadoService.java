@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Service;
 
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
+import com.tfg.mentoring.model.SalaChat;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorInfoDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.PeticionInfoDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.SalaChatDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.UsuarioDTO;
 
 @Service
@@ -28,6 +31,8 @@ public class MapeadoService {
 	
 	@Autowired
 	private FileService fservice;
+	@Autowired
+	private ChatService cservice;
 	
 	
 	
@@ -161,6 +166,48 @@ public class MapeadoService {
 			user.setFoto("/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
 		}
 		return user;
+	}
+	
+	public List<SalaChatDTO> convertSalasToDTOMentor(List<SalaChat> salas, String username){
+		List<SalaChatDTO> salasDto = new ArrayList<>();
+		List<Long> conNuevos = cservice.getSalasConMensajesNuevos(username, true);
+		for (SalaChat s : salas) {
+			Mentorizado m = s.getMentorizado();
+			String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
+			String foto;
+			if (m.getUsuario().getFoto() != null) {
+				foto = "/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+			} else {
+				foto = "/images/usuario.png";
+			}
+			SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
+			if (conNuevos.contains(s.getId_sala())) {
+				sala.setNuevos(true);
+			}
+			salasDto.add(sala);
+		}
+		return salasDto;
+	}
+	
+	public List<SalaChatDTO> convertSalasToDTOMentorizado(List<SalaChat> salas, String username){
+		List<SalaChatDTO> salasDto = new ArrayList<>();
+		List<Long> conNuevos = cservice.getSalasConMensajesNuevos(username, false);
+		for (SalaChat s : salas) {
+			Mentor m = s.getMentor();
+			String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
+			String foto;
+			if (m.getUsuario().getFoto() != null) {
+				foto = "/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+			} else {
+				foto = "/images/usuario.png";
+			}
+			SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
+			if (conNuevos.contains(s.getId_sala())) {
+				sala.setNuevos(true);
+			}
+			salasDto.add(sala);
+		}
+		return salasDto;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.tfg.mentoring.service;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +14,6 @@ import javax.persistence.QueryTimeoutException;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,20 +24,25 @@ import com.tfg.mentoring.model.Institucion;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizacion;
 import com.tfg.mentoring.model.Mentorizado;
+import com.tfg.mentoring.model.NivelEstudios;
 import com.tfg.mentoring.model.Notificacion;
 import com.tfg.mentoring.model.Peticion;
 import com.tfg.mentoring.model.Usuario;
-import com.tfg.mentoring.model.auxiliar.MensajeConAsunto;
+import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorInfoDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.MentorizacionDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
-import com.tfg.mentoring.model.auxiliar.enums.AsuntoMensaje;
+import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
+import com.tfg.mentoring.model.auxiliar.DTO.PeticionDTO;
 import com.tfg.mentoring.model.auxiliar.enums.EstadosNotificacion;
 import com.tfg.mentoring.model.auxiliar.enums.EstadosPeticion;
 import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 import com.tfg.mentoring.model.auxiliar.enums.Roles;
 import com.tfg.mentoring.model.auxiliar.requests.CamposBusqueda;
 import com.tfg.mentoring.model.auxiliar.requests.EnvioPeticion;
+import com.tfg.mentoring.model.auxiliar.requests.MentorizacionCerrar;
 import com.tfg.mentoring.model.auxiliar.requests.UserAux;
 import com.tfg.mentoring.repository.InstitucionRepo;
 import com.tfg.mentoring.repository.MentorRepo;
@@ -57,25 +62,22 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private MentorizadoRepo menrepo;
+	private MentorizadoRepo menrepo; //
 	@Autowired
-	private MentorRepo mrepo;
+	private MentorRepo mrepo; //
 	@Autowired
-	private UsuarioRepo urepo;
+	private UsuarioRepo urepo;//
 	@Autowired
 	private NotificacionRepo nrepo;
 	@Autowired
-	private InstitucionRepo irepo;
+	private InstitucionRepo irepo; //
 	@Autowired
-	private MentorizacionRepo mentorizacionrepo;
+	private MentorizacionRepo mentorizacionrepo;//
 	@Autowired
 	private PeticionRepo prepo;
 
 	@Autowired
 	private ListLoad listas;
-
-	@Autowired
-	private SimpMessagingTemplate messagingTemplate; // Esto quizas mejor un servicio de envio de mensajes
 
 	@Autowired
 	private FileService fservice;
@@ -86,7 +88,7 @@ public class UserService {
 	@Autowired
 	private MapeadoService mapservice;
 	@Autowired
-	private SalaChatServicio chatservice;
+	private ChatService chatservice;
 
 	public void register(UserAux useraux, String siteURL)
 			throws UnsupportedEncodingException, MessagingException, ExcepcionDB, JDBCConnectionException,
@@ -168,8 +170,7 @@ public class UserService {
 			} else if (acservice.enNotificacion(u.getUsername())) {
 				if (!acservice.enChat(u.getUsername()))
 					notificacion.setEstado(EstadosNotificacion.ENTREGADA);
-				messagingTemplate.convertAndSendToUser(u.getUsername(), "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
+				chatservice.enviarMensaje(2, u.getUsername(), new NotificacionDTO(notificacion));
 			}
 			nrepo.save(notificacion);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {// Si falla el acceso a la base de datos o tarda
@@ -205,8 +206,7 @@ public class UserService {
 							}
 						}
 					} else if (acservice.enNotificacion(username)) {
-						messagingTemplate.convertAndSendToUser(u.get().getUsername(), "/queue/messages",
-								new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, new NotificacionDTO(notificacion)));
+						chatservice.enviarMensaje(2, u.get().getUsername(), new NotificacionDTO(notificacion));
 					}
 				} // En caso contrario, nada
 			} else {
@@ -252,8 +252,14 @@ public class UserService {
 		return mapservice.getMentorBusqueda(mentores);
 	}
 
-	public Optional<Mentor> getMentorPerfil(String mentor) throws JDBCConnectionException, QueryTimeoutException {
-		return mrepo.findByUsuarioUsernameAndUsuarioEnable(mentor, true);
+	public Optional<MentorInfoDTO> getMentorPerfil(String mentor) throws JDBCConnectionException, QueryTimeoutException {
+		Optional<Mentor> m = mrepo.findByUsuarioUsernameAndUsuarioEnable(mentor, true);
+		if(m.isPresent()) {
+			return Optional.of(mapservice.getMentorInfoBusqueda(m.get()));
+		}
+		else {
+			return Optional.empty();
+		}
 	}
 
 	public int enviarSolicitud(EnvioPeticion peticion, String username) {
@@ -346,7 +352,7 @@ public class UserService {
 						+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
 						+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
 		fservice.borrarTodosUsuario(username, "mentores");
-		return Optional.ofNullable(null);
+		return Optional.empty();
 	}
 	
 	public Optional<ModelAndView> borrarMentorizado(String username) throws UnsupportedEncodingException, 
@@ -372,6 +378,382 @@ public class UserService {
 						+ "volver a usar esta cuenta de correo para registrar otra cuenta en nuestra aplicación. <br>"
 						+ "Le damos las gracias por todo lo que haya aportado y le queremos desear mucha suerte.");
 		fservice.borrarTodosUsuario(username, "mentorizados");
-		return Optional.ofNullable(null);
+		return Optional.empty();
+	}
+
+	public List<PeticionDTO> obtenerPeticiones(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<PeticionDTO> pUser = new ArrayList<PeticionDTO>();
+		List<Peticion> peticiones = new ArrayList<Peticion>();
+		peticiones = prepo.obtenerPeticiones(username);
+		for (Peticion p : peticiones) {
+			// PeticionInfoDTO up = mservice.getMentorizadoInfo(p.getMentorizado());
+			pUser.add(new PeticionDTO(p, mapservice.getMentorizadoInfo(p.getMentorizado())));
+			if (p.getEstado() == EstadosPeticion.ENVIADA) {
+				p.setEstado(EstadosPeticion.RECIBIDA);
+			}
+		}
+		if(!pUser.isEmpty()) prepo.saveAll(peticiones);
+		return pUser;
+	}
+	
+	public List<PeticionDTO> obtenerPeticionesNuevas(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<PeticionDTO> pUser = new ArrayList<PeticionDTO>();
+		List<Peticion> peticiones = new ArrayList<Peticion>();
+		peticiones = prepo.getNews(username);
+		for (Peticion p : peticiones) {
+			// PeticionInfoDTO up = mservice.getMentorizadoInfo(p.getMentorizado());
+			pUser.add(new PeticionDTO(p, mapservice.getMentorizadoInfo(p.getMentorizado())));
+			if (p.getEstado() == EstadosPeticion.ENVIADA) {
+				p.setEstado(EstadosPeticion.RECIBIDA);
+			}
+		}
+		if(!pUser.isEmpty()) prepo.saveAll(peticiones);
+		return pUser;
+	}
+
+	public Optional<MensajeError> aceptarPeticion(String username, String mentorizado) throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);// Asumimos que el username nunca va a ser null
+		Optional<Mentorizado> men = menrepo.findById(mentorizado);
+		if (m.isPresent() && men.isPresent()) {
+			Mentorizacion mentorizacion = new Mentorizacion(m.get(), men.get());
+			Mentorizacion resultado = mentorizacionrepo.save(mentorizacion);
+			prepo.aceptarPeticion(username, mentorizado);
+			if (resultado.getMentorizado().getUsuario().isEnabled()) {
+				chatservice.abrirChat(resultado.getMentor(), resultado.getMentorizado());
+				enviarNotificacion(men.get().getUsuario(), "Peticion aceptada",
+						"El usuario " + m.get().getNombre() + " te ha aceptado una petición de mentorizacion.",
+						MotivosNotificacion.ACEPTAR);
+				return Optional.empty();
+			} else {
+				resultado.setFin(new Date());
+				mentorizacionrepo.save(resultado);
+				return Optional.ofNullable(new MensajeError("Mentorizado eliminado",
+						"El mentorizado ya no se encuentra disponible, no se creará mentorización."));
+			}
+
+		} else {
+			System.out.println("No hay usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentorizado, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+	}
+	
+	public Optional<MensajeError> rechazarPeticion(String username, String mentorizado) throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);// Asumimos que el username nunca va a ser null
+		Optional<Mentorizado> men = menrepo.findById(mentorizado);
+		if (m.isPresent() && men.isPresent()) {
+			prepo.rechazarPeticion(username, mentorizado);
+			enviarNotificacion(men.get().getUsuario(), "Peticion rechazada",
+					"El usuario " + m.get().getNombre() + " te ha rechazado una petición de mentorizacion.",
+					MotivosNotificacion.RECHAZAR);
+			return Optional.empty();
+		} else {
+			System.out.println("No hay usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentorizado, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesMentor(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.obtenerMentorizacionesMentor(username);
+		for (Mentorizacion m : mentorizaciones) {
+			mUser.add(new MentorizacionDTO(m, mapservice.getMentorizadoMentorizacion(m.getMentorizado()),
+					m.getMentorizado().getCorreo(), false));
+		}
+		return mUser;
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesMentorNuevas(String username, Timestamp fecha) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.getNuevasMentor(username, fecha);
+		for (Mentorizacion m : mentorizaciones) {
+			if (m.getFin() == null) {
+				mUser.add(new MentorizacionDTO(m, mapservice.getMentorizadoMentorizacion(m.getMentorizado()),
+						m.getMentorizado().getCorreo(), false));
+			} else {
+				mUser.add(new MentorizacionDTO(m, null, m.getMentorizado().getCorreo(), false));
+			}
+		}
+		return mUser;
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesMentorizado(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.obtenerMentorizacionesMentorizado(username);
+		for (Mentorizacion m : mentorizaciones) {
+			mUser.add(new MentorizacionDTO(m, mapservice.getMentorMentorizacion(m.getMentor()),
+					m.getMentor().getCorreo(), true));
+		}
+		return mUser;
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesMentorizadoNuevas(String username, Timestamp fecha) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.getNuevasMentorizado(username, fecha);
+		for (Mentorizacion m : mentorizaciones) {
+			if (m.getFin() == null) {
+				mUser.add(new MentorizacionDTO(m, mapservice.getMentorMentorizacion(m.getMentor()),
+						m.getMentor().getCorreo(), true));
+			} else {
+				mUser.add(new MentorizacionDTO(m, null, m.getMentor().getCorreo(), true));
+			}
+		}
+		return mUser;
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesPorPuntuar(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuar(username);
+		for (Mentorizacion m : mentorizaciones) {
+			mUser.add(new MentorizacionDTO(m, mapservice.getMentorInfo(m.getMentor()), m.getMentor().getCorreo(),
+					true));
+		}
+		return mUser;
+	}
+	
+	public List<MentorizacionDTO> obtenerMentorizacionesPorPuntuarNuevas(String username, Timestamp fecha) throws JDBCConnectionException, QueryTimeoutException{
+		List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
+		List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
+		mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuarNuevas(username, fecha);
+		for (Mentorizacion m : mentorizaciones) {
+			if (m.getFin() == null) {
+				mUser.add(new MentorizacionDTO(m, mapservice.getMentorInfo(m.getMentor()), m.getMentor().getCorreo(),
+						true));
+			} else {
+				mUser.add(new MentorizacionDTO(m, null, m.getMentor().getCorreo(), true));
+			}
+		}
+		return mUser;
+	}
+	
+	public Optional<MensajeError> cerrarMentorizacionesMentor(String username, String mentorizado) throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);
+		Optional<Mentorizado> men = menrepo.findById(mentorizado);
+		if (m.isPresent() && men.isPresent()) {
+			mentorizacionrepo.cerrarMentorizacion(username, mentorizado,
+					new Timestamp(System.currentTimeMillis()));
+			chatservice.cerrarChat(m.get().getCorreo(), mentorizado, true);
+			enviarNotificacion(men.get().getUsuario(), "Mentorizacion cerrada", "El usuario "
+					+ m.get().getNombre()
+					+ " ha cerrado una mentorización que tenía abierta contigo. Puedes proceder a puntuarla y comentarla en el apartado de puntuar.",
+					MotivosNotificacion.CIERRE);
+			return Optional.empty();
+		} else {
+			System.out.println("Fallo al acceder a los usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentorizado, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+	}
+	
+	public Optional<MensajeError> cerrarMentorizacionesMentorizado(String username, MentorizacionCerrar mentorizacion) 
+			throws JDBCConnectionException, QueryTimeoutException{
+
+		Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
+		Optional<Mentorizado> men = menrepo.findById(username);
+		if (m.isPresent() && men.isPresent()) {
+			mentorizacionrepo.cerrarPuntuarMentorizacion(mentorizacion.getPuntuacion(),
+					mentorizacion.getComentario(), mentorizacion.getMentor(), username);
+			chatservice.cerrarChat(m.get().getCorreo(), men.get().getCorreo(), false);
+			enviarNotificacion(m.get().getUsuario(), "Mentorizacion cerrada",
+					"El usuario " + men.get().getNombre()
+							+ " ha cerrado una mentorización que tenía abierta contigo.",
+					MotivosNotificacion.CIERRE);
+			return Optional.empty();
+		} else {
+			System.out.println("Fallo al acceder a los usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentor, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+	}
+	
+	public Optional<MensajeError> cambiarFase(String username, String mentorizado, int fase) throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);
+		Optional<Mentorizado> men = menrepo.findById(mentorizado);
+		if (m.isPresent() && men.isPresent()) {
+			mentorizacionrepo.cambiarFase(username, mentorizado, fase);
+			return Optional.empty();
+		} else {
+			System.out.println("Fallo al acceder a los usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentorizado, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+	}
+	
+	public Optional<MensajeError> puntuarMentorizacion(String username, MentorizacionCerrar mentorizacion) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
+		Optional<Mentorizado> men = menrepo.findById(username);
+		if (m.isPresent() && men.isPresent()) {
+			mentorizacionrepo.puntuarMentorizacion(mentorizacion.getPuntuacion(), mentorizacion.getComentario(),
+					mentorizacion.getMentor(), username, new Timestamp(mentorizacion.getFechafin()));
+			return Optional.empty();
+		} else {
+			System.out.println("Fallo al acceder a los usuarios");
+			return Optional.ofNullable(new MensajeError("Fallo en la peticion",
+					"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
+							+ "la del mentor, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+		}
+		
+	}
+	
+	public Optional<PerfilDTO> obtenerMiPerfilMentor(String username) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);
+		if (m.isPresent()) {
+			// UsuarioPerfil up = new UsuarioPerfil(m.get());
+			PerfilDTO up = mapservice.getPerfilMentor(m.get());
+			up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
+			up.setMentor(true);
+			return Optional.of(up);
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public Optional<PerfilDTO> obtenerMiPerfilMentorizado(String username) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentorizado> m = menrepo.findById(username);
+		if (m.isPresent()) {
+			// UsuarioPerfil up = new UsuarioPerfil(m.get());
+			PerfilDTO up = mapservice.getPerfilMentorizado(m.get());
+			up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
+			up.setMentor(false);
+			up.setHoraspormes(4);
+			return Optional.of(up);
+		} else {
+			return Optional.empty();
+		}
+	}
+	
+	public Optional<MensajeError> setInfoMentor(PerfilDTO up, String username) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentor> m = mrepo.findById(username);
+		if (m.isPresent()) {
+			Mentor men = m.get();
+			men.setNombre(up.getNombre());
+			men.setPapellido(up.getPapellido());
+			men.setSapellido(up.getSapellido());
+			men.setDescripcion(up.getDescripcion());
+			men.setFnacimiento(up.getFnacimiento());
+			men.setHoraspormes(up.getHoraspormes());
+			men.setLinkedin(up.getLinkedin());
+			men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
+			men.setEntidad(up.getEntidad());
+			men.setTelefono(up.getTelefono());
+			if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
+				List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
+				men.setInstitucion(i.get(0));
+			}
+			men.setAreas(up.getAreas());
+			men.getUsuario().setNotificar_correo(up.isNotificar_correo());
+			mrepo.save(men);
+			return Optional.empty();
+
+		} else {
+			return Optional.of(new MensajeError());
+		}
+	}
+	
+	public Optional<MensajeError> setInfoMentorizado(PerfilDTO up, String username) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		Optional<Mentorizado> me = menrepo.findById(username);
+		if (me.isPresent()) {
+			Mentorizado men = me.get();
+			men.setNombre(up.getNombre());
+			men.setPapellido(up.getPapellido());
+			men.setSapellido(up.getSapellido());
+			men.setDescripcion(up.getDescripcion());
+			men.setFnacimiento(up.getFnacimiento());
+			men.setLinkedin(up.getLinkedin());
+			men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
+			men.setTelefono(up.getTelefono());
+			if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
+				List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
+				men.setInstitucion(i.get(0));
+			}
+			men.setAreas(up.getAreas());
+			men.getUsuario().setNotificar_correo(up.isNotificar_correo());
+			menrepo.save(men);
+			return Optional.empty();
+
+		} else {
+			return Optional.of(new MensajeError());
+		}
+	}
+	
+	public Optional<MensajeError> borrarArea(String area, String username, Roles rol) 
+			throws JDBCConnectionException, QueryTimeoutException{
+		switch (rol) {
+		case MENTOR:
+			Optional<Mentor> m = mrepo.findById(username);
+			if (m.isPresent()) {
+				mrepo.borrarArea(username, area);
+				return Optional.empty();
+			} else {
+				return Optional.of(new MensajeError("Fallo en la peticion",
+						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
+								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+								+ new Date()));
+			}
+		case MENTORIZADO:
+			Optional<Mentorizado> me = menrepo.findById(username);
+			if (me.isPresent()) {
+				menrepo.borrarArea(username, area);
+				return Optional.empty();
+			} else {
+				return Optional.of(new MensajeError("Fallo en la peticion",
+						"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
+								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+								+ new Date()));
+			}
+
+		default:
+			return Optional.of(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"));
+		}
+	}
+	
+	public List<NotificacionDTO> obtenerNotificaciones(String username) throws JDBCConnectionException, QueryTimeoutException{
+		List<Notificacion> notificaciones = new ArrayList<Notificacion>();
+		List<NotificacionDTO> nUser = new ArrayList<NotificacionDTO>();
+		notificaciones = nrepo.getNotificaciosUser(username);
+		nrepo.actualizaEstadoNotificaciosUser(username);
+		for (Notificacion n : notificaciones) {
+			nUser.add(new NotificacionDTO(n));
+		}
+		return nUser;
+	}
+	
+	
+	public Optional<MensajeError> borrarNotificacion(long id, String username) throws JDBCConnectionException, QueryTimeoutException{
+		if(nrepo.comprobarNotificacion(id, username) == 1) {
+			nrepo.borrarNotificacion(id);
+			return Optional.empty();
+		}
+		else {
+			return Optional.of(new MensajeError("No es tuya", "La notificación que estás intentado borrar no te pertenece."));
+		}
 	}
 }

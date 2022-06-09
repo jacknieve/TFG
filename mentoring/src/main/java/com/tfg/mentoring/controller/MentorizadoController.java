@@ -1,7 +1,6 @@
 package com.tfg.mentoring.controller;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,42 +19,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tfg.mentoring.model.Mentor;
-import com.tfg.mentoring.model.Mentorizacion;
-import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorInfoDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.MentorizacionDTO;
-import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 import com.tfg.mentoring.model.auxiliar.requests.CamposBusqueda;
 import com.tfg.mentoring.model.auxiliar.requests.EnvioPeticion;
 import com.tfg.mentoring.model.auxiliar.requests.MentorizacionCerrar;
-import com.tfg.mentoring.repository.MentorRepo;
-import com.tfg.mentoring.repository.MentorizacionRepo;
-import com.tfg.mentoring.repository.MentorizadoRepo;
-import com.tfg.mentoring.service.MapeadoService;
-import com.tfg.mentoring.service.SalaChatServicio;
 import com.tfg.mentoring.service.UserService;
 
 @RestController
 @RequestMapping("/mentorizado")
 public class MentorizadoController {
 
-	@Autowired
-	private MentorizadoRepo menrepo;
-	@Autowired
-	private MentorRepo mrepo;
-	@Autowired
-	private MentorizacionRepo mentorizacionrepo;
 
 	@Autowired
 	private UserService uservice;
-	@Autowired
-	private SalaChatServicio schats;
-	@Autowired
-	private MapeadoService mservice;
 
 	@PostMapping("/busqueda")
 	public ResponseEntity<List<MentorDTO>> buscar(@RequestBody CamposBusqueda campos) {
@@ -81,10 +61,10 @@ public class MentorizadoController {
 	public ResponseEntity<MentorInfoDTO> getPerfilBusqueda(@AuthenticationPrincipal UserAuth us,
 			@RequestBody String mentor) {
 		try {
-			Optional<Mentor> m = uservice.getMentorPerfil(mentor);
+			Optional<MentorInfoDTO> m = uservice.getMentorPerfil(mentor);
 			if (m.isPresent()) {
 				// MentorInfoDTO up = mservice.getMentorInfoBusqueda(m.get());
-				return new ResponseEntity<>(mservice.getMentorInfoBusqueda(m.get()), HttpStatus.OK);
+				return new ResponseEntity<>(m.get(), HttpStatus.OK);
 			} else {
 				System.out.println("No hay mentor");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -156,18 +136,11 @@ public class MentorizadoController {
 	@GetMapping("/mentorizaciones")
 	public ResponseEntity<List<MentorizacionDTO>> getMentorizaciones(@AuthenticationPrincipal UserAuth us) {
 		try {
-			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
-			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesMentorizado(us.getUsername());
+			List<MentorizacionDTO> mentorizaciones = uservice.obtenerMentorizacionesMentorizado(us.getUsername());
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			for (Mentorizacion m : mentorizaciones) {
-				mUser.add(new MentorizacionDTO(m, mservice.getMentorMentorizacion(m.getMentor()),
-						m.getMentor().getCorreo(), true));
-			}
-
-			return new ResponseEntity<>(mUser, HttpStatus.OK);
+			return new ResponseEntity<>(mentorizaciones, HttpStatus.OK);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -183,22 +156,11 @@ public class MentorizadoController {
 			@PathVariable("date") Long date) {
 		try {
 			Timestamp fecha = new Timestamp(date);
-			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
-			mentorizaciones = mentorizacionrepo.getNuevasMentorizado(us.getUsername(), fecha);
+			List<MentorizacionDTO> mentorizaciones = uservice.obtenerMentorizacionesMentorizadoNuevas(us.getUsername(), fecha);
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			for (Mentorizacion m : mentorizaciones) {
-				if (m.getFin() == null) {
-					mUser.add(new MentorizacionDTO(m, mservice.getMentorMentorizacion(m.getMentor()),
-							m.getMentor().getCorreo(), true));
-				} else {
-					mUser.add(new MentorizacionDTO(m, null, m.getMentor().getCorreo(), true));
-				}
-
-			}
-			return new ResponseEntity<>(mUser, HttpStatus.OK);
+			return new ResponseEntity<>(mentorizaciones, HttpStatus.OK);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -217,25 +179,12 @@ public class MentorizadoController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
-			Optional<Mentorizado> men = menrepo.findById(us.getUsername());
-			if (m.isPresent() && men.isPresent()) {
-				mentorizacionrepo.cerrarPuntuarMentorizacion(mentorizacion.getPuntuacion(),
-						mentorizacion.getComentario(), mentorizacion.getMentor(), us.getUsername());
-				schats.cerrarChat(m.get().getCorreo(), men.get().getCorreo(), false);
-				uservice.enviarNotificacion(m.get().getUsuario(), "Mentorizacion cerrada",
-						"El usuario " + men.get().getNombre()
-								+ " ha cerrado una mentorización que tenía abierta contigo.",
-						MotivosNotificacion.CIERRE);
+			Optional<MensajeError> error = uservice.cerrarMentorizacionesMentorizado(us.getUsername(), mentorizacion);
+			if(error.isPresent()) {
+				return new ResponseEntity<>(error.get(), HttpStatus.NOT_FOUND);
+			}
+			else {
 				return new ResponseEntity<>(null, HttpStatus.OK);
-			} else {
-				System.out.println("Fallo al acceder a los usuarios");
-				return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
-						"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
-								+ "la del mentor, por favor,  si recibe este mensaje,"
-								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
-								+ new Date()),
-						HttpStatus.NOT_FOUND);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
@@ -257,18 +206,11 @@ public class MentorizadoController {
 	@GetMapping("/mentorizaciones/porpuntuar")
 	public ResponseEntity<List<MentorizacionDTO>> getMentorizacionesPorPuntuar(@AuthenticationPrincipal UserAuth us) {
 		try {
-			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
-			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuar(us.getUsername());
+			List<MentorizacionDTO> mentorizaciones = uservice.obtenerMentorizacionesPorPuntuar(us.getUsername());
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			for (Mentorizacion m : mentorizaciones) {
-				mUser.add(new MentorizacionDTO(m, mservice.getMentorInfo(m.getMentor()), m.getMentor().getCorreo(),
-						true));
-			}
-
-			return new ResponseEntity<>(mUser, HttpStatus.OK);
+			return new ResponseEntity<>(mentorizaciones, HttpStatus.OK);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -283,18 +225,11 @@ public class MentorizadoController {
 			@PathVariable("date") Long date) {
 		try {
 			Timestamp fecha = new Timestamp(date);
-			List<Mentorizacion> mentorizaciones = new ArrayList<Mentorizacion>();
-			List<MentorizacionDTO> mUser = new ArrayList<MentorizacionDTO>();
-			mentorizaciones = mentorizacionrepo.obtenerMentorizacionesPorPuntuarNuevas(us.getUsername(), fecha);
+			List<MentorizacionDTO> mentorizaciones = uservice.obtenerMentorizacionesMentorizadoNuevas(us.getUsername(), fecha);
 			if (mentorizaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			for (Mentorizacion m : mentorizaciones) {
-				mUser.add(new MentorizacionDTO(m, mservice.getMentorInfo(m.getMentor()), m.getMentor().getCorreo(),
-						true));
-
-			}
-			return new ResponseEntity<>(mUser, HttpStatus.OK);
+			return new ResponseEntity<>(mentorizaciones, HttpStatus.OK);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -313,20 +248,12 @@ public class MentorizadoController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			Optional<Mentor> m = mrepo.findById(mentorizacion.getMentor());
-			Optional<Mentorizado> men = menrepo.findById(us.getUsername());
-			if (m.isPresent() && men.isPresent()) {
-				mentorizacionrepo.puntuarMentorizacion(mentorizacion.getPuntuacion(), mentorizacion.getComentario(),
-						mentorizacion.getMentor(), us.getUsername(), new Timestamp(mentorizacion.getFechafin()));
+			Optional<MensajeError> error = uservice.puntuarMentorizacion(us.getUsername(), mentorizacion);
+			if(error.isPresent()) {
+				return new ResponseEntity<>(error.get(), HttpStatus.NOT_FOUND);
+			}
+			else {
 				return new ResponseEntity<>(null, HttpStatus.OK);
-			} else {
-				System.out.println("Fallo al acceder a los usuarios");
-				return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
-						"Se ha producido un problema al intentar acceder al la información de su cuenta o de "
-								+ "la del mentor, por favor,  si recibe este mensaje,"
-								+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
-								+ new Date()),
-						HttpStatus.NOT_FOUND);
 			}
 
 		} catch (JDBCConnectionException | QueryTimeoutException e) {

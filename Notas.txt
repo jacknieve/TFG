@@ -4,7 +4,12 @@ Mas cosas que hacer:
 
 ->Cosas que comentar en reunion<-
 
--> En el diagrama de contexto, deberia poner Mentores y mentorizados o su navegador?
+-Si movemos eleccion de componentes al diseño, añadir tambien los recursos hardware empleados
+-Cambiar gmail por GMX en arquitectura y demas sitios donde se nombre
+
+-Seguir referencias
+-Cambiar diseño grafico
+-Manual técnico
 
 Cosas que añadir en el diseño:
 -Diagrama de contexto
@@ -130,10 +135,18 @@ https://unpocodejava.com/2018/02/11/que-es-sockjs-y-por-que-usarlo-en-lugar-de-u
 Diagrama de secuencia:
 https://app.diagrams.net/
 
+Decir lo de que el UserAuth tiene lo del @Authen...
+
+
+Se esta elaborando un modelo de negocio con un TFM
+En motivación del proyecto, incluir la definicion de cliente, que seria quien esta elaborando el TFM del modelo de negocio, que lo esta cotutorando loreto. Que es un proyecto de emprendedor, una idea para crear una empresa para 
+Se ha detectado un nicho de negocio y se han implementado conjuntamente un trabajo de fin de master para desarrollar el modelo de negocio y un trabajo de fin de grado para desarrollar la aplicación. Comentar que es un proyecto empresarial emprendedor.
+
+En apendice
 
 
 
-
+En el 1.3 comentar las funcionalidades y pasarlo a diseño
 
 
 

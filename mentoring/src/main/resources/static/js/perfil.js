@@ -51,6 +51,7 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 	$scope.ficheroSubir = null;
 	$scope.sinficherosperfil = false;
 	$scope.mydate = null;
+	$scope.conexionPerdida = false;
 
 	$scope.getInfo = function() {
 		$scope.cargando = true;
@@ -84,6 +85,13 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 						//console.log('Connected: ' + frame);
 						stompClient.subscribe("/usuario/" + response.data.correo + "/queue/messages", controladorMensajes);
 					});
+					socket.onclose = function() {
+					console.log("Cerrado conexion");
+					$notification.warning("Conexión perdida", "Se ha perdido la conexión con el servidor.", null, false);
+					$scope.conexionPerdida = true;
+					stompClient.disconnect();
+					$scope.$apply();
+				}
 				}
 				$scope.cargando = false;
 			},

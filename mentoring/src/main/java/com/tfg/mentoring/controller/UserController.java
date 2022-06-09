@@ -1,8 +1,6 @@
 package com.tfg.mentoring.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,50 +28,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tfg.mentoring.model.AreaConocimiento;
-import com.tfg.mentoring.model.Institucion;
-import com.tfg.mentoring.model.Mentor;
-import com.tfg.mentoring.model.Mentorizado;
-import com.tfg.mentoring.model.NivelEstudios;
-import com.tfg.mentoring.model.Notificacion;
-import com.tfg.mentoring.model.Usuario;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.PerfilDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.UserAuthDTO;
-import com.tfg.mentoring.repository.InstitucionRepo;
-import com.tfg.mentoring.repository.MentorRepo;
-import com.tfg.mentoring.repository.MentorizadoRepo;
-import com.tfg.mentoring.repository.NotificacionRepo;
-import com.tfg.mentoring.service.ActiveUsersService;
-import com.tfg.mentoring.service.MapeadoService;
+import com.tfg.mentoring.service.RedirectService;
 import com.tfg.mentoring.service.UserService;
-import com.tfg.mentoring.service.util.ListLoad;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
 	@Autowired
-	private MentorizadoRepo menrepo;
-	@Autowired
-	private MentorRepo mrepo;
-	@Autowired
-	private NotificacionRepo notrepo;
-	@Autowired
-	private InstitucionRepo irepo;
-
-	@Autowired
 	private UserService uservice;
 	@Autowired
-	private ActiveUsersService acservice;
-	@Autowired
-	private MapeadoService mservice;
+	private RedirectService rservice;
 
-	@Autowired
-	private ListLoad listas;
-	@Autowired
-	private SimpleDateFormat format;
 
 /////////////////////////////////////////////////////////////////////////
 ////////                  Perfil de usuario                       ///////
@@ -88,46 +59,10 @@ public class UserController {
 			switch (us.getRol()) {
 			case MENTOR:
 				rol = "Mentor";
-				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
-				if (mentor.isPresent()) {
-					modelo = new ModelAndView("perfil");
-					modelo.addObject("correo", mentor.get().getCorreo());
-					modelo.addObject("rol", rol);
-					modelo.addObject("fregistro", format.format(mentor.get().getFregistro()));
-					modelo.addObject("password", "");
-					uservice.addListasModelo(modelo);
-					uservice.addInstitucionUtils(modelo, mentor.get().getInstitucion());
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverPerfilMentor(us.getUsername());
 			case MENTORIZADO:
 				rol = "Mentorizado";
-				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
-				if (mentorizado.isPresent()) {
-					modelo = new ModelAndView("perfil");
-					modelo.addObject("correo", mentorizado.get().getCorreo());
-					modelo.addObject("rol", rol);
-					modelo.addObject("fregistro", format.format(mentorizado.get().getFregistro()));
-					modelo.addObject("password", "");
-					uservice.addListasModelo(modelo);
-					uservice.addInstitucionUtils(modelo, mentorizado.get().getInstitucion());
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverPerfilMentorizado(us.getUsername());
 			default:
 				System.out.println("Otro rol");
 				modelo = new ModelAndView("error_page");
@@ -159,28 +94,19 @@ public class UserController {
 	@GetMapping("/info")
 	public ResponseEntity<PerfilDTO> getInfoPerfil(@AuthenticationPrincipal UserAuth us) {
 		try {
-			PerfilDTO up;
+			Optional<PerfilDTO> m;
 			switch (us.getRol()) {
 			case MENTOR:
-				Optional<Mentor> m = mrepo.findById(us.getUsername());
+				m = uservice.obtenerMiPerfilMentor(us.getUsername());
 				if (m.isPresent()) {
-					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					up = mservice.getPerfilMentor(m.get());
-					up.setNotificar_correo(m.get().getUsuario().isNotificar_correo());
-					up.setMentor(true);
-					return new ResponseEntity<>(up, HttpStatus.OK);
+					return new ResponseEntity<>(m.get(), HttpStatus.OK);
 				} else {
 					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 				}
 			case MENTORIZADO:
-				Optional<Mentorizado> me = menrepo.findById(us.getUsername());
-				if (me.isPresent()) {
-					// UsuarioPerfil up = new UsuarioPerfil(m.get());
-					up = mservice.getPerfilMentorizado(me.get());
-					up.setNotificar_correo(me.get().getUsuario().isNotificar_correo());
-					up.setMentor(false);
-					up.setHoraspormes(4); // Le damos el valor por defecto para evitar error al enviar
-					return new ResponseEntity<>(up, HttpStatus.OK);
+				m = uservice.obtenerMiPerfilMentorizado(us.getUsername());
+				if (m.isPresent()) {
+					return new ResponseEntity<>(m.get(), HttpStatus.OK);
 				} else {
 					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 				}
@@ -201,62 +127,28 @@ public class UserController {
 
 	// Actualizar la informacion del perfil del usuario
 	@PostMapping("/setinfo")
-	public ResponseEntity<Usuario> setInfoPerfil(@RequestBody PerfilDTO up, @AuthenticationPrincipal UserAuth us) {
+	public ResponseEntity<MensajeError> setInfoPerfil(@RequestBody PerfilDTO up, @AuthenticationPrincipal UserAuth us) {
 		if (up.getNombre() == null) {
 			System.out.println("El nombre estaba vacío");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		try {
+			Optional<MensajeError> error;
 			switch (us.getRol()) {
 			case MENTOR:
-				Optional<Mentor> m = mrepo.findById(us.getUsername());
-				if (m.isPresent()) {
-					Mentor men = m.get();
-					men.setNombre(up.getNombre());
-					men.setPapellido(up.getPapellido());
-					men.setSapellido(up.getSapellido());
-					men.setDescripcion(up.getDescripcion());
-					men.setFnacimiento(up.getFnacimiento());
-					men.setHoraspormes(up.getHoraspormes());
-					men.setLinkedin(up.getLinkedin());
-					men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
-					men.setEntidad(up.getEntidad());
-					men.setTelefono(up.getTelefono());
-					if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
-						List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
-						men.setInstitucion(i.get(0));
-					}
-					men.setAreas(up.getAreas());
-					men.getUsuario().setNotificar_correo(up.isNotificar_correo());
-					mrepo.save(men);
-					return new ResponseEntity<>(null, HttpStatus.OK);
-
-				} else {
+				error = uservice.setInfoMentor(up, us.getUsername());
+				if (error.isPresent()) {				
 					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				} else {
+					return new ResponseEntity<>(null, HttpStatus.OK);
 				}
 			case MENTORIZADO:
-				Optional<Mentorizado> me = menrepo.findById(us.getUsername());
-				if (me.isPresent()) {
-					Mentorizado men = me.get();
-					men.setNombre(up.getNombre());
-					men.setPapellido(up.getPapellido());
-					men.setSapellido(up.getSapellido());
-					men.setDescripcion(up.getDescripcion());
-					men.setFnacimiento(up.getFnacimiento());
-					men.setLinkedin(up.getLinkedin());
-					men.setNivelEstudios(new NivelEstudios(up.getNivelEstudiosNivelestudios()));
-					men.setTelefono(up.getTelefono());
-					if (!men.getInstitucion().getNombre().equals(up.getInstitucionNombre())) {
-						List<Institucion> i = irepo.findByNombre(up.getInstitucionNombre());
-						men.setInstitucion(i.get(0));
-					}
-					men.setAreas(up.getAreas());
-					men.getUsuario().setNotificar_correo(up.isNotificar_correo());
-					menrepo.save(men);
-					return new ResponseEntity<>(null, HttpStatus.OK);
+				error = uservice.setInfoMentorizado(up, us.getUsername());
+				if (error.isPresent()) {
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 				} else {
-					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+					return new ResponseEntity<>(null, HttpStatus.OK);
 				}
 
 			default:
@@ -280,35 +172,12 @@ public class UserController {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		try {
-			switch (us.getRol()) {
-			case MENTOR:
-				Optional<Mentor> m = mrepo.findById(us.getUsername());
-				if (m.isPresent()) {
-					mrepo.borrarArea(us.getUsername(), area.getArea());
-					return new ResponseEntity<>(null, HttpStatus.OK);
-				} else {
-					return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
-							"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
-									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
-									+ new Date()),
-							HttpStatus.NOT_FOUND);
-				}
-			case MENTORIZADO:
-				Optional<Mentorizado> me = menrepo.findById(us.getUsername());
-				if (me.isPresent()) {
-					menrepo.borrarArea(us.getUsername(), area.getArea());
-					return new ResponseEntity<>(null, HttpStatus.OK);
-				} else {
-					return new ResponseEntity<>(new MensajeError("Fallo en la peticion",
-							"Se ha producido un problema al intentar acceder al la información de su cuenta, si recibe este mensaje,"
-									+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
-									+ new Date()),
-							HttpStatus.BAD_REQUEST);
-				}
-
-			default:
-				return new ResponseEntity<>(new MensajeError("Sin autorización", "No tienes permiso para hacer esto"),
-						HttpStatus.UNAUTHORIZED);
+			Optional<MensajeError> error = uservice.borrarArea(area.getArea(), us.getUsername(), us.getRol());
+			if(error.isPresent()) {
+				return new ResponseEntity<>(error.get(),HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			else {
+				return new ResponseEntity<>(null, HttpStatus.OK);
 			}
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
@@ -334,17 +203,11 @@ public class UserController {
 	@GetMapping("/notificaciones")
 	public ResponseEntity<List<NotificacionDTO>> getAllNotificaciones(@AuthenticationPrincipal UserAuth us) {
 		try {
-			List<Notificacion> Notificaciones = new ArrayList<Notificacion>();
-			List<NotificacionDTO> nUser = new ArrayList<NotificacionDTO>();
-			Notificaciones = notrepo.getNotificaciosUser(us.getUsername());
-			if (Notificaciones.isEmpty()) {
+			List<NotificacionDTO> notificaciones = uservice.obtenerNotificaciones(us.getUsername());
+			if (notificaciones.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-			notrepo.actualizaEstadoNotificaciosUser(us.getUsername());
-			for (Notificacion n : Notificaciones) {
-				nUser.add(new NotificacionDTO(n));
-			}
-			return new ResponseEntity<>(nUser, HttpStatus.OK);
+			return new ResponseEntity<>(notificaciones, HttpStatus.OK);
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.SERVICE_UNAVAILABLE);
@@ -356,9 +219,9 @@ public class UserController {
 
 	// Borrar una notificacion
 	@PostMapping("/notificaciones/delete")
-	public ResponseEntity<MensajeError> borrarNotificacion(@RequestBody long id) {
+	public ResponseEntity<MensajeError> borrarNotificacion(@RequestBody long id, @AuthenticationPrincipal UserAuth us) {
 		try {
-			notrepo.borrarNotificacion(id);
+			uservice.borrarNotificacion(id, us.getUsername());
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println(e.getMessage());
 			return new ResponseEntity<>(new MensajeError("Fallo en el repositorio",
@@ -385,39 +248,9 @@ public class UserController {
 		try {
 			switch (us.getRol()) {
 			case MENTOR:
-				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
-				if (mentor.isPresent()) {
-					ModelAndView modelo = new ModelAndView("prMentor");
-					uservice.addInstitucionUtils(modelo, mentor.get().getInstitucion());
-					acservice.salirChat(us.getUsername());
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.getPrincipalMentor(us.getUsername());
 			case MENTORIZADO:
-				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
-				if (mentorizado.isPresent()) {
-					ModelAndView modelo = new ModelAndView("prMentorizado");
-					modelo.addObject("instituciones", listas.getInstituciones());
-					modelo.addObject("areas", listas.getAreas());
-					uservice.addInstitucionUtils(modelo, mentorizado.get().getInstitucion());
-					acservice.salirChat(us.getUsername());
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.getPrincipalMentorizado(us.getUsername());
 			default:
 				System.out.println("Otro rol");
 				ModelAndView model = new ModelAndView("error_page");

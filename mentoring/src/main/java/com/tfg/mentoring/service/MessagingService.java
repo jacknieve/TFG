@@ -21,8 +21,9 @@ public class MessagingService {
 	// https://mail.codejava.net/frameworks/spring-boot/email-verification-example
 	public void sendVerificationEmail(Usuario user, String nombre, String siteURL)
 			throws MessagingException, UnsupportedEncodingException {
+		
 		String toAddress = user.getUsername();
-		String fromAddress = "mentoring.pablo@gmail.com";
+		String fromAddress = "pablo.mentoring@gmx.es";
 		String senderName = "Mentoring";
 		String subject = "Por favor, verifique su registro";
 		String content = "Saludos [[name]],<br>" + "Por favor, haga click en el link para verificar su registro:<br>"
@@ -49,7 +50,7 @@ public class MessagingService {
 	public void notificarPorCorreo(Usuario u, String titulo, String descripcion)
 			throws MessagingException, UnsupportedEncodingException {
 		String toAddress = u.getUsername();
-		String fromAddress = "mentoring.pablo@gmail.com";
+		String fromAddress = "pablo.mentoring@gmx.es";
 		String senderName = "Mentoring";
 		String subject = titulo;
 		String content = "Saludos,<br>" + descripcion + "<br>Muchas gracias por su atención,<br>" + "Mentoring.";
@@ -62,7 +63,6 @@ public class MessagingService {
 		helper.setSubject(subject);
 
 		helper.setText(content, true);
-
 		// Aqui crear una excepcion personalizada en caso de excepcion
 		mailSender.send(message);
 	}

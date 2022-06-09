@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and()
 			.authorizeRequests()
-				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**","/images/**", "/cierre", "/info",
+				.antMatchers("/", "/home", "/auth/**", "/css/**", "/js/**","/images/**",
 						"/verify_success", "/verify_fail", "/register_success", "/error_page", "/error").permitAll()
 				.antMatchers("/principalMentor", "/mentor/**", "/file/download/mentorizado/**").hasAuthority("MENTOR")
 				.antMatchers("/principalMentorizado", "/mentorizado/**", "/file/download/mentor/**").hasAuthority("MENTORIZADO")

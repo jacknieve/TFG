@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.QueryTimeoutException;
 
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,104 +27,86 @@ import com.tfg.mentoring.exceptions.ExcepcionDB;
 import com.tfg.mentoring.exceptions.ExcepcionFichero;
 import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.MensajeChat;
-import com.tfg.mentoring.model.Mentor;
-import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.SalaChat;
-import com.tfg.mentoring.model.auxiliar.MensajeConAsunto;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.model.auxiliar.DTO.MensajeChatDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.NotificacionDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.SalaChatDTO;
-import com.tfg.mentoring.model.auxiliar.enums.AsuntoMensaje;
 import com.tfg.mentoring.model.auxiliar.enums.EstadoMensaje;
 import com.tfg.mentoring.model.auxiliar.enums.MotivosNotificacion;
 import com.tfg.mentoring.model.auxiliar.requests.MensajeReenvio;
 import com.tfg.mentoring.model.auxiliar.requests.MensajesGet;
-import com.tfg.mentoring.repository.MentorRepo;
-import com.tfg.mentoring.repository.MentorizadoRepo;
 import com.tfg.mentoring.service.ActiveUsersService;
 import com.tfg.mentoring.service.FileService;
-import com.tfg.mentoring.service.SalaChatServicio;
+import com.tfg.mentoring.service.MapeadoService;
+import com.tfg.mentoring.service.RedirectService;
+import com.tfg.mentoring.service.ChatService;
 import com.tfg.mentoring.service.UserService;
 
 @Controller
 public class ChatController {
 
 	@Autowired
-	private SalaChatServicio salaChats;
-	@Autowired
-	private SimpMessagingTemplate messagingTemplate;
+	private ChatService chatservice;
 	@Autowired
 	private ActiveUsersService acservice;
 	@Autowired
 	private UserService uservice;
 	@Autowired
 	private FileService fservice;
-
 	@Autowired
-	private MentorizadoRepo menrepo;
+	private MapeadoService mservice;
 	@Autowired
-	private MentorRepo mrepo;
+	private RedirectService rservice;
 
 	@MessageMapping("/send")
 	public void procesarMensaje(@Payload MensajeReenvio mensaje) {
 		// Asumimos que el receptor existe (esto se puede dejar de
 		// asumir en un futuro y añadir comprobacion)
 		try {
-			SalaChat sala = salaChats.getSalaUsuarios(mensaje.getEmisor(), mensaje.getReceptor(), mensaje.isDeMentor());
+			SalaChat sala = chatservice.getSalaUsuarios(mensaje.getEmisor(), mensaje.getReceptor(), mensaje.isDeMentor());
 			if (sala == null) {
-				messagingTemplate.convertAndSendToUser(mensaje.getEmisor(), "/queue/messages", new MensajeConAsunto(
-						AsuntoMensaje.MENSAJEERROR,
-						new NotificacionDTO(0, "Fallo al enviar el mensaje",
-								"No se ha encontrado la conversación a donde queria enviar el mensaje, por favor, pongase en contacto con nosotros si recibe este error",
-								null, true, MotivosNotificacion.ERROR)));
+				chatservice.enviarMensaje(4, mensaje.getEmisor(), new NotificacionDTO(0, "Fallo al enviar el mensaje",
+						"No se ha encontrado la conversación a donde queria enviar el mensaje, por favor, pongase en "
+						+ "contacto con nosotros si recibe este error", null, true, MotivosNotificacion.ERROR));
 			}
 			MensajeChat msg = new MensajeChat(mensaje.getContenido(), sala, mensaje.isDeMentor(), true);
 			if (acservice.activo(mensaje.getReceptor())) {
 				if (acservice.enChat(mensaje.getReceptor())) {
 					msg.setEstado(EstadoMensaje.ENTREGADO);
 
-					salaChats.saveMensaje(msg);// Esto lo pongo varia veces por que en este caso debe de actualizase
-												// para indicar que ya se entrego
-					messagingTemplate.convertAndSendToUser(mensaje.getReceptor(), "/queue/messages",
-							new MensajeConAsunto(AsuntoMensaje.MENSAJE, new MensajeChatDTO(msg)));
-					System.out.println("Nuevo mensaje : " + mensaje.toString() + " de " + mensaje.getEmisor() + " para "
-							+ mensaje.getReceptor());
+					chatservice.saveMensaje(msg);
+					// Esto lo pongo varia veces por que en este caso debe de actualizase para indicar que ya se entrego
+					chatservice.enviarMensaje(0, mensaje.getReceptor(), new MensajeChatDTO(msg));
 				} else {
 					// Notificar
-					salaChats.saveMensaje(msg);
+					chatservice.saveMensaje(msg);
 					uservice.enviarNotificacionMensaje(mensaje.getReceptor(), false);
 				}
 			} else {
 				// Notificar por correo
-				salaChats.saveMensaje(msg);
+				chatservice.saveMensaje(msg);
 				uservice.enviarNotificacionMensaje(mensaje.getReceptor(), true);
 			}
 
 		} catch (DataIntegrityViolationException e) {
-			System.out.println(
-					"Error al guardar el mensaje, seguramente producido por no existir la sala de chat (tambien se puede dar si ya hay un msg con el mismo id)");
+			System.out.println("Error al guardar el mensaje, seguramente producido por no existir la sala "
+					+ "de chat (tambien se puede dar si ya hay un msg con el mismo id)");
 			System.out.println(e.getMessage());
-			messagingTemplate.convertAndSendToUser(mensaje.getEmisor(), "/queue/messages", new MensajeConAsunto(
-					AsuntoMensaje.MENSAJEERROR,
-					new NotificacionDTO(0, "Fallo al enviar el mensaje",
-							"Se ha producido un fallo interno al intentar almcanenar el mensaje, por favor, pongase en contacto con nosotros si recibe este error",
-							null, true, MotivosNotificacion.ERROR)));
+			chatservice.enviarMensaje(4, mensaje.getEmisor(), new NotificacionDTO(0, "Fallo al enviar el mensaje",
+					"Se ha producido un fallo interno al intentar almacenar el mensaje, por favor, pongase en contacto "
+					+ "con nosotros si recibe este error", null, true, MotivosNotificacion.ERROR));
 		} catch (JDBCConnectionException | QueryTimeoutException e) {
 			System.out.println("Error al guardar el mensaje en la db: " + e.getMessage());
-			messagingTemplate.convertAndSendToUser(mensaje.getEmisor(), "/queue/messages", new MensajeConAsunto(
-					AsuntoMensaje.MENSAJEERROR,
-					new NotificacionDTO(0, "Fallo al enviar el mensaje",
-							"No ha sido posible almacenar el mensaje en el repositorio, por favor, vuelva a intentarlo más tarde",
-							null, true, MotivosNotificacion.ERROR)));
+			chatservice.enviarMensaje(4, mensaje.getEmisor(), new NotificacionDTO(0, "Fallo al enviar el mensaje",
+					"No ha sido posible almacenar el mensaje en el repositorio, por favor, vuelva a intentarlo más tarde",
+					null, true, MotivosNotificacion.ERROR));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			messagingTemplate.convertAndSendToUser(mensaje.getEmisor(), "/queue/messages", new MensajeConAsunto(
-					AsuntoMensaje.MENSAJEERROR,
-					new NotificacionDTO(0, "Fallo al enviar el mensaje",
-							"Se ha producido un error interno al enviar el mensaje, por favor, pongase en contacto con nosotros si recibe este error",
-							null, true, MotivosNotificacion.ERROR)));
+			chatservice.enviarMensaje(4, mensaje.getEmisor(), new NotificacionDTO(0, "Fallo al enviar el mensaje",
+					"Se ha producido un error interno al enviar el mensaje, por favor, pongase en contacto con "
+					+ "nosotros si recibe este error", null, true, MotivosNotificacion.ERROR));
 		}
 
 	}
@@ -140,55 +120,9 @@ public class ChatController {
 		try {
 			switch (us.getRol()) {
 			case MENTOR:
-				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
-				if (mentor.isPresent()) {
-					// Asumimos que el usuario se considera logeado
-					acservice.entrarChat(us.getUsername());
-					ModelAndView modelo = new ModelAndView("chat");
-					Mentor m = mentor.get();
-					uservice.addInstitucionUtils(modelo, m.getInstitucion());
-					modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
-					if (m.getUsuario().getFoto() != null) {
-						modelo.addObject("foto",
-								"/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
-					} else {
-						modelo.addObject("foto", "/images/usuario.png");
-					}
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverChatMentor(us.getUsername());
 			case MENTORIZADO:
-				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
-				if (mentorizado.isPresent()) {
-					acservice.entrarChat(us.getUsername());
-					System.out.println(mentorizado.get().toString());
-					Mentorizado m = mentorizado.get();
-					ModelAndView modelo = new ModelAndView("chat");
-					uservice.addInstitucionUtils(modelo, m.getInstitucion());
-					modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
-					if (m.getUsuario().getFoto() != null) {
-						modelo.addObject("foto",
-								"/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
-					} else {
-						modelo.addObject("foto", "/images/usuario.png");
-					}
-					return modelo;
-				} else {
-					System.out.println("No existe");
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverChatMentorizado(us.getUsername());
 			default:
 				System.out.println("Otro rol");
 				ModelAndView model = new ModelAndView("error_page");
@@ -218,60 +152,25 @@ public class ChatController {
 
 	@GetMapping("/chat/chatsuser")
 	public ResponseEntity<List<SalaChatDTO>> getChats(@AuthenticationPrincipal UserAuth u) {
-		List<SalaChatDTO> resultado = new ArrayList<>();
 		List<SalaChat> salas = new ArrayList<>();
-		List<Long> conNuevos = new ArrayList<>();
 		try {
 			switch (u.getRol()) {
 			case MENTOR:
-				salas = salaChats.getSalasUsuario(u.getUsername(), true);
+				salas = chatservice.getSalasUsuario(u.getUsername(), true);
 				if (salas.isEmpty()) {
-					System.out.println(u.getUsername() + " no tiene chats abiertos.");
+					//System.out.println(u.getUsername() + " no tiene chats abiertos.");
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 				}
-				conNuevos = salaChats.getSalasConMensajesNuevos(u.getUsername(), true);
-				for (SalaChat s : salas) {
-					Mentorizado m = s.getMentorizado();
-					String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
-					String foto;
-					if (m.getUsuario().getFoto() != null) {
-						foto = "/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
-					} else {
-						foto = "/images/usuario.png";
-					}
-					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
-					if (conNuevos.contains(s.getId_sala())) {
-						sala.setNuevos(true);
-					}
-					resultado.add(sala);
-				}
 				//System.out.println("Recuperando las salas de chat de " + u.getUsername());
-				return new ResponseEntity<>(resultado, HttpStatus.OK);
+				return new ResponseEntity<>(mservice.convertSalasToDTOMentor(salas, u.getUsername()), HttpStatus.OK);
 			case MENTORIZADO:
-				salas = salaChats.getSalasUsuario(u.getUsername(), false);
+				salas = chatservice.getSalasUsuario(u.getUsername(), false);
 				if (salas.isEmpty()) {
-					System.out.println(u.getUsername() + " no tiene chats abiertos.");
+					//System.out.println(u.getUsername() + " no tiene chats abiertos.");
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 				}
-				conNuevos = salaChats.getSalasConMensajesNuevos(u.getUsername(), false);
-				System.out.println(conNuevos.toString());
-				for (SalaChat s : salas) {
-					Mentor m = s.getMentor();
-					String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
-					String foto;
-					if (m.getUsuario().getFoto() != null) {
-						foto = "/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
-					} else {
-						foto = "/images/usuario.png";
-					}
-					SalaChatDTO sala = new SalaChatDTO(s.getId_sala(), m.getCorreo(), nombre, false, foto);
-					if (conNuevos.contains(s.getId_sala())) {
-						sala.setNuevos(true);
-					}
-					resultado.add(sala);
-				}
 				//System.out.println("Recuperando las salas de chat de " + u.getUsername());
-				return new ResponseEntity<>(resultado, HttpStatus.OK);
+				return new ResponseEntity<>(mservice.convertSalasToDTOMentorizado(salas, u.getUsername()), HttpStatus.OK);
 			default:
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
@@ -286,12 +185,12 @@ public class ChatController {
 
 	// Recuperar mensajes de un chat
 	@PostMapping("/chat/mensajes")
-	public ResponseEntity<List<MensajeChatDTO>> getChats(@RequestBody MensajesGet peticion) {
+	public ResponseEntity<List<MensajeChatDTO>> getMensajesChat(@RequestBody MensajesGet peticion) {
 		try {
 			List<MensajeChatDTO> mensajes = new ArrayList<>();
-			mensajes = salaChats.getMensajes(peticion.getId(), peticion.isMentor());
+			mensajes = chatservice.getMensajes(peticion.getId(), peticion.isMentor());
 			if (mensajes.isEmpty()) {
-				System.out.println("No hay mensajes en el chat " + peticion.getId());
+				//System.out.println("No hay mensajes en el chat " + peticion.getId());
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			return new ResponseEntity<>(mensajes, HttpStatus.OK);
@@ -306,15 +205,15 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat/idchat")
-	public ResponseEntity<Long> getSalaId(@RequestBody String otroUsuario, @AuthenticationPrincipal UserAuth u) {
+	public ResponseEntity<Long> getIdSala(@RequestBody String otroUsuario, @AuthenticationPrincipal UserAuth u) {
 		try {
 			Long id;
 			switch (u.getRol()) {
 			case MENTOR:
-				id = salaChats.getIdSalaUsuarios(u.getUsername(), otroUsuario);
+				id = chatservice.getIdSalaUsuarios(u.getUsername(), otroUsuario);
 				break;
 			case MENTORIZADO:
-				id = salaChats.getIdSalaUsuarios(otroUsuario, u.getUsername());
+				id = chatservice.getIdSalaUsuarios(otroUsuario, u.getUsername());
 				break;
 			default:
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -342,7 +241,7 @@ public class ChatController {
 			SalaChat sala;
 			switch (u.getRol()) {
 			case MENTOR:
-				sala = salaChats.getSalaUsuarios(u.getUsername(), receptor, true);
+				sala = chatservice.getSalaUsuarios(u.getUsername(), receptor, true);
 				if (sala == null) {
 					return new ResponseEntity<>(new MensajeError("Conversación no encontrada",
 							"No ha sido posible acceder a la conversación para almacenar el"
@@ -353,7 +252,7 @@ public class ChatController {
 				msg = fservice.guardarFicheroSend(file, "mentor", sala, true);
 				break;
 			case MENTORIZADO:
-				sala = salaChats.getSalaUsuarios(receptor, u.getUsername(), true);
+				sala = chatservice.getSalaUsuarios(receptor, u.getUsername(), true);
 				if (sala == null) {
 					return new ResponseEntity<>(new MensajeError("Conversación no encontrada",
 							"No ha sido posible acceder a la conversación para almacenar el"
@@ -372,13 +271,12 @@ public class ChatController {
 					try {
 						msg.setEstado(EstadoMensaje.ENTREGADO);
 
-						salaChats.saveMensaje(msg);
+						chatservice.saveMensaje(msg);
 					} catch (JDBCConnectionException | QueryTimeoutException e) {
 						// Aqui no pasa mucho si no se puede actualizar el estado ahora
 						System.out.println(e.getMessage());
 					}
-					messagingTemplate.convertAndSendToUser(receptor, "/queue/messages",
-							new MensajeConAsunto(AsuntoMensaje.MENSAJE, new MensajeChatDTO(msg)));
+					chatservice.enviarMensaje(0, receptor, new MensajeChatDTO(msg));
 				} else {
 					uservice.enviarNotificacionMensaje(receptor, false);
 				}
@@ -428,11 +326,11 @@ public class ChatController {
 		try {
 			switch (u.getRol()) {
 			case MENTOR:
-					salaChats.borrarFileChat(u.getUsername(), sala, file, true);
+					chatservice.borrarFileChat(u.getUsername(), sala, file, true);
 					fservice.borrarFileSend(file, sala, "mentor");
 				break;
 			case MENTORIZADO:
-					salaChats.borrarFileChat(u.getUsername(), sala, file, false);
+					chatservice.borrarFileChat(u.getUsername(), sala, file, false);
 					fservice.borrarFileSend(file, sala, "mentorizado");
 				break;
 			default:

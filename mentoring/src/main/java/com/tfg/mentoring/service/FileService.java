@@ -105,12 +105,12 @@ public class FileService {
 	}
 
 	// https://www.baeldung.com/java-file-extension#:~:text=java%E2%80%9C.,returns%20extension%20of%20the%20filename.
-	public Optional<String> getExtensionByStringHandling(String filename) {
+	private Optional<String> getExtensionByStringHandling(String filename) {
 		return Optional.ofNullable(filename).filter(f -> f.contains("."))
 				.map(f -> f.substring(filename.lastIndexOf(".") + 1));
 	}
 
-	public boolean checkFormat(String extension) {
+	private boolean checkFormat(String extension) {
 		String format = extension.toLowerCase();
 		switch (format) {
 		case "png":
@@ -326,7 +326,7 @@ public class FileService {
 	public void limpiarFilesSala(long sala) throws IOException, ExcepcionRecursos {
 		File dirChat = new File("recursos/user-files/salaschat/" + sala + "/");
 		if (dirChat.exists()) {
-			FileUtils.cleanDirectory(dirChat);
+			if(dirChat.list().length > 0) FileUtils.cleanDirectory(dirChat);
 			dirChat.delete();
 		} else {
 			throw new ExcepcionRecursos("No ha sido posible limpiar los ficheros del chat " + sala + ".");
@@ -339,7 +339,7 @@ public class FileService {
 			urepo.borrarFoto(username);
 
 			File dir = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/");
-			if (dir.exists()) {
+			if (dir.exists() && dir.list().length > 0) {
 				FileUtils.cleanDirectory(dir);
 			} else {
 				System.out.println("No ha sido posible acceder al directorio de la imagen de perfil del usuario "
@@ -347,7 +347,7 @@ public class FileService {
 			}
 			String path = "recursos/user-files/" + rol + "/" + username + "/";
 			File dirPerfil = new File(path + "perfil/");
-			if (dirPerfil.exists()) {
+			if (dirPerfil.exists() && dirPerfil.list().length > 0) {
 				FileUtils.cleanDirectory(dirPerfil);
 			} else {
 				System.out.println("No ha sido posible acceder al directorio de perfil del usuario " + username

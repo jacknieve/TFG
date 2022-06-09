@@ -32,7 +32,7 @@ import com.tfg.mentoring.exceptions.ExcepcionRecursos;
 import com.tfg.mentoring.model.auxiliar.MensajeError;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
 import com.tfg.mentoring.service.FileService;
-import com.tfg.mentoring.service.SalaChatServicio;
+import com.tfg.mentoring.service.ChatService;
 
 @RestController
 @RequestMapping("/file")
@@ -41,7 +41,7 @@ public class FileController {
 	@Autowired
 	private FileService fservice;
 	@Autowired
-	private SalaChatServicio sservice;
+	private ChatService sservice;
 
 	@PostMapping("/fotoperfil")
 	public ResponseEntity<MensajeError> setFotoPerfil(@RequestParam("imagen") MultipartFile image,
@@ -152,31 +152,16 @@ public class FileController {
 	}
 
 	// https://o7planning.org/11673/spring-boot-file-upload-with-angularjs
-	@GetMapping("/download/mentor/{username}/{filename}")
-	public ResponseEntity<Resource> descargarFicheroMentor(@PathVariable("username") String username,
+	@GetMapping("/download/{quien}/{username}/{filename}")
+	public ResponseEntity<Resource> descargarFichero(@PathVariable("quien") String quien, @PathVariable("username") String username,
 			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u)
 			throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
 		try {
-			Resource recurso = fservice.getFile("recursos/user-files/mentores/" + username + "/perfil/" + filename);
-			// System.out.println("Fichero descargado: " + filename + " por " +
-			// u.getUsername() + " de " + username);
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"").body(recurso);
-		} catch (ExcepcionRecursos e) {
-			System.out.println(e.getMessage());
-			throw new ExcepcionFileNotFound(filename);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			throw new ExcepcionFalloAccesoFile(filename);
-		}
-	}
+			if (!quien.equals("mentores") && !quien.equals("mentorizados")) {
+				throw new NotFoundException();
+			}
 
-	@GetMapping("/download/mentorizado/{username}/{filename}")
-	public ResponseEntity<Resource> descargarFicheroMentorizado(@PathVariable("username") String username,
-			@PathVariable("filename") String filename, @AuthenticationPrincipal UserAuth u)
-			throws MalformedURLException, ExcepcionFileNotFound, ExcepcionFalloAccesoFile, NotFoundException {
-		try {
-			Resource recurso = fservice.getFile("recursos/user-files/mentorizados/" + username + "/perfil/" + filename);
+			Resource recurso = fservice.getFile("recursos/user-files/" + quien + "/" + username + "/perfil/" + filename);
 			// System.out.println("Fichero descargado: " + filename + " por " +
 			// u.getUsername() + " de " + username);
 			return ResponseEntity.ok()
@@ -306,8 +291,7 @@ public class FileController {
 	}
 
 	@PostMapping("/deletefile")
-	public ResponseEntity<MensajeError> borrarFichero(@AuthenticationPrincipal UserAuth us,
-			@RequestBody String filename) {
+	public ResponseEntity<MensajeError> borrarFichero(@RequestBody String filename, @AuthenticationPrincipal UserAuth us) {
 		try {
 			String nombre = "";
 			switch (us.getRol()) {

@@ -17,6 +17,9 @@ public interface NotificacionRepo extends JpaRepository<Notificacion, String>{
 	@Query(nativeQuery = true, value="SELECT * FROM notificaciones WHERE id_user = ?1 AND estado <> 2 ORDER BY fechaenv DESC")
 	List<Notificacion> getNotificaciosUser(String user);
 	
+	@Query(nativeQuery = true, value="SELECT COUNT(*) FROM notificaciones WHERE id = ?1 AND id_user = ?2")
+	int comprobarNotificacion(long id, String user);
+	
 	@Transactional
 	@Modifying
 	@Query(nativeQuery = true, value="UPDATE notificaciones SET estado = 1 WHERE id_user = ?1 AND estado = 0")

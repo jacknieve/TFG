@@ -17,6 +17,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 				lastload = Date.now();
 				$scope.errorBusqueda = false;
 				if (response.status == 200) {
+					$scope.sinresultados = false;
 					$scope.mentorizaciones = response.data;
 					for (var i = 0; i < response.data.length; i++) {
 						$scope.mentorizaciones[i].expandido = false;
@@ -289,7 +290,7 @@ appConsumer.controller("mentorizadoMentorizacionController", function($scope, $h
 	$scope.dowloadFile = function(file, mentor) {
 		$scope.cargando = true;
 
-		path = "/file/download/mentor/" + mentor + "/" + file;
+		path = "/file/download/mentores/" + mentor + "/" + file;
 		window.open(path, '_blank', '');
 
 		$scope.cargando = false;

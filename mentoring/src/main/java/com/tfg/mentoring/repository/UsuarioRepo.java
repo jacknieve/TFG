@@ -13,7 +13,7 @@ import com.tfg.mentoring.model.Usuario;
 //https://www.baeldung.com/hibernate-exceptions
 
 public interface UsuarioRepo extends JpaRepository<Usuario, String>{
-	Usuario findByUsername(String nombre);
+	public Usuario findByUsername(String nombre);
 	//Usuario findById(Long id);
 	
 	@Query(nativeQuery = true, value="SELECT * FROM usuarios WHERE verification_code = ?1")

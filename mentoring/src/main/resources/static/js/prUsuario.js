@@ -12,18 +12,19 @@ appConsumer.config(function($httpProvider) {
 
 appConsumer.controller("globalController", function($rootScope) {
 	$rootScope.popUpAbierto = false;
-
+	$rootScope.conexionPerdida = false;
 
 
 });
 
-appConsumer.controller("notificacionController", function($scope, $http, $notification) {
+appConsumer.controller("notificacionController", function($scope, $http, $notification, $rootScope) {
 
 	$scope.mostrarsin = false;
 	$scope.cargando = false;
 	$scope.enfallo = false;
 	var stompClient = null;
 	var miUsername = "";
+	
 
 
 	var obtenerMiInfo = function() {
@@ -69,6 +70,13 @@ appConsumer.controller("notificacionController", function($scope, $http, $notifi
 					//console.log('Connected: ' + frame);
 					stompClient.subscribe("/usuario/" + miUsername + "/queue/messages", controladorMensajes);
 				});
+				socket.onclose = function() {
+					console.log("Cerrado conexion");
+					$notification.warning("Conexión perdida", "Se ha perdido la conexión con el servidor, por favor, trate de recargar la página.", null, false);
+					$rootScope.conexionPerdida = true;
+					stompClient.disconnect();
+					$scope.$apply();
+				}
 				$scope.cargando = false;
 			},
 			function errorCallback(response) {

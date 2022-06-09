@@ -45,7 +45,7 @@ public class RegisterController {
 	}
 
 	@GetMapping("/registration/{rol}")
-	public ModelAndView showRegistrationForm(HttpServletRequest request, @PathVariable("rol") String rol,
+	public ModelAndView showRegistrationForm(@PathVariable("rol") String rol,
 			@AuthenticationPrincipal UserAuth us) {
 		ModelAndView modelo;
 		if (us == null) {
@@ -135,11 +135,11 @@ public class RegisterController {
 	}
 
 	@PostMapping("/register")
-	public ModelAndView registerUserAccount(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result,
+	public ModelAndView registerUser(@Valid @ModelAttribute("useraux") UserAux useraux, BindingResult result,
 			HttpServletRequest request, @AuthenticationPrincipal UserAuth us) {
 		if (us == null) {
 			if (result.hasErrors()) {
-				System.out.println(useraux.toString());
+				//System.out.println(useraux.toString());
 				ModelAndView model = new ModelAndView("registro");
 				model.addObject("useraux", useraux);
 				uservice.addListasModeloSinAreas(model);

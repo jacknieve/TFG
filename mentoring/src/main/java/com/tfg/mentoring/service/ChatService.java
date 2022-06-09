@@ -18,6 +18,7 @@ import com.tfg.mentoring.model.MensajeChat;
 import com.tfg.mentoring.model.Mentor;
 import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.SalaChat;
+import com.tfg.mentoring.model.auxiliar.CuerpoMensaje;
 import com.tfg.mentoring.model.auxiliar.MensajeConAsunto;
 import com.tfg.mentoring.model.auxiliar.DTO.MensajeChatDTO;
 import com.tfg.mentoring.model.auxiliar.DTO.SalaChatDTO;
@@ -26,11 +27,10 @@ import com.tfg.mentoring.repository.MensajesRepo;
 import com.tfg.mentoring.repository.SalaChatRepo;
 
 @Service
-public class SalaChatServicio {
+public class ChatService {
 
 	@Autowired
 	private SalaChatRepo srepo;
-
 	@Autowired
 	private MensajesRepo mrepo;
 
@@ -39,7 +39,6 @@ public class SalaChatServicio {
 	@Autowired
 	private FileService fservice;
 
-	// Esto habria que ponerlo en otro sitio
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 
@@ -94,7 +93,7 @@ public class SalaChatServicio {
 
 	public void abrirChat(Mentor mentor, Mentorizado mentorizado) throws JDBCConnectionException, QueryTimeoutException{
 		SalaChat sala = new SalaChat(mentor, mentorizado);
-		srepo.save(sala);
+		sala = srepo.save(sala);
 		if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
 			String nombre = mentor.getNombre() + " " + mentor.getPapellido() + " " + mentor.getSapellido();
 			String foto = "";
@@ -103,6 +102,20 @@ public class SalaChatServicio {
 			}
 			messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
 					AsuntoMensaje.CONTACTO, new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false, foto)));
+		}
+		try {
+			fservice.crearDirectoriosChat(sala.getId_sala());
+		}catch (ExcepcionRecursos | SecurityException e) {
+			try {
+				srepo.delete(sala);
+				if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
+					messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
+							AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor.getCorreo(), null, true, null)));
+				}
+				
+			} catch (JDBCConnectionException | QueryTimeoutException ex) {
+				System.out.println("No ha sido posible limpiar la sala de chat en la base de datos.");
+			}
 		}
 		
 
@@ -229,6 +242,38 @@ public class SalaChatServicio {
 		return n == 1;
 		
 	}
+	
+	public void enviarMensaje(int asunto, String receptor, CuerpoMensaje cuerpo) {
+		switch (asunto) {
+		case 0:
+			messagingTemplate.convertAndSendToUser(receptor, "/queue/messages",
+					new MensajeConAsunto(AsuntoMensaje.MENSAJE, cuerpo));
+			break;
+		case 1:
+			messagingTemplate.convertAndSendToUser(receptor, "/queue/messages",
+					new MensajeConAsunto(AsuntoMensaje.CONTACTO, cuerpo));
+			break;
+		case 2:
+			messagingTemplate.convertAndSendToUser(receptor, "/queue/messages",
+					new MensajeConAsunto(AsuntoMensaje.NOTIFICACION, cuerpo));
+			break;
+		case 3:
+			messagingTemplate.convertAndSendToUser(receptor, "/queue/messages",
+					new MensajeConAsunto(AsuntoMensaje.ERROR, cuerpo));
+			break;
+		case 4:
+			messagingTemplate.convertAndSendToUser(receptor, "/queue/messages", 
+					new MensajeConAsunto(AsuntoMensaje.MENSAJEERROR, cuerpo));
+			break;
+
+		default:
+			break;
+		}
+		
+		
+	}
+	
+	
 	
 
 }

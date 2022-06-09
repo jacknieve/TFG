@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Principal Mentor</title>
+	<title>Principal Mentorizado</title>
 	<link th:href="@{/css/bootstrap-4.4.1.css}" rel="stylesheet">
 	<link th:href="@{/css/general.css}" rel="stylesheet">
 	<link th:href="@{/css/notification.lee}" rel="stylesheet/less" type="text/css" />
@@ -21,7 +21,7 @@
 </head>
 
 <body ng-app="appConsumer" ng-cloak>
-	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto}">
+	<div ng-controller="globalController" ng-class="{ 'seccionDesabilitada': popUpAbierto || conexionPerdida}">
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top header"
 			th:style="'background-color: '+@{${color}}+';'">
 			<a class="navbar-brand" th:href="@{/home}"><img id="borderIcono" th:src="@{/images/icono_prueba.png}"
@@ -171,7 +171,7 @@
 											<div class="row" ng-show="mentorizacion.expandido">
 												<div class="col-md-5"><strong>Nivel de estudios:</strong>
 													{{mentorizacion.uperfil.nivelEstudiosNivelestudios}}</div>
-												<div class="col-md-7" ng-hide="mentorizacion.uperfil.linkedin == ''">
+												<div class="col-md-7" ng-hide="mentorizacion.uperfil.linkedin == '' || mentorizacion.uperfil.linkedin == null">
 													<strong>Linkedin:</strong>
 													{{mentorizacion.uperfil.linkedin}}
 												</div>
@@ -407,7 +407,7 @@
 											<div class="textoContacto" ng-show="mentor.expandido">
 												<strong>Correo eletronico:</strong>
 												<span style="font-size: 12px">{{mentor.correo}}</span><br>
-												<span ng-hide="mentor.info.linkedin == ''"><strong>Linkedin:</strong>
+												<span ng-hide="mentor.info.linkedin == '' || mentor.info.linkedin == null"><strong>Linkedin:</strong>
 													<span style="font-size: 10px">{{mentor.info.linkedin}}</span></span>
 											</div>
 										</div>
@@ -537,7 +537,7 @@
 											<strong>Correo eletronico:</strong>
 											<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
 											<span
-												ng-hide="mentorizacion.uperfil.linkedin == ''"><strong>Linkedin:</strong>
+												ng-hide="mentorizacion.uperfil.linkedin == '' || mentorizacion.uperfil.linkedin == null"><strong>Linkedin:</strong>
 												<span
 													style="font-size: 10px">{{mentorizacion.uperfil.linkedin}}</span></span>
 										</div>

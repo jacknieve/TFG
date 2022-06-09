@@ -29,9 +29,4 @@ public interface MensajesRepo extends JpaRepository<MensajeChat, MensajeChatId>{
 	
 	
 	
-	/*@Transactional
-	@Modifying
-	@Query(nativeQuery = true, value="INSERT INTO mensajes (contenido, dementor, estado, fecha_envio, id_mentor, id_mentorizado, inicio) VALUES (?1,?2,?3,current_timestamp,?4,?5,?6)")
-	void insertarMensaje(String contenido, boolean deMentor, int estado, String mentor, String mentorizado, Timestamp inicio);*/
-	
 }

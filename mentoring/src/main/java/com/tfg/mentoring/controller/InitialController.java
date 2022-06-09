@@ -1,7 +1,6 @@
 package com.tfg.mentoring.controller;
 
 import java.util.Date;
-import java.util.Optional;
 
 import javax.persistence.QueryTimeoutException;
 
@@ -11,27 +10,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.socket.config.WebSocketMessageBrokerStats;
 
-import com.tfg.mentoring.model.Mentor;
-import com.tfg.mentoring.model.Mentorizado;
 import com.tfg.mentoring.model.auxiliar.UserAuth;
-import com.tfg.mentoring.repository.MentorRepo;
-import com.tfg.mentoring.repository.MentorizadoRepo;
-import com.tfg.mentoring.service.UserService;
+import com.tfg.mentoring.service.RedirectService;
 
 @RestController
 public class InitialController {
 
 	@Autowired
-	private UserService uservice;
-	@Autowired
-	private MentorizadoRepo menrepo;
-	@Autowired
-	private MentorRepo mrepo;
+	private RedirectService rservice;
 
-	@Autowired
-	WebSocketMessageBrokerStats webSocketMessageBrokerStats;
+	/*@Autowired
+	WebSocketMessageBrokerStats webSocketMessageBrokerStats;*/
 
 	@GetMapping({ "/", "/home" })
 	public ModelAndView home(@AuthenticationPrincipal UserAuth us) {
@@ -52,36 +42,11 @@ public class InitialController {
 			switch (us.getRol()) {
 			case MENTOR:
 				rol = "Mentor";
-				Optional<Mentor> mentor = mrepo.findById(us.getUsername());
-				if (mentor.isPresent()) {
-					ModelAndView modelo = new ModelAndView("home_login");
-					modelo.addObject("rol", rol);
-					uservice.addInstitucionUtils(modelo, mentor.get().getInstitucion());
-					return modelo;
-				} else {
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverInicioMentor(us.getUsername());
+				
 			case MENTORIZADO:
 				rol = "Mentorizado";
-				Optional<Mentorizado> mentorizado = menrepo.findById(us.getUsername());
-				if (mentorizado.isPresent()) {
-					ModelAndView modelo = new ModelAndView("home_login");
-					modelo.addObject("rol", rol);
-					uservice.addInstitucionUtils(modelo, mentorizado.get().getInstitucion());
-					return modelo;
-				} else {
-					ModelAndView model = new ModelAndView("error_page");
-					model.addObject("mensaje",
-							"No ha sido posible acceder a la información de su perfil, por favor, si recibe este mensaje, "
-									+ "pongase en contancto con nosotros e indíquenos el contexto en el que se produjo este error.");
-					model.addObject("hora", new Date());
-					return model;
-				}
+				return rservice.devolverInicioMentorizado(us.getUsername());
 
 			default:
 				System.out.println("Otro rol");
@@ -148,10 +113,10 @@ public class InitialController {
 		}
 	}
 
-	@GetMapping("/info")
+	/*@GetMapping("/info")
 	public void info() {
 		System.out.println("Session Stats info " + webSocketMessageBrokerStats.getWebSocketSessionStatsInfo());
 
-	}
+	}*/
 
 }
