@@ -1,0 +1,28 @@
+-Preparativos previos:
+Crear 2 cuentas de correo
+-Primera parte:
+(solo se ve una pantalla)
+Se registra el mentor, introduce los datos, verifica el correo, inicia sesión, accede a su perfil, no toca sus datos, añade una foto de perfil, indica un área de conocimiento, añade 2 ficheros a su perfil.
+-Segunda parte:
+(se sigue viendo una pantalla solo)
+Se registra el mentorizado, introduce sus datos, verifica el correo, inicia sesión, accede a su perfil, modifica sus datos (cambia su institucion a usc y recarga para ver los cambios), añade una descripción, sube una foto de perfil, introduce un área de conocimento.
+-Tercera parte:
+(pantalla dividida)
+El mentorizado realiza la busqueda del mentor, despliega su perfil, envia una petición, y abre mentorizaciones
+El mentor abre solicitudes, abre la peticion, la acepta y accede a la mentorizacion
+El mentorizado abre y cierra mentorizaciones para que salga, accede a la mentorizacion, descarga uno de los ficheros
+El mentor cambia de fase y acepta
+El mentorizado recarga para ver el cambio de fase
+El mentor entra en el chat desde mentorizaciones y le envia un mensaje
+El mentorizado entra en el chat desde mis chats y abre el chat del mentor, le responde y le envia un fichero
+El mentor descarga el fichero
+El mentorizado borra el fichero
+El mentor vuelve a intentar descargar el fichero, sale del chat, cambia la fase de la mentorizacion a fin y la cierra
+El mentorizado ve que el chat se ha cerrado, sale de él, accede a mentorizaciones, accede a por puntuar, la puntua
+-Cuarta parte:
+(solo el mentor)
+El mentor accede a su perfil y elimina su cuenta, intenta entrar de nuevo sin éxito
+-Quinta parte:
+(solo mentorizado)
+Realiza de nuevo la busqueda y no aparece el mentor
+

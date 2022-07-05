@@ -139,7 +139,7 @@
 										<div class="textoContacto" ng-show="mentorizacion.expandido">
 											<strong>Correo eletronico:</strong>
 											<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
-											<span ng-hide="mentorizacion.uperfil.telefono== ''">
+											<span ng-hide="mentorizacion.uperfil.telefono== '' || mentorizacion.uperfil.telefono== null">
 												<strong>Telefono:</strong>
 												<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
 											</span>
@@ -154,7 +154,7 @@
 												<div class="col-md-5" ng-show="mentorizacion.uperfil.edad > 0"><strong>Edad:</strong>
 													{{mentorizacion.uperfil.edad}}
 												</div>
-												<div class="col-md-7" ng-show="mentor.entidad != ''">
+												<div class="col-md-7" ng-hide="mentorizacion.uperfil.entidad == '' || mentorizacion.uperfil.entidad == null">
 													<strong>Entidad:</strong> {{mentorizacion.uperfil.entidad}}
 												</div>
 												<div class="col-md-12"
@@ -178,7 +178,7 @@
 												<div class="col-md-12">
 													<strong>Descripción:</strong>
 													<p style="font-size: 14px">
-														<span ng-show="mentorizacion.uperfil.descripcion == null">
+														<span ng-show="mentorizacion.uperfil.descripcion == null || mentorizacion.uperfil.descripcion == ''">
 															Sin descripción.
 														</span>
 														{{mentorizacion.uperfil.descripcion}}
@@ -370,16 +370,16 @@
 						<div class="row">
 							<div class="col-lg-3 col-md-6 text-center">
 								<label>Área de conocimiento: </label><br>
-								<select ng-model="areaseleccioanda" style="margin-bottom: 3px;">
-									<option th:value="sin">--Escoge un área--</option>
+								<select ng-model="areaseleccioanda" class="campoBusqueda">
+									<option th:value="sin">&nbsp;&nbsp;Escoge un área</option>
 									<option th:each="i : ${areas}" th:value="${i.area}" th:text="${i.area}">
 									</option>
 								</select>
 							</div>
 							<div class="col-lg-3 col-md-6 text-center">
 								<label>Participa en el programa de: </label><br>
-								<select ng-model="institucionseleccionada" style="margin-bottom: 3px;">
-									<option th:value="sin">--Escoge una institucion--</option>
+								<select ng-model="institucionseleccionada" class="campoBusqueda">
+									<option th:value="sin">&nbsp;&nbsp;Escoge una institución</option>
 									<option th:each="i : ${instituciones}" th:value="${i}" th:text="${i}">
 									</option>
 								</select>
@@ -426,13 +426,13 @@
 												</div>
 												<div class="col-md-5" ng-show="mentor.expandido && mentor.info.edad > 0"> <strong>Edad:</strong>
 													{{mentor.info.edad}}</div>
-												<div class="col-md-7" ng-show="mentor.entidad != ''">
+												<div class="col-md-7" ng-hide="mentor.entidad == '' || mentor.entidad == null">
 													<strong>Entidad:</strong> {{mentor.entidad}}
 												</div>
 												<div class="col-lg-12" ng-show="mentor.expandido">
 													<strong>Descripción:</strong>
 													<p style="font-size: 14px">
-														<span ng-show="mentor.info.descripcion == null">
+														<span ng-show="mentor.info.descripcion == null || mentor.info.descripcion == ''">
 															Sin descripción.
 														</span>
 														{{mentor.info.descripcion}}
@@ -558,7 +558,7 @@
 												</div>
 											</div>
 											<div class="row" ng-show="mentorizacion.expandido">
-												<div class="col-lg-12" ng-show="mentorizacion.uperfil.entidad != ''">
+												<div class="col-lg-12" ng-hide="mentorizacion.uperfi.entidad == '' || mentorizacion.uperfi.entidad == null">
 													<strong>Entidad:</strong>
 													{{mentorizacion.uperfil.entidad}}
 												</div>
@@ -572,7 +572,7 @@
 												<div class="col-lg-12">
 													<strong>Descripción:</strong>
 													<p style="font-size: 14px">
-														<span ng-show="mentorizacion.uperfil.descripcion == null">
+														<span ng-show="mentorizacion.uperfil.descripcion == null || mentorizacion.uperfil.descripcion == ''">
 															Sin descripción.
 														</span>
 														{{mentorizacion.uperfil.descripcion}}

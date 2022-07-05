@@ -413,5 +413,16 @@ appChat.controller("chatController", function($scope, $http, $notification) {
 			}
 		)
 	}
+	//https://stackoverflow.com/questions/8934088/how-to-make-enter-key-in-a-textarea-submit-a-form
+	function submitOnEnter(event){
+    	if(event.which === 13 && !event.shiftKey){
+        	$scope.enviarMensaje();
+        	$scope.$apply();
+    	}
+	}
+
+	document.getElementById("textareamensaje").addEventListener("keypress", submitOnEnter);
 
 });
+
+

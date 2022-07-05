@@ -9,9 +9,13 @@ import org.springframework.stereotype.Component;
 public class UsuariosActivos {
 
 	public Map<String,InfoUsuarioActivo> users;
-
+	Map<String, String> roleTargetUrlMap;
+	
     public UsuariosActivos() {
         users = new HashMap<String,InfoUsuarioActivo>();
+        roleTargetUrlMap = new HashMap<>();
+	    roleTargetUrlMap.put("MENTOR", "/user/principal");
+	    roleTargetUrlMap.put("MENTORIZADO", "/user/principal");
     }
 
 	public Map<String,InfoUsuarioActivo> getUsers() {
@@ -21,4 +25,10 @@ public class UsuariosActivos {
 	public void setUsers(Map<String,InfoUsuarioActivo>users) {
 		this.users = users;
 	}
+
+	public Map<String, String> getRoleTargetUrlMap() {
+		return roleTargetUrlMap;
+	}
+	
+	
 }

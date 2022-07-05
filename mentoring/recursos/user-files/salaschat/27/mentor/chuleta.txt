@@ -1,0 +1,21 @@
+1. En caso de que el programa de ordenador sea original, puede registrarlo (101) para
+que posea derechos de autor y así este portegido por la ley de propiedad intelectual y se le concederian los derechos de autor. Estos derechos son concedidos de manera automática en el momento de la expresión.
+Depende, si resulta en una inovación tecnica, podría llegar a patentarse. Pero, por norma
+general, si es segun la regulación española, los programas de ordenador son capital
+intelectual (Articulo 10 LPI, i), por lo tanto, lo que le afecta es la LPI.
+2. Debido a que fue Ana la que editó y divulgó el programa, ella poseerá en exclusiva los derechos de autor (97.2)(caso a), o si la documentación preparatoria no influyó lo suficiente en el programa final (96.4). En cambio, también se podría tomar como una obra colaborativa debido a que, dentro de la documentación, no se puede distinguir que parte hizo cada uno (97.3)(caso b), por lo tanto, ambos serían los propietarios de los derechos. También puede darse este caso si la documentación preparatoría tuviese un gran efecto sobre el resultado final (96.1). Debido a que esta desarrollo el porgrama por su cuenta, la empresa no es propietaria de ningun derecho sobre dicho porgrama (97.4).
+3. (a)Debido a que ella es la única poseedora de los derechos del programa, tiene en 
+exclusiva tanto los derechos morales como los derechos patrimoniales (17). Para poder
+tener beneficios económicos podría llegar a un acuerdo con su empresa u otra empresa para cederles
+los derechos de explotación a cambio de una parte de los beneficios. En este caso, a Roberto unicamente se le reconocería el derecho moral. (b) En ese caso, tanto Ana como Roberto compartirían los derechos de explotación, por lo tanto, tendrían que llegar a un acuerdo mutuo para realizar la explatión (posiblemente mediante una empresa tercera) y repartirse los beneficios.
+4.(a) Si, ya que es la única poseedora de los derechos de autor y no estaría obligada a dar nada a Roberto. (b) No, debido a que fue un trabajo colaborativo, la explotación debe realizarse únicamente mediante la llegada a un acuerdo. En este caso, Roberto recibiría una porcentaje de acuerdo al trabajo realizado o al acuerdo llegado.
+5. Si, ya que seguirá teniendo los derechos morales de la obra, ya que al ser un derecho inalienable, no puede ser transferido. (14)
+6. Si, siempre que forme parte de procedimiento innovador.
+
+////////Bases de datos
+1.Solo se la prodría proteger si tiene partes originales por medio de los derechos de autor.
+3.No, es un caso claro de competencia desleal. Por lo que Norma podría emprender acciones legales contra Innova o los trabajadores. Contra los trabajadores dependerá también de si estos firmaron algún tipo de clausula de confidencialidad.
+4. Los derechos de autor sobre la base de datos le correponden a la empresa, debido a que los trabajadores crearon dicha base de datos durante su ejercicio laboral. A su vez, los derechos sui generis también corresponden a la empresa ya que esta es la que hace la inversión. En cambio, los derechos morales de los de autor le correpondería a los trabajadores.
+5. El derecho de autor sería durante toda la vida de la empresa y 70 años despues del fin de esta. En cambio, el derecho sui generis es de 15 años a partir del 2019. En caso de que dicha empresa realice modificaciones significativas en dicha base de datos, la duración de la proteción puede alargarse otros 15 años de manera indefinida.
+6. Pueden acceder al contenido de dicha base de datos y realizar la extracción/reutilización de las partes no sustanciales.
+7. Si, que se renovará la protección de derecho sui generis otros 15 años a partir del 1 de enero de 2020 (si termina la actualización en el 2019, si no, pues 15 años desde el 1 de enero del año siguiente).

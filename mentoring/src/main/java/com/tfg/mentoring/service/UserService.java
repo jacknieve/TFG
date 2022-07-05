@@ -319,7 +319,7 @@ public class UserService {
 		modelo.addObject("letrasBlancas", i.isLetrasBlancas());
 		if (i.getUsuario().getFoto() != null) {
 			modelo.addObject("logo",
-					"/images/usuarios/instituciones/" + i.getUsuario().getUsername() + "/" + i.getUsuario().getFoto());
+					"/imagenes/instituciones/" + i.getUsuario().getUsername() + "/" + i.getUsuario().getFoto());
 		}
 		if (i.getNombre().equals("Otra")) {
 			modelo.addObject("letrasBB", false);
@@ -416,21 +416,31 @@ public class UserService {
 		Optional<Mentorizado> men = menrepo.findById(mentorizado);
 		if (m.isPresent() && men.isPresent()) {
 			Mentorizacion mentorizacion = new Mentorizacion(m.get(), men.get());
-			Mentorizacion resultado = mentorizacionrepo.save(mentorizacion);
-			prepo.aceptarPeticion(username, mentorizado);
-			if (resultado.getMentorizado().getUsuario().isEnabled()) {
-				chatservice.abrirChat(resultado.getMentor(), resultado.getMentorizado());
-				enviarNotificacion(men.get().getUsuario(), "Peticion aceptada",
-						"El usuario " + m.get().getNombre() + " te ha aceptado una petición de mentorizacion.",
-						MotivosNotificacion.ACEPTAR);
-				return Optional.empty();
-			} else {
-				resultado.setFin(new Date());
-				mentorizacionrepo.save(resultado);
+			mentorizacion = mentorizacionrepo.save(mentorizacion);
+			if (!mentorizacion.getMentorizado().getUsuario().isEnabled()) {
+				mentorizacion.setFin(new Date());
+				mentorizacion.setCalificacion(-1);
+				mentorizacionrepo.save(mentorizacion);
+				prepo.aceptarPeticion(username, mentorizado);
 				return Optional.ofNullable(new MensajeError("Mentorizado eliminado",
 						"El mentorizado ya no se encuentra disponible, no se creará mentorización."));
 			}
-
+			try {
+				chatservice.abrirChat(mentorizacion.getMentor(), mentorizacion.getMentorizado());
+			} catch (ExcepcionRecursos | JDBCConnectionException | QueryTimeoutException e) {
+				mentorizacion.setFin(new Date());
+				mentorizacion.setCalificacion(-1);
+				mentorizacionrepo.save(mentorizacion);
+				return Optional.ofNullable(new MensajeError("Fallo al crear la mentorización",
+					"Debido a un error interno, no ha sido posible crear la mentorizacipn, por favor,  si recibe este mensaje,"
+							+ "pongasé en contacto con nosotros y detalle el contexto en el que ocurrió el error. Hora del suceso: "
+							+ new Date()));
+			}
+			enviarNotificacion(men.get().getUsuario(), "Peticion aceptada",
+					"El usuario " + m.get().getNombre() + " te ha aceptado una petición de mentorizacion.",
+					MotivosNotificacion.ACEPTAR);
+			prepo.aceptarPeticion(username, mentorizado);
+			return Optional.empty();
 		} else {
 			System.out.println("No hay usuarios");
 			return Optional.ofNullable(new MensajeError("Fallo en la peticion",

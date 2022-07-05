@@ -91,17 +91,16 @@ public class ChatService {
 		}
 	}
 
-	public void abrirChat(Mentor mentor, Mentorizado mentorizado) throws JDBCConnectionException, QueryTimeoutException{
+	public void abrirChat(Mentor mentor, Mentorizado mentorizado) throws JDBCConnectionException, QueryTimeoutException, ExcepcionRecursos{
 		SalaChat sala = new SalaChat(mentor, mentorizado);
 		sala = srepo.save(sala);
 		if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
 			String nombre = mentor.getNombre() + " " + mentor.getPapellido() + " " + mentor.getSapellido();
 			String foto = "";
 			if(mentor.getUsuario().getFoto() != null) {
-				foto = "/images/usuarios/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto();
+				foto = "/imagenes/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto();
 			}
-			messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
-					AsuntoMensaje.CONTACTO, new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false, foto)));
+			enviarMensaje(1, mentorizado.getCorreo(), new SalaChatDTO(sala.getId_sala(), mentor.getCorreo(), nombre, false, foto));
 		}
 		try {
 			fservice.crearDirectoriosChat(sala.getId_sala());
@@ -109,13 +108,13 @@ public class ChatService {
 			try {
 				srepo.delete(sala);
 				if (acservice.activo(mentorizado.getCorreo()) && acservice.enChat(mentorizado.getCorreo())) {
-					messagingTemplate.convertAndSendToUser(mentorizado.getCorreo(), "/queue/messages", new MensajeConAsunto(
-							AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor.getCorreo(), null, true, null)));
+					enviarMensaje(1, mentorizado.getCorreo(), new SalaChatDTO(0, mentor.getCorreo(), null, true, null));
 				}
 				
 			} catch (JDBCConnectionException | QueryTimeoutException ex) {
 				System.out.println("No ha sido posible limpiar la sala de chat en la base de datos.");
 			}
+			throw new ExcepcionRecursos("No ha sido posible crear los directorios de la aplicación");
 		}
 		
 
@@ -128,13 +127,15 @@ public class ChatService {
 			srepo.salirChat(mentor, mentorizado);
 		if (fueMentor) {
 			if (acservice.activo(mentorizado) && acservice.enChat(mentorizado)) {
-				messagingTemplate.convertAndSendToUser(mentorizado, "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor, null, true, null)));
+				/*messagingTemplate.convertAndSendToUser(mentorizado, "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentor, null, true, null)));*/
+				enviarMensaje(1, mentorizado, new SalaChatDTO(0, mentor, null, true, null));
 			}
 		} else {
 			if (acservice.activo(mentor) && acservice.enChat(mentor)) {
-				messagingTemplate.convertAndSendToUser(mentor, "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentorizado, null, true, null)));
+				/*messagingTemplate.convertAndSendToUser(mentor, "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, mentorizado, null, true, null)));*/
+				enviarMensaje(1, mentor, new SalaChatDTO(0, mentorizado, null, true, null));
 			}
 		}
 		try {
@@ -155,8 +156,9 @@ public class ChatService {
 		List<SalaChat> salas = srepo.findByMentor(username);
 		for(SalaChat s : salas) {
 			if (acservice.activo(s.getMentorizado().getCorreo()) && acservice.enChat(s.getMentorizado().getCorreo())) {
-				messagingTemplate.convertAndSendToUser(s.getMentorizado().getCorreo(), "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
+				/*messagingTemplate.convertAndSendToUser(s.getMentorizado().getCorreo(), "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));*/
+				enviarMensaje(1, s.getMentorizado().getCorreo(), new SalaChatDTO(0, username, null, true, null));
 			}
 			try {
 				fservice.limpiarFilesSala(s.getId_sala());
@@ -177,8 +179,9 @@ public class ChatService {
 		List<SalaChat> salas = srepo.findByMentorizado(username);
 		for(SalaChat s : salas) {
 			if (acservice.activo(s.getMentor().getCorreo()) && acservice.enChat(s.getMentor().getCorreo())) {
-				messagingTemplate.convertAndSendToUser(s.getMentor().getCorreo(), "/queue/messages",
-						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));
+				/*messagingTemplate.convertAndSendToUser(s.getMentor().getCorreo(), "/queue/messages",
+						new MensajeConAsunto(AsuntoMensaje.CONTACTO, new SalaChatDTO(0, username, null, true, null)));*/
+				enviarMensaje(1, s.getMentor().getCorreo(), new SalaChatDTO(0, username, null, true, null));
 			}
 			try {
 				fservice.limpiarFilesSala(s.getId_sala());

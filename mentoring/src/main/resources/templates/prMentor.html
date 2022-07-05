@@ -133,7 +133,7 @@
 									<div class="textoContacto" ng-show="mentorizacion.expandido">
 										<strong>Correo eletronico:</strong>
 										<span style="font-size: 12px">{{mentorizacion.correo}}</span><br>
-										<span ng-hide="mentorizacion.uperfil.telefono == ''">
+										<span ng-hide="mentorizacion.uperfil.telefono == '' || mentorizacion.uperfil.telefono == null">
 											<strong>Telefono: </strong>
 											<span style="font-size: 14px">{{mentorizacion.uperfil.telefono}}</span>
 										</span>
@@ -167,7 +167,7 @@
 										</div>
 										<p class="col-lg-12" style="font-size: 14px; text-align: justify;"
 											ng-show="mentorizacion.expandido">
-											<span ng-show="mentorizacion.uperfil.descripcion == null">
+											<span ng-show="mentorizacion.uperfil.descripcion == null || mentorizacion.uperfil.descripcion == ''">
 												Sin descripción.
 											</span>
 											{{mentorizacion.uperfil.descripcion}}
@@ -354,7 +354,7 @@
 									<div class="textoContacto" ng-show="peticion.expandido">
 										<strong>Correo eletronico:</strong>
 										<span style="font-size: 12px">{{peticion.info.correo}}</span><br>
-										<span ng-hide="peticion.info.telefono == ''">
+										<span ng-hide="peticion.info.telefono == '' || peticion.info.telefono == null">
 											<strong>Telefono:</strong>
 											<span style="font-size: 14px">{{peticion.info.telefono}}</span>
 										</span>
@@ -386,7 +386,7 @@
 								<div class="col-md-6">
 									<strong>Descripción:</strong>
 									<p style="font-size: 14px">
-										<span ng-show="peticion.info.descripcion == null">
+										<span ng-show="peticion.info.descripcion == null || peticion.info.descripcion == ''">
 											Sin descripción.
 										</span>
 										{{peticion.info.descripcion}}

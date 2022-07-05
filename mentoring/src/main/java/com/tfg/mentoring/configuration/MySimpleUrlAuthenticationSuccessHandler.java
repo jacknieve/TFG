@@ -2,8 +2,6 @@ package com.tfg.mentoring.configuration;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,15 +45,11 @@ implements AuthenticationSuccessHandler {
   
   protected String determineTargetUrl(final Authentication authentication) {
 
-	    Map<String, String> roleTargetUrlMap = new HashMap<>();
-	    roleTargetUrlMap.put("MENTOR", "/user/principal");
-	    roleTargetUrlMap.put("MENTORIZADO", "/user/principal");
-
 	    final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 	    for (final GrantedAuthority grantedAuthority : authorities) {
 	        String authorityName = grantedAuthority.getAuthority();
-	        if(roleTargetUrlMap.containsKey(authorityName)) {
-	            return roleTargetUrlMap.get(authorityName);
+	        if(usuariosActivos.getRoleTargetUrlMap().containsKey(authorityName)) {
+	            return usuariosActivos.getRoleTargetUrlMap().get(authorityName);
 	        }
 	    }
 

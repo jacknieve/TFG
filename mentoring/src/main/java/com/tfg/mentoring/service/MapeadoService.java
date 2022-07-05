@@ -43,7 +43,7 @@ public class MapeadoService {
 			user.setFoto("/images/usuario.png");
 		}
 		else {
-			user.setFoto("/images/usuarios/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
 			
 		}
 		user.setFicheros(fservice.getFicherosUser(mentor.getCorreo()));
@@ -58,7 +58,7 @@ public class MapeadoService {
 			
 		}
 		else {
-			user.setFoto("/images/usuarios/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
 		}
 		user.setFicheros(fservice.getFicherosUser(mentorizado.getCorreo()));
 		return user;
@@ -76,7 +76,7 @@ public class MapeadoService {
 			user.setFoto("/images/usuario.png");
 		}
 		else {
-			user.setFoto("/images/usuarios/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
 			
 		}
 		user.setFicheros(fservice.getFicherosUser(mentor.getCorreo()));
@@ -97,7 +97,7 @@ public class MapeadoService {
 			
 		}
 		else {
-			user.setFoto("/images/usuarios/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
 		}
 		user.setFicheros(fservice.getFicherosUser(mentorizado.getCorreo()));
 		return user;
@@ -115,7 +115,7 @@ public class MapeadoService {
 			user.setFoto("/images/usuario.png");
 		}
 		else {
-			user.setFoto("/images/usuarios/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentores/" + mentor.getCorreo() + "/" + mentor.getUsuario().getFoto());
 			
 		}
 
@@ -146,7 +146,7 @@ public class MapeadoService {
 			
 		}
 		else {
-			user.setFoto("/images/usuarios/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentorizados/" + mentorizado.getCorreo() + "/" + mentorizado.getUsuario().getFoto());
 		}
 
 		return user;
@@ -163,7 +163,7 @@ public class MapeadoService {
 			user.setFoto("/images/usuario.png");
 		}
 		else {
-			user.setFoto("/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
+			user.setFoto("/imagenes/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
 		}
 		return user;
 	}
@@ -176,7 +176,7 @@ public class MapeadoService {
 			String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
 			String foto;
 			if (m.getUsuario().getFoto() != null) {
-				foto = "/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+				foto = "/imagenes/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
 			} else {
 				foto = "/images/usuario.png";
 			}
@@ -197,7 +197,7 @@ public class MapeadoService {
 			String nombre = m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido();
 			String foto;
 			if (m.getUsuario().getFoto() != null) {
-				foto = "/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
+				foto = "/imagenes/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto();
 			} else {
 				foto = "/images/usuario.png";
 			}

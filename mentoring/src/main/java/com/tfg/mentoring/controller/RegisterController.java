@@ -97,7 +97,7 @@ public class RegisterController {
 			@AuthenticationPrincipal UserAuth us) {
 		ModelAndView modelo;
 		if (us == null) {
-			System.out.println(useraux.toString());
+			//System.out.println(useraux.toString());
 			modelo = new ModelAndView("registro");
 			useraux.setHoraspormes(4);
 			if (useraux.getMentor()) {

@@ -1,0 +1,118 @@
+Portada
+Buenos días, mi nombre es Pablo González Alonso y estoy aquí para presentaros el TFG que he realizado,
+que consiste en el desarrollo de una aplicacion web para la gestión del mentoring.
+--Introducción--
+1
+¿Que és el mentoring?
+El mentoring es uno de los métodos más eficaces para la gestión del talento. Permite establecer una relación de ayuda o apoyo entre un profesional cualificado en un determiando campo, un mentor, y una persona que requiere una orientación en dicho ámbito, a la que transmite sus conocimientos y experiencia, un mentorizado.
+2
+En cuanto a como se suele implementar, muchas instituciones siguen un proceso manual, en el qué los mentores y mentorizados se inscriben en su programa de mentoring, una tercera persona los empareja, y se establece la relación. Una vez establecida, el mentor y mentorizado deben mantenerla a través de algún canal externo al programa.
+3
+Nosotros eliminamos a esta tercera persona de la ecuación
+4
+Una vez que ambos usuarios se han registrado en la aplicación, el mentorizado puede buscar un mentor y realizarle una solicitud. Dicho mentor la puede aceptar, y, de ser así, se establecerá la relación, la cual podrá ser mantenida a través de la propia aplicación.
+5
+Para explotar esta idea, se implementaron conjuntamente un TFM de Desarrollo Ecónomico e Innovación, elaborado por Sergio ANtelo Blanco, en que se desarrolla el modelo de negocio de esta iniciativa emprendedora; y este trabajo de fin de grado, en el que se desarrolla la aplicación que da soporte a dicho modelo de negocio. Por lo tanto, este trabajo conjunto se puede considerar un proyecto empresarial emprendedor.
+6
+Por ello, la motivación de este TFG es, por un lado, desarrollar una aplicación web que facilite y permita gestionar el mentoring; y, por el otro lado, desarrollar una aplicación que contenga las características que nuestro cliente, es decir, Sergio, haya detectado como necesarias para que su plan sea viable.
+7
+De la motivación podemos extraer los dos objetivos principales del proyecto, por un lado, gestionar el mentoring, permitir que los mentorizados contacten con mentores para establecer y mantener relaciones de mentoring; y, por el otro lado, facilitar el mentoring, permitir realizar el proceso de mentorización de forma automatizada y simple.
+8
+Se determinó que la aplicación debía poseer 3 funcionalidades básicas: gestión de usuarios, permitir a los usuarios registrarse, modificar sus datos y establecer y mantener relaciones de mentorización a través de la aplicación; Contacto entre usuarios, proveer de una herramienta que permita a los usuarios comunicarse a través de la propia aplicación; y, Compartición y envío de ficheros, permitir a los usuarios subir ficheros a su perfil para que otros puedan descargarlos o enviarselos a otros usuarios a través de la herramienta utilizada para la comunicación.
+--Análisis--
+1
+Los diferentes roles que puede tomar una persona que usase la aplicación son: Mentor, Mentorizado o Usuario. Este tercer rol es una abtración de los otros dos, y puede representar tanto a un mentor como a un mentorizado. Nuestro sistema necesita además 2 interfaces con sistemas externos, una para comunicarse con la base de datos y otra para comunicarse con la API de mensajería, para enviar correos a los usuarios.
+2
+En cuanto a los requisitos de información, el sistema deberá almacenar información acerca de: los mentores, los mentorizados, los usuarios, las peticiones de mentorización, las mentorizaciones, las intituciones, las notificaciones enviadas a los usuarios y los mensajes.
+3
+Se detectaron una cantidad significativa de requisitos, tanto funcionales como no funcionales, como ejemplo, se muestra el primero de ellos, Registrar a un usuario, del que se ha sacado el caso de uso que después comentaremos y que detallaremos su secuencia en un diagrama de secuencia. Este requisitos establece que la aplicación debe permitir a un usuarios registrarse en ella utilizando su información, y qué, tras registrarse, el usuario debe poder verficar su cuenta a través de su correo eletrónico. Relacionado con este requisito podemos ver estos dos no funcionales, que restringen, por un lado, que un usuario no pueda iniciar sesión si no ha verificado su cuenta, y por el otro, que un usuario no puede completar el proceso de registro si no acepta los términos y condiciones.
+4
+En esta diapositiva se puede observar un grupo de los casos de uso que se establecieron, como se puede apreciar, estñan agrupados por colores. El color verde indica que pertenecen a la funcionalidad de gestión de usuarios, el azul, a la de contacto entre usuarios, y el naranja, que en breve veremos, al de compartir y enviar ficheros.
+5
+Para seguir el ejemplo que comenzamos en los requisitos, veremos el caso de uso Registrar a un usuario
+6
+Como se puede apreciar, este caso de uso tiene como precondición que el usuario no haya iniciado sesión con una cuenta. Los pasos son, el usuario, escoge el rol con el que se quiere registrar e introduce sus datos y acepta los términos y condiciones. Tras esto, el sistema almacena los datos del usuario, fijandolo como no verificado y envía el correo de verificación. El usuario accede a su correo, hace clic en el enlace proprocionado y el sistema actualiza sus datos para que pueda iniciar sesión. Finalmente, el usuario queda registrado y puede iniciar sesión.
+7
+Aquí podemos ver el resto de casos de uso.
+--Diseño--
+1(esta se quitaria)
+Aqui se diria que se ha escogido un servicio rest, debido a que es el más extendido, como se puede ver en la figura, y por ser muy facil de consumir por parte del Frontend. Para implementar este servicio se hizo uso de Spring Boot, que, además de ser de los más utilizados, ofrece grandes facilidades para desarrollar aplicaciones web.
+Además, se ha escogido PostgreSQL para la base de datos, AngularJS para la lógica del Frontend, y WebSocket para implementar la herramienta de chat.
+2
+El sistema está basándo en una arquitectura cliente-servidor, y su diseño sigue el patrón Modelo Vista Controlador. En esta diapositiva podemos ver el diagrama de arquitectura del sistema, en el que se puede apreciar claramente las piezas de este patrón. Por un lado, el Controlador y el Modelo, que están implementados dentro de un servicio Rest y constituyen el Backend de la aplicación, es decir, el servidor. Concretamente, el papel del controlador es tomado por los controladores Rest y las clases que implementan la lógica de la aplicación; y, el Modelo está compuesto por los Beans y las clases que implementan el acceso a la base de datos. Y, por el otro lado, la Vista, que está constituida por el Frontend de la aplicación, es decir, el cliente.
+Además de esto, podemos ver que los datos de la aplicación se almacenan en una base de datos PostgreSQL y que se utiliza un servidor SMTP, en concreto GMX, para el envío de correos a los usuarios.
+(opcional)
+Por lo tanto, cuando un usuario interactúe con la aplicación, su entrada será tomada por el Frontend, que consumirá un servicio del Backend. El Backend aplicará la lógica correspondiente a la funcionalidad consumida, consultará la base de datos y realizará sobre ella las operaciones necesarias. Finalmente, devolverá una respuesta al Frontend para que se la muestre al usuario.
+3
+En esta diapositiva podemos ver el diagrama de Sistema, y podemos apreciar que, actualmente, los únicos usuarios que interactuan con la aplicación son los mentores y mentorizados. A pesar de que se ven reflejadas dos bases de datos, para simplificar el desarrollo, solo se utilizó una. 
+(opcional)
+Aqui podría decir algo de por que pongo dos bases de datos, es decir, para asi aliviar la carga de la base de datos que contiene los datos de los usuarios, para que los accesos a los mismos no se viesen "entorpecidos" por las transacciones referentes a los mensajes, puesto que estas serían, teoricamente, las más comunes.
+(fin opcional)
+Como se puede observar, el sistema cuenta con 5 subsistemas.
+4
+Gestión de usuarios, responsable del registro y autenticación de los usuarios, la modificación de sus datos y la eliminación de sus cuentas, así como de la gestión de todo el proceso de la mentorización.
+5
+Gestión de datos, responsable de establecer la comunicación con los repositorios y de realizar transacciones de datos con los mismos.
+6
+Gestión de la mensajería, responsable de preparar y enviar los correos electrónicos para los usuarios.
+7
+Gestión de los chats, responsable de proveer todas las funcionalidades relacionadas con el chat de la aplicación.
+8
+Gestión de ficheros, responsable de la carga y descarga de los ficheros en la aplicación.
+9(quizas se quite)
+Aquí se comentaria que se puede observar el diagrama de clases del modelo de la aplicación, que es consistente con los requisitos de información que ya se comentaron, salvo que el requisito de Mensaje se dividió en SalaChat (chat abierto entre mentor y mentorizado) y MensajeChat(cada mensaje de ese chat).
+10
+En esta diapositiva se puede ver el diagrama de secuencia correspondiente al caso de uso que ya se comentó, Registrar a un usuario, en este caso concreto, a un mentor. Este ejemplo nos sirve para mostrar como se distribuye la lógica en la aplicación y como interactúan sus componentes.
+(opcional)
+Como se puede apreciar, se siguen los pasos comentados durante el caso de uso:
+11
+Selección del rol
+12
+Introducción de los datos por parte del usuario
+13
+Almacenamiento de los datos y envío del correo de verificación
+14
+Acceso al correo y verificación
+15
+Actualización de los datos del usuario
+16
+En cuanto a los patrones de diseño, además del Modelo Vista Controlador ya comentado y de los que ya aplica Spring Boot, como el Template o el Singleton, se utilizan:
+Data Access Object, usado para las consultas a la base de datos. Es aplicado por las clases de Hibernate.
+Data Transfer Object, usado para las transferencias de datos al cliente desde el servidor
+Y, Publica-Suscribe, usado para la recepción de los mensajes y notificaciones por parte del Frontend. 
+--Pruebas--
+Se han realizado 2 tipos de pruebas, por un lado, pruebas unitarias, de caja blanca, que se llevaron a cabo a medida que se iba generando el código de la aplicación. Y, por el otro lado, pruebas de funcionalidad, de caja negra. Para estas segundas se prepararon casos de prueba específicos para porbar las diferentes funcionalidades de la aplicación. Aquí se puede ver una lista con dichos casos de prueba. El resultado de cada una de estas pruebas fue el obtenido, por lo que se considera que la aplicación superó el proceso de pruebas.
+--Conclusiones--
+1
+Por un lado, se ha desarrollado una aplicación web con una considerable cantidad de funcionalidades, el uso de los frameworks Spring Boot, para el Backend, y AngularJS para el Frontend contribuyeron en gran medida a mejorar el alcance del proyecto.
+Por el otro lado, podemos afirmar que se han alcanzado los objetivos establecidos de forma satisfactoria, dado que, en primer lugar, la aplicación permite a los usuarios registrarse en ella y establecer y mantener relaciones de mentorización. Y, en segundo lugar, la aplicación facilita el mentoring, haciendola una opción preferible al proceso manual que ya se comentó que aplican muchas instituciones. Además de esto, la disponibilidad de una herramienta de chat permite que los usuarios se comuniquen sin necesidad de usar canales de terceros.
+2
+Para finalizar, para pasar del Producto Mínimo Viable del que disponemos a un producto comercializable, sería deseable añadirle más funcionalidades: En primer lugar, utilidades para las instituciones, dado que serían las que contratarías los servicios de la aplicación, debería poder acceder como usuarios a la aplicación para modificar su información, verificar sus mentores, monitorizar sus usuarios y visualizar y exportar informes de uso.
+En segundo lugar, sería muy útil que los usuarios pudieran contar con una herramienta de planificación, como un calendario, y mas opciones de comunicación, como realizar llamadas de voz o videollamadas. Esto mejoraría el mantenimiento de las mentorizaciones.
+En tercer lugar, sería necesario aumentar la seguridad de la aplicación, así como añadir una funcionalidad que permitiera a los usuarios informar del uso inadecuado de la aplicación por parte de otros usuarios. También sería deseable optimizar la aplicación para mejorar su eficiencia.
+Finalemente, utilidades para el administrador de la aplicación, para que este pudiera realizar labores de gestión y mantenimiento de la misma.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dragonizo: Descarga, muñeco, aliento
+Diablillo: fuego, escudo fuego, portal
+Dragon de hueso:
+
+pablo.quesada@usc.es

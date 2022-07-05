@@ -97,6 +97,50 @@ public class MentoringApplication {
 					System.exit(-1);
 				}
 			}
+			folder = new File("imagenes/");
+			if(!folder.exists()) {
+				if(folder.mkdir()) {
+					System.out.println("Creado fichero");
+					System.out.println(folder.getAbsolutePath());
+				}
+				else {
+					System.out.println("No se ha podido crear el directorio de imagenes");
+					System.exit(-1);
+				}
+			}
+			folder = new File("imagenes/mentores/");
+			if(!folder.exists()) {
+				if(folder.mkdir()) {
+					System.out.println("Creado fichero");
+					System.out.println(folder.getAbsolutePath());
+				}
+				else {
+					System.out.println("No se ha podido crear el directorio de imagenes para los mentores");
+					System.exit(-1);
+				}
+			}
+			folder = new File("imagenes/mentorizados/");
+			if(!folder.exists()) {
+				if(folder.mkdir()) {
+					System.out.println("Creado fichero");
+					System.out.println(folder.getAbsolutePath());
+				}
+				else {
+					System.out.println("No se ha podido crear el directorio de imagenes para los mentorizados");
+					System.exit(-1);
+				}
+			}
+			folder = new File("imagenes/instituciones/");
+			if(!folder.exists()) {
+				if(folder.mkdir()) {
+					System.out.println("Creado fichero");
+					System.out.println(folder.getAbsolutePath());
+				}
+				else {
+					System.out.println("No se ha podido crear el directorio de imagenes para las instituciones");
+					System.exit(-1);
+				}
+			}
 		} catch (SecurityException | NullPointerException e) {
 			System.out.println(e.getMessage());
 			System.exit(-1);

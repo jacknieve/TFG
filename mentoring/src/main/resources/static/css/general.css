@@ -485,3 +485,8 @@ button:disabled{
   	align-items : center;
 }
 
+.campoBusqueda{
+	margin-bottom: 3px;
+	max-width: 240px;
+}
+

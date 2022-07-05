@@ -1,6 +1,6 @@
-Mas cosas que hacer:
--Empezar informe
--Seguir diseño
+
+
+----> En la maquina virtual, actualizar aceptarPeticion de UserService
 
 ->Cosas que comentar en reunion<-
 
@@ -98,6 +98,10 @@ https://www.codejava.net/frameworks/spring-boot/spring-boot-file-upload-tutorial
 https://o7planning.org/11673/spring-boot-file-upload-with-angularjs
 
 
+->Cuando se debuelve la imagen de un usuario: chat (mi imagen, la target y lista contactos), mis mentores, mis mentorizados, busqueda, por puntuar, solicitudes, perfil
+->Al borrar?
+->Tambien las instituciones
+
 -------------------
 
 -->Areas de conocimiento:
@@ -111,8 +115,6 @@ https://doc-kurento.readthedocs.io/en/stable/tutorials/java/tutorial-one2one.htm
 ->Pero requiere ssl
 --Calendar
 https://stackoverflow.com/questions/54886906/create-google-calendar-event-from-java-backend-from-oauth-authenticated-users-on
-
-
 
 
 
@@ -147,6 +149,16 @@ En apendice
 
 
 En el 1.3 comentar las funcionalidades y pasarlo a diseño
+
+mentoring.pablo@gmail.com
+TFGpablo2022//
+
+
+
+
+
+
+
 
 
 

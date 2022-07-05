@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tfg.mentoring.exceptions.ExcepcionDB;
@@ -45,7 +44,7 @@ public class FileService {
 	@Autowired
 	private MensajesRepo mrepo;
 
-	public void crearDirectoriosUsuario(String username, String rol) throws FileNotFoundException, ExcepcionRecursos {
+	/*public void crearDirectoriosUsuario(String username, String rol) throws FileNotFoundException, ExcepcionRecursos {
 		File filesUsers = new File("recursos/user-files/" + rol + "/" + username + "/");
 		File filesUsersPerfil = new File("recursos/user-files/" + rol + "/" + username + "/perfil/");
 		if (!filesUsers.mkdir() || !filesUsersPerfil.mkdir()) {
@@ -57,6 +56,23 @@ public class FileService {
 		if (!imagen.mkdir()) {
 			throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el usuario");
 		}
+	}*/
+	
+	//V2
+	
+	public void crearDirectoriosUsuario(String username, String rol) throws FileNotFoundException, ExcepcionRecursos {
+		File filesUsers = new File("recursos/user-files/" + rol + "/" + username + "/");
+		File filesUsersPerfil = new File("recursos/user-files/" + rol + "/" + username + "/perfil/");
+		File filesUsersFoto = new File("imagenes/" + rol + "/" + username + "/");
+		if (!filesUsers.mkdir() || !filesUsersPerfil.mkdir() || !filesUsersFoto.mkdir()) {
+			throw new ExcepcionRecursos("No ha sido posible crear el directorio para el usuario");
+		}
+		/*String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/").getAbsolutePath() + "/"
+				+ username + "/";
+		File imagen = new File(path);
+		if (!imagen.mkdir()) {
+			throw new ExcepcionRecursos("No ha sido posible crear el directorio de foto de perfil para el usuario");
+		}*/
 	}
 
 	public void crearDirectoriosChat(long id) throws ExcepcionRecursos, SecurityException {
@@ -71,11 +87,12 @@ public class FileService {
 	public String guardarImagen(MultipartFile imagen, String username, String rol)
 			throws IOException, ExcepcionFichero, SecurityException, JDBCConnectionException, QueryTimeoutException {
 
-		String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/")
+		/*String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/")
 				.getAbsolutePath();
 		if (imagen.isEmpty()) {
 			throw new ExcepcionFichero("Imagen vacía", "La imagen facilitada estaba vacía.");
-		}
+		}*/
+		String path = "imagenes/" + rol + "/" + username + "/";
 		String filename = imagen.getOriginalFilename();
 		Optional<String> extension = getExtensionByStringHandling(filename);
 		if (filename.length() > 250) {
@@ -99,7 +116,7 @@ public class FileService {
 		byte[] bytes = imagen.getBytes();
 		Path pathImagen = Paths.get(imagenPath);
 		Files.write(pathImagen, bytes);
-		return "/images/usuarios/" + rol + "/" + username + "/" + filename;
+		return "/imagenes/" + rol + "/" + username + "/" + filename;
 		// Si aqui falla, habria que hacer una consulta de limpieza en la DB, es decir,
 		// si salta una IO exception
 	}
@@ -226,9 +243,7 @@ public class FileService {
 	}
 
 	public void borrarImage(String filename, String username, String rol) throws FileNotFoundException {
-		String path = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/")
-				.getAbsolutePath();
-		String filePath = path + "/" + filename;
+		String filePath = "imagenes/" + rol + "/" + username + "/" + filename;
 		File f = new File(filePath);
 		if (f.exists()) {
 			f.delete();
@@ -337,15 +352,17 @@ public class FileService {
 		try {
 			frepo.limpiarDeUsuario(username);
 			urepo.borrarFoto(username);
-
-			File dir = ResourceUtils.getFile("classpath:static/images/usuarios/" + rol + "/" + username + "/");
-			if (dir.exists() && dir.list().length > 0) {
-				FileUtils.cleanDirectory(dir);
+			
+			String path = "imagenes/" + rol + "/" + username + "/";
+			File dirFoto = new File(path);
+			if (dirFoto.exists() && dirFoto.list().length > 0) {
+				FileUtils.cleanDirectory(dirFoto);
 			} else {
-				System.out.println("No ha sido posible acceder al directorio de la imagen de perfil del usuario "
-						+ username + " para borrarla.");
+				System.out.println("No ha sido posible acceder al directorio de la foto de perfil del usuario " + username
+						+ "para borrar el fichero.");
 			}
-			String path = "recursos/user-files/" + rol + "/" + username + "/";
+			
+			path = "recursos/user-files/" + rol + "/" + username + "/";
 			File dirPerfil = new File(path + "perfil/");
 			if (dirPerfil.exists() && dirPerfil.list().length > 0) {
 				FileUtils.cleanDirectory(dirPerfil);

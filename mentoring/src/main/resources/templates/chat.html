@@ -64,17 +64,20 @@
 			<div class="col-lg-12 cuerpoChats">
 				<div class="row" style="height: 100%;">
 
-					<div class="col-4"
-						th:style="'background-color: '+@{${colorB}}+'; border-right: 1px solid black; overflow-y: scroll;'">
+					<div class="col-4 zonaContactos"
+						th:style="'background-color: '+@{${colorB}}+'; border-right: 1px solid black;'">
 						<div class="row" th:style="${letrasBB ? 'color: white' : 'color: black'}">
 							<div class="col-lg-12 volverSeccion">
-								<div class="row" style="width: 100%; margin: 0px;">
-									<div class="col-md-8 offset-md-2">
+								<!--<div class="row" style="width: 100%; margin: 0px;">
+									<div class="col-md-8 offset-md-1">
 										<form action="#" th:action="@{/user/principal}" style="width: 100%;">
 											<button class="volverButton">Volver a principal</button>
 										</form>
 									</div>
-								</div>
+								</div>-->
+								<form action="#" th:action="@{/user/principal}">
+									<button class="volverButton">Volver a principal</button>
+								</form>
 							</div>
 							<div class="col-lg-12" style="border-bottom: 1px solid black;" ng-repeat="sala in salas"
 								ng-class="{ 'seccionDesabilitada': cargando}">
@@ -139,16 +142,17 @@
 							</div>
 							<div class="col-lg-12" ng-class="{ 'salaDesabilitada': cargando}">
 								<div class="row" ng-class="{ 'salaDesabilitada': !mostrarChat || salaActual.cerrada}">
+								
 									<div class="col-8 col-sm-8 col-md-9 col-lg-10"
 										style="padding-right: 0px; margin-right: 0px;">
-										<textarea ng-model="cuerpoMensaje" maxlength="300" class="textareaMensaje"
+										<textarea id="textareamensaje" ng-model="cuerpoMensaje" maxlength="300" class="textareaMensaje"
 											ng-hide="enEnvioFile"></textarea>
 										<form ng-show="enEnvioFile" class="textareaMensaje">
 											<label for="files" class="botonSubirFichero"
 												style="margin-top: 10px;">Seleccione un fichero</label>
 											<input id="files" style="display:none;" type="file"
 												file-model="ficheroEnviar">
-											<span style="margin-left: 15px;">{{ficheroEnviar.name}}</span>
+											<span class="nombreFile">{{ficheroEnviar.name}}</span>
 										</form>
 									</div>
 									<div class="col-4 col-sm-4 col-md-3 col-lg-2 sendBotonSection">
@@ -157,7 +161,7 @@
 											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
 											<img src="images/file.png" class="sendImage" alt="" />
 										</button>
-										<button ng-click="enviarMensaje()" ng-disabled="cargando" class="sendBoton"
+										<button type="submit" ng-click="enviarMensaje()" ng-disabled="cargando" class="sendBoton"
 											ng-hide="enEnvioFile">
 											<!--https://flyclipart.com/download-png#send-share-submit-icon-with-png-and-vector-format-for-free-371578.png-->
 											<img src="images/enviar.png" class="sendImage" alt="" />
@@ -168,7 +172,7 @@
 											<img src="images/enviar.png" class="sendImage" alt="" />
 										</button>
 									</div>
-
+								
 								</div>
 							</div>
 						</div>

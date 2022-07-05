@@ -19,13 +19,13 @@ public class UserAux {
 	private String password;
 	@NotEmpty(message = "Es necesario introducir un nombre")
 	@Size(max=255)
-	@Pattern(regexp = "^([A-zÀ-ÿ\\u00f1\\u00d1]+)?$", message = "Por favor, introduzca un nombre válido")
+	@Pattern(regexp = "^([A-zÀ-ÿ\u00f1\u00d1\u0020]+)?$", message = "Por favor, introduzca un nombre válido")
 	private String nombre;//
 	@Size(max=255)
-	@Pattern(regexp = "^([A-zÀ-ÿ\\u00f1\\u00d1]+)?$", message = "Por favor, introduzca un apellido válido")
+	@Pattern(regexp = "^([A-zÀ-ÿ\u00f1\u00d1\u0020]+)?$", message = "Por favor, introduzca un apellido válido")
 	private String papellido;//
 	@Size(max=255)
-	@Pattern(regexp = "^([A-zÀ-ÿ\\u00f1\\u00d1]+)?$", message = "Por favor, introduzca un apellido válido")
+	@Pattern(regexp = "^([A-zÀ-ÿ\u00f1\u00d1\u0020]+)?$", message = "Por favor, introduzca un apellido válido")
 	private String sapellido;//
 	private String nivelEstudios;//
 	@Pattern(regexp = "^(([+][0-9]{2})?[0-9]{9})?$", message = "Por favor, introduzca un formato de telefono válido")

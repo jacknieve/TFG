@@ -48,7 +48,7 @@ public class RedirectService {
 			modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
 			if (m.getUsuario().getFoto() != null) {
 				modelo.addObject("foto",
-						"/images/usuarios/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
+						"/imagenes/mentores/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
 			} else {
 				modelo.addObject("foto", "/images/usuario.png");
 			}
@@ -68,14 +68,14 @@ public class RedirectService {
 		Optional<Mentorizado> mentorizado = menrepo.findById(username);
 		if (mentorizado.isPresent()) {
 			acservice.entrarChat(username);
-			System.out.println(mentorizado.get().toString());
+			//System.out.println(mentorizado.get().toString());
 			Mentorizado m = mentorizado.get();
 			ModelAndView modelo = new ModelAndView("chat");
 			uservice.addInstitucionUtils(modelo, m.getInstitucion());
 			modelo.addObject("nombre", m.getNombre() + " " + m.getPapellido() + " " + m.getSapellido());
 			if (m.getUsuario().getFoto() != null) {
 				modelo.addObject("foto",
-						"/images/usuarios/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
+						"/imagenes/mentorizados/" + m.getCorreo() + "/" + m.getUsuario().getFoto());
 			} else {
 				modelo.addObject("foto", "/images/usuario.png");
 			}
