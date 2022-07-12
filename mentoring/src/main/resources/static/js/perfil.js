@@ -159,7 +159,7 @@ appConsumer.controller("userController", function($scope, $http, $notification, 
 			$http.post("/user/setinfo", usuario).then(
 				function sucessCallback(response) {
 					areasNuevas.clear(); //Borramos las areas para no intentar solo eliminar del frontend un area
-					$notification.success("Información actualizada", "Tu información se ha actualizadp de forma exitosa", null, false);
+					$notification.success("Información actualizada", "Tu información se ha actualizado de forma exitosa", null, false);
 					$scope.cargando = false;
 				},
 				function errorCallback(response) {
